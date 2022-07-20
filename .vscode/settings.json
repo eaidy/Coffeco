@@ -1,0 +1,10 @@
+{
+    "nuxt.isNuxtApp": false,
+    "colorize.languages": [
+        "typescript",
+        "javascript",
+        "css",
+        "scss"
+    ],
+    "editor.formatOnSave": true
+}
