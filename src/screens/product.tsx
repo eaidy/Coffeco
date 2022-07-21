@@ -1,5 +1,7 @@
 // API Imports
-import React, { Component, useEffect } from 'react'
+import React, { Component, useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
+import { useNavigation } from '@react-navigation/native'
 
 // Component Imports
 import {
@@ -17,112 +19,173 @@ import Header from '@/components/header'
 
 // Service Imports
 import { fetchData } from '@/services/methods'
-import { useAtom } from 'jotai'
-import { productAtom } from '@/states/auth'
 
-class ProductScreen extends Component {
-  constructor(props: any) {
-    super(props);
+// Model Imports
+import { ResponseModel, Variants, Variant } from '@/models/models'
 
-    const [product, setProduct] = useAtom(productAtom)
+function ProductScreen({ route }: any) {
 
-  }
+  const [variantParents, setVariantParents] = useState<Variants>([])
+  const [variantChilds, setVariantChilds] = useState<Variants>([])
 
-  render() {
-    return (
-      <>
-        <Header />
-        <View style={styles.pageWrapper}>
-          <ImageBackground
-            source={require('@/assets/images/product-bg.jpg')}
-            style={styles.detailBg}
+  const navigation = useNavigation()
+
+  const { productResponse } = route.params
+
+  let temp: Variants
+
+  const buffer = [
+    {
+      description: "Boyut",
+      price: 0,
+      bonus: 0,
+      salePrice: 0,
+      priceID: 1,
+      parentID: 0
+    },
+    {
+      description: "Süt",
+      price: 0,
+      bonus: 0,
+      salePrice: 0,
+      priceID: 2,
+      parentID: 0
+    },
+    {
+      description: "Şurup",
+      price: 0,
+      bonus: 0,
+      salePrice: 0,
+      priceID: 3,
+      parentID: 0
+    },
+    {
+      description: "Krema",
+      price: 0,
+      bonus: 0,
+      salePrice: 0,
+      priceID: 4,
+      parentID: 0
+    },
+    {
+      description: "Shot",
+      price: 0,
+      bonus: 0,
+      salePrice: 0,
+      priceID: 5,
+      parentID: 0
+    },
+    {
+      description: "Small",
+      price: 0,
+      bonus: 0,
+      salePrice: 0,
+      priceID: 6,
+      parentID: 1
+    },
+    {
+      description: "Medium",
+      price: 0,
+      bonus: 0,
+      salePrice: 0,
+      priceID: 7,
+      parentID: 1
+    },
+    {
+      description: "Large",
+      price: 0,
+      bonus: 0,
+      salePrice: 0,
+      priceID: 8,
+      parentID: 1
+    }
+  ]
+
+  useEffect(() => {
+    // Parent Filter
+    temp = buffer.filter((variant) => variant.parentID === 0)
+    setVariantParents(temp)
+    // Child Filter
+    temp = buffer.filter((variant) => variant.parentID === 1)
+    setVariantChilds(temp)
+  }, [])
+
+  return (
+    <>
+      <Header />
+      <View style={styles.pageWrapper}>
+        <ImageBackground
+          source={require('@/assets/images/product-bg.jpg')}
+          style={styles.detailBg}
+        >
+          <Pressable
+            onPress={() => navigation.goBack()}
           >
-            <Image
-              style={styles.detailImage}
-              source={require('@/assets/images/product.png')}
+            <Text>
+              Geri Dön
+            </Text>
+          </Pressable>
+          <Image
+            style={styles.detailImage}
+            source={require('@/assets/images/product.png')}
+          />
+          <Text style={styles.detailTitle}>Cappucino</Text>
+          <Text style={styles.detailText}>Laktozsuz süt seçeneği ile</Text>
+        </ImageBackground>
+        <View style={styles.optionList}>
+
+          <ScrollView style={styles.optionListScroll}>
+
+            {variantParents.map((variantParent: Variant) => (
+              <Pressable
+                style={styles.option}
+                key={variantParent.priceID}
+                onPress={() => { console.log(productResponse, 'ALOOO') }}
+              >
+                <Text style={styles.optionTitle}>{variantParent.description}</Text>
+                <View style={styles.optionSelect}>
+                  <Text style={styles.optionSelectText}>Seçiniz Test</Text>
+                  {/* <SvgXml
+                      xml={iconArrow}
+                      width="24"
+                      height="24"
+                      style={styles.navIcon}
+                    /> */}
+                </View>
+                <View>
+                  {
+                    variantChilds.filter((variantChild) => variantChild.parentID === variantParent.priceID)
+                      .map((variantChild) => (
+                        <Pressable
+                          key={variantChild.priceID}
+                        >
+                          <Text>
+                            {variantChild.description}
+                          </Text>
+                        </Pressable>
+                      ))
+                  }
+                </View>
+              </Pressable>))
+            }
+          </ScrollView>
+
+          <View style={styles.optionListFooter}>
+            <TextInput
+              style={styles.optionNumber}
+              placeholder="Adet"
+              keyboardType="numeric"
             />
-            <Text style={styles.detailTitle}>Cappucino</Text>
-            <Text style={styles.detailText}>Laktozsuz süt seçeneği ile</Text>
-          </ImageBackground>
-          <View style={styles.optionList}>
-            <ScrollView style={styles.optionListScroll}>
-              <Pressable style={styles.option}>
-                <Text style={styles.optionTitle}>Boyut</Text>
-                <View style={styles.optionSelect}>
-                  <Text style={styles.optionSelectText}>Seçiniz</Text>
-                  <SvgXml
-                    xml={iconArrow}
-                    width="24"
-                    height="24"
-                    style={styles.navIcon}
-                  />
-                </View>
-              </Pressable>
-              <Pressable style={styles.option}>
-                <Text style={styles.optionTitle}>Süt</Text>
-                <View style={styles.optionSelect}>
-                  <Text style={styles.optionSelectText}>Seçiniz</Text>
-                  <SvgXml
-                    xml={iconArrow}
-                    width="24"
-                    height="24"
-                    style={styles.navIcon}
-                  />
-                </View>
-              </Pressable>
-              <Pressable style={styles.option}>
-                <Text style={styles.optionTitle}>Şurup</Text>
-                <View style={styles.optionSelect}>
-                  <Text style={styles.optionSelectText}>Seçiniz</Text>
-                  <SvgXml
-                    xml={iconArrow}
-                    width="24"
-                    height="24"
-                    style={styles.navIcon}
-                  />
-                </View>
-              </Pressable>
-              <Pressable style={styles.option}>
-                <Text style={styles.optionTitle}>Krema</Text>
-                <View style={styles.optionSelect}>
-                  <Text style={styles.optionSelectText}>Seçiniz</Text>
-                  <SvgXml
-                    xml={iconArrow}
-                    width="24"
-                    height="24"
-                    style={styles.navIcon}
-                  />
-                </View>
-              </Pressable>
-              <Pressable style={styles.option}>
-                <Text style={styles.optionTitle}>Shot</Text>
-                <View style={styles.optionSelect}>
-                  <Text style={styles.optionSelectText}>Seçiniz</Text>
-                  <SvgXml
-                    xml={iconArrow}
-                    width="24"
-                    height="24"
-                    style={styles.navIcon}
-                  />
-                </View>
-              </Pressable>
-            </ScrollView>
-            <View style={styles.optionListFooter}>
-              <TextInput
-                style={styles.optionNumber}
-                placeholder="Adet"
-                keyboardType="numeric"
-              />
-              <Pressable style={styles.optionCart}>
-                <Text style={styles.optionCartText}>Sepet'e Ekle</Text>
-                <Text style={styles.optionCartPrice}>15 Puan</Text>
-              </Pressable>
-            </View>
+            <Pressable style={styles.optionCart}>
+              <Text style={styles.optionCartText}>Sepet'e Ekle</Text>
+              <Text style={styles.optionCartPrice}>15 Puan</Text>
+            </Pressable>
           </View>
+
         </View>
-      </>
-    )
-  }
+      </View>
+    </>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -259,6 +322,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito-Bold',
     fontSize: 18,
   },
+  optionSelectText: {
+
+  }
 })
 
 export default ProductScreen

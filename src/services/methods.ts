@@ -1,4 +1,4 @@
-export type Params = {
+type Params = {
     key?: number;
     paramLabel?: string;
     authToken: string;

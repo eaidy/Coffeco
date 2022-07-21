@@ -1,25 +1,44 @@
+// API Imports
 import React, { useState } from 'react'
-import { Box, Text, ImageBackground, TextInput, Button } from '@/atoms/'
 import { useTheme } from '@shopify/restyle'
 import { register } from '@/services/register'
+
+// Component Imports
 import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
   ScrollView,
 } from 'react-native'
+import { Box, Text, ImageBackground, TextInput, Button } from '@/atoms/'
 import { Formik } from 'formik'
 import HomeScreen from './home'
 
-type FormValues = {
-  Phone: Number
-}
+// Model Imports
+import { RegisterFormModel } from '@/models/models'
+
 
 function SignupScreen() {
+
   const { colors, spacing } = useTheme()
-  async function submitRegister(values: any) {
-    await register(values.Phone, '')
+
+  const initialFormValues: RegisterFormModel = {
+    Login: '',
+    Adi: '',
+    Soyadi: '',
+    Cep: '',
+    Email: '',
+    Password: '',
+    RePassword: ''
   }
+
+  async function submitRegister(values: RegisterFormModel) {
+    const response = await register(values)
+    console.log(response)
+  }
+
+
+
   return (
     <ScrollView
       contentContainerStyle={{
@@ -44,17 +63,8 @@ function SignupScreen() {
               </Text>
             </Box>
             <Formik
-              initialValues={{
-                Phone: '',
-                Email: '',
-                Password: '',
-                RePassword: '',
-                Name: '',
-                Surname: '',
-                City: '',
-                Address: '',
-              }}
-              onSubmit={async values => await submitRegister(values)}
+              initialValues={initialFormValues}
+              onSubmit={values => submitRegister(values)}
             >
               {({ handleChange, handleBlur, handleSubmit, values }) => (
                 <>

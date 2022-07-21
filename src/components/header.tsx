@@ -1,14 +1,22 @@
+// API Imports
 import React from 'react'
+import { useNavigation } from '@react-navigation/native'
+import { useAtom } from 'jotai'
+
+// Component Imports
 import {
   StyleSheet,
   View,
   Image,
 } from 'react-native'
 import { Text, Pressable, ImageBackground } from '@/atoms'
-import { useAtom } from 'jotai'
-import { userStateAtom } from '../states/auth'
+
+// State Imports
+import { userStateAtom } from '@/states/auth'
 
 export default function Header() {
+
+  const navigation = useNavigation()
 
   return (
     <View style={styles.header}>
@@ -22,7 +30,10 @@ export default function Header() {
             source={require('@/assets/images/logo.png')}
           />
         </Pressable>
-        <Pressable style={styles.profile}>
+        <Pressable
+          style={styles.profile}
+          onPress={() => navigation.navigate('Profile')}
+        >
           <Image
             style={styles.profileImg}
             source={require('@/assets/images/profile.jpg')}

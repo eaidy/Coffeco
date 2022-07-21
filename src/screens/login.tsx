@@ -11,9 +11,10 @@ import { Box, Text, ImageBackground, TextInput, Button } from '@/atoms/'
 
 // Service/State Imports
 import { login } from '@/services/auth'
-import { categoriesAtom, productsAtom, UserState, userStateAtom } from '@/states/auth'
+import { categoriesAtom, productsAtom, userStateAtom } from '@/states/auth'
 
 // Model Imports
+import { UserState } from '@/models/models'
 
 type FormValues = {
   phoneNumber: string;
@@ -32,7 +33,7 @@ function LoginScreen() {
     const response = await login(values.phoneNumber, '')
       .then((res) => {
         userStateBuffer = res
-        console.log('Okey')
+        console.log(res)
       })
       .catch((err) => {
         console.log(err)

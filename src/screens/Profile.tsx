@@ -1,4 +1,8 @@
+// API Imports
 import React from 'react'
+import { useNavigation } from '@react-navigation/native'
+
+// Component Imports
 import { Box, Text } from '@/atoms'
 import {
   Image,
@@ -8,18 +12,27 @@ import {
   TextInput,
   View,
 } from 'react-native'
-import MainNavigation from '@/navs/main'
 import Header from '@/components/header'
 import { SvgXml } from 'react-native-svg'
 import { Icons } from '@/constants'
 
 function ProfileScreen() {
+
+  const navigation = useNavigation()
+
   return (
     <>
       <Header />
       <ScrollView>
         <View style={styles.wrapper}>
           <Text style={styles.title}>Hesabım</Text>
+          <Pressable
+            onPress={() => navigation.goBack()}
+          >
+            <Text>
+              Profilden Çıkış
+            </Text>
+          </Pressable>
           <View style={styles.sectionContainer}>
             <View style={styles.boxTitle}>
               <Text style={styles.boxTitleText}>Geçmiş Siparişlerim</Text>
@@ -41,7 +54,7 @@ function ProfileScreen() {
                   <View style={styles.productLeft}>
                     <Image
                       style={styles.productImage}
-                      source={require('@/assets/images/product.png')}
+                      source={require('../assets/images/product.png')}
                     />
                     <View style={styles.productContet}>
                       <Text style={styles.productTitle}>Cappucino</Text>
@@ -56,7 +69,7 @@ function ProfileScreen() {
                   <View style={styles.productLeft}>
                     <Image
                       style={styles.productImage}
-                      source={require('@/assets/images/product.png')}
+                      source={require('../assets/images/product.png')}
                     />
                     <View style={styles.productContet}>
                       <Text style={styles.productTitle}>Cappucino</Text>
@@ -88,7 +101,7 @@ function ProfileScreen() {
                   <View style={styles.productLeft}>
                     <Image
                       style={styles.productImage}
-                      source={require('../../../assets/img/product.png')}
+                      source={require('../assets/images/product.png')}
                     />
                     <View style={styles.productContet}>
                       <Text style={styles.productTitle}>Cappucino</Text>
@@ -103,7 +116,7 @@ function ProfileScreen() {
                   <View style={styles.productLeft}>
                     <Image
                       style={styles.productImage}
-                      source={require('../../../assets/img/product.png')}
+                      source={require('../assets/images/product.png')}
                     />
                     <View style={styles.productContet}>
                       <Text style={styles.productTitle}>Cappucino</Text>
@@ -225,7 +238,6 @@ function ProfileScreen() {
           </Pressable>
         </View>
       </ScrollView>
-      <MainNavigation />
     </>
   )
 }

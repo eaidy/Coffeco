@@ -1,8 +1,15 @@
+// API Imports
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
 
+// Nested Navigators Imports
 import AuthNavigation from '@/navs/auth'
 import MainNavigation from '@/navs/main'
+
+// Single Screen Imports
+import ProfileScreen from '@/screens/Profile'
+import ProductScreen from '@/screens/product'
+
 
 const Stack = createNativeStackNavigator()
 
@@ -20,6 +27,20 @@ export default function Navigations() {
       <Stack.Screen
         name="Main"
         component={MainNavigation}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Product"
+        component={ProductScreen}
         options={{
           headerShown: false,
         }}

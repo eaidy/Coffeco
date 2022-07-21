@@ -1,23 +1,5 @@
 import { atom } from "jotai";
-
-// Models
-export type UserState = {
-    data: string;
-    message: string;
-    status: boolean;
-}
-
-export type Categories = {
-    status: boolean;
-    message: string;
-    data: Array<Object>;
-}
-
-export type Category = {
-    categoriID: number,
-    category: string,
-    sort: number
-}
+import { UserState } from '@/models/models'
 
 // User State
 export const userStateAtom = atom<UserState>({
