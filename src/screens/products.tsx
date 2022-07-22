@@ -23,7 +23,7 @@ function ProductsScreen() {
   const [products, setProducts] = useAtom(productsAtom)
   const [userState,] = useAtom(userStateAtom)
 
-  const [activeCategoryID, setActiveCategoryID] = useState<number>()
+  const [activeCategoryID, setActiveCategoryID] = useState<number>() // For active category style
 
   const navigation = useNavigation()
 
@@ -37,7 +37,6 @@ function ProductsScreen() {
       .then((res) => {
         setProducts(res)
         setActiveCategoryID(category.categoriID)
-        console.log(products)
       })
   }
 
@@ -49,6 +48,7 @@ function ProductsScreen() {
     })
       .then((res: any) => {
         setCategories(res)
+        categoryPressHandler(res[0])
         //console.log(res)
       })
       .catch((err) => {
@@ -65,7 +65,6 @@ function ProductsScreen() {
       method: 'POST'
     })
       .then((res) => {
-        console.log(res)
         navigation.navigate('Product', {
           productResponse: res
         })
