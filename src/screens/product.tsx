@@ -20,10 +20,14 @@ import Header from '@/components/header'
 // Model Imports
 import { ResponseModel, Variants, Variant } from '@/models/models'
 
+type VariantsExpand = Array<Boolean>
+
 function ProductScreen({ route }: any) {
 
   const [variantParents, setVariantParents] = useState<Variants>([])
   const [variantChilds, setVariantChilds] = useState<Variants>([])
+  const [variantsExpand, setVariantsExpand] = useState<VariantsExpand>([])
+
 
   const navigation = useNavigation()
 
@@ -37,6 +41,7 @@ function ProductScreen({ route }: any) {
     // Parent Variants Filter
     temp = buffer.filter((variant: Variant) => variant.parentID === 0) // 0 means the variant is a parent
     setVariantParents(temp)
+    setVariantsExpand(temp.map(() => false))
     // Child Variants Filter
     temp = buffer.filter((variant: Variant) => variant.parentID === 1) // 1 means the variant is a child
     setVariantChilds(temp)
@@ -69,11 +74,15 @@ function ProductScreen({ route }: any) {
           <ScrollView style={styles.optionListScroll}>
 
             {
-              variantParents.map((variantParent: Variant) =>
+              variantParents.map((variantParent: Variant, parentIndex) =>
               (
                 <Pressable
                   style={styles.option}
-                  key={variantParent.priceID}
+                  key={parentIndex}
+                  onPress={() => {
+                    setVariantsExpand(variantsExpand.map((item, index) => index === parentIndex ? !item : item))
+                    console.log(variantsExpand)
+                  }}
                 >
                   <Text style={styles.optionTitle}>{variantParent.description}</Text>
                   <View style={styles.optionSelect}>
@@ -85,21 +94,25 @@ function ProductScreen({ route }: any) {
                           style={styles.navIcon}
                         /> */}
                   </View>
-                  <View>
-                    {
-                      variantChilds.filter((isParentsChild) => isParentsChild.parentID === variantParent.priceID)
-                        .map((variantChild) =>
-                        (
-                          <Pressable
-                            key={variantChild.priceID}
-                          >
-                            <Text>
-                              {variantChild.description}
-                            </Text>
-                          </Pressable>
-                        ))
-                    }
-                  </View>
+                  {
+                    (<View>
+                      {
+                        variantsExpand[parentIndex] &&
+                        variantChilds.filter((isParentsChild) => isParentsChild.parentID === variantParent.priceID)
+                          .map((variantChild, index) =>
+                          (
+                            <Pressable
+                              key={index}
+                            >
+                              <Text>
+                                {variantChild.description}
+                              </Text>
+                            </Pressable>
+                          ))
+                      }
+                    </View>
+                    )
+                  }
                 </Pressable>
               ))
             }
