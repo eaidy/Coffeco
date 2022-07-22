@@ -17,9 +17,6 @@ import {
 import { SvgXml } from 'react-native-svg'
 import Header from '@/components/header'
 
-// Service Imports
-import { fetchData } from '@/services/methods'
-
 // Model Imports
 import { ResponseModel, Variants, Variant } from '@/models/models'
 
@@ -34,79 +31,14 @@ function ProductScreen({ route }: any) {
 
   let temp: Variants
 
-  const buffer = [
-    {
-      description: "Boyut",
-      price: 0,
-      bonus: 0,
-      salePrice: 0,
-      priceID: 1,
-      parentID: 0
-    },
-    {
-      description: "Süt",
-      price: 0,
-      bonus: 0,
-      salePrice: 0,
-      priceID: 2,
-      parentID: 0
-    },
-    {
-      description: "Şurup",
-      price: 0,
-      bonus: 0,
-      salePrice: 0,
-      priceID: 3,
-      parentID: 0
-    },
-    {
-      description: "Krema",
-      price: 0,
-      bonus: 0,
-      salePrice: 0,
-      priceID: 4,
-      parentID: 0
-    },
-    {
-      description: "Shot",
-      price: 0,
-      bonus: 0,
-      salePrice: 0,
-      priceID: 5,
-      parentID: 0
-    },
-    {
-      description: "Small",
-      price: 0,
-      bonus: 0,
-      salePrice: 0,
-      priceID: 6,
-      parentID: 1
-    },
-    {
-      description: "Medium",
-      price: 0,
-      bonus: 0,
-      salePrice: 0,
-      priceID: 7,
-      parentID: 1
-    },
-    {
-      description: "Large",
-      price: 0,
-      bonus: 0,
-      salePrice: 0,
-      priceID: 8,
-      parentID: 1
-    }
-  ]
+  const buffer = productResponse.variants
 
   useEffect(() => {
-    // Parent Filter
-    temp = buffer.filter((variant) => variant.parentID === 0)
+    // Parent Variants Filter
+    temp = buffer.filter((variant: Variant) => variant.parentID === 0) // 0 means the variant is a parent
     setVariantParents(temp)
-    // Child Filter
-    temp = buffer.filter((variant) => variant.parentID === 1)
+    // Child Variants Filter
+    temp = buffer.filter((variant: Variant) => variant.parentID === 1) // 1 means the variant is a child
     setVariantChilds(temp)
   }, [])
 
@@ -136,37 +68,40 @@ function ProductScreen({ route }: any) {
 
           <ScrollView style={styles.optionListScroll}>
 
-            {variantParents.map((variantParent: Variant) => (
-              <Pressable
-                style={styles.option}
-                key={variantParent.priceID}
-                onPress={() => { console.log(productResponse, 'ALOOO') }}
-              >
-                <Text style={styles.optionTitle}>{variantParent.description}</Text>
-                <View style={styles.optionSelect}>
-                  <Text style={styles.optionSelectText}>Seçiniz Test</Text>
-                  {/* <SvgXml
-                      xml={iconArrow}
-                      width="24"
-                      height="24"
-                      style={styles.navIcon}
-                    /> */}
-                </View>
-                <View>
-                  {
-                    variantChilds.filter((variantChild) => variantChild.parentID === variantParent.priceID)
-                      .map((variantChild) => (
-                        <Pressable
-                          key={variantChild.priceID}
-                        >
-                          <Text>
-                            {variantChild.description}
-                          </Text>
-                        </Pressable>
-                      ))
-                  }
-                </View>
-              </Pressable>))
+            {
+              variantParents.map((variantParent: Variant) =>
+              (
+                <Pressable
+                  style={styles.option}
+                  key={variantParent.priceID}
+                >
+                  <Text style={styles.optionTitle}>{variantParent.description}</Text>
+                  <View style={styles.optionSelect}>
+                    <Text style={styles.optionSelectText}>Seçiniz Test</Text>
+                    {/* <SvgXml
+                          xml={iconArrow}
+                          width="24"
+                          height="24"
+                          style={styles.navIcon}
+                        /> */}
+                  </View>
+                  <View>
+                    {
+                      variantChilds.filter((isParentsChild) => isParentsChild.parentID === variantParent.priceID)
+                        .map((variantChild) =>
+                        (
+                          <Pressable
+                            key={variantChild.priceID}
+                          >
+                            <Text>
+                              {variantChild.description}
+                            </Text>
+                          </Pressable>
+                        ))
+                    }
+                  </View>
+                </Pressable>
+              ))
             }
           </ScrollView>
 
