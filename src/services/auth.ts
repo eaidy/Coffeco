@@ -1,4 +1,4 @@
-import { UserState } from '@/states/auth'
+import { UserState } from '@/models/models'
 
 const login = async (phoneNumber: string, password: string) => {
 

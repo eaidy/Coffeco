@@ -1,5 +1,5 @@
 // API Imports
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTheme } from '@shopify/restyle'
 import { useAtom } from 'jotai'
 import { useNavigation } from '@react-navigation/native'
@@ -24,12 +24,14 @@ type FormValues = {
 function LoginScreen() {
 
   const [userState, setUserState] = useAtom(userStateAtom)
+
   const navigation = useNavigation()
   const { colors, spacing } = useTheme()
 
-  let userStateBuffer: any = null
-
   const submitLogin = async (values: FormValues) => {
+
+    let userStateBuffer: any = { ...userState }
+
     const response = await login(values.phoneNumber, '')
       .then((res) => {
         userStateBuffer = res

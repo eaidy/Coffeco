@@ -37,7 +37,9 @@ function ProductsScreen() {
       .then((res) => {
         setProducts(res)
         setActiveCategoryID(category.categoriID)
+        console.log(res)
       })
+      .catch((err) => console.log(err))
   }
 
   useEffect(() => {  /* Fetch and set the categories initially when the main page loads */

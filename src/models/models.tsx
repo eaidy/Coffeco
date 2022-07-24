@@ -57,6 +57,11 @@ export type RegisterFormModel = {
     RePassword: string;
 }
 
+export type ProductBasketModel = {
+    ProductID: number;
+    Qty: number;
+    Variants: string;
+}
 
 // Derived Models
 export type Variants = Array<Variant>

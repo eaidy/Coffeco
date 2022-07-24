@@ -41,4 +41,5 @@ const fetchData = async (Api: string, params: Params) => {
     return fetchBuffer
 }
 
+
 export { fetchData }

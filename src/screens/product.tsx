@@ -17,35 +17,129 @@ import {
 import { SvgXml } from 'react-native-svg'
 import Header from '@/components/header'
 
+//State Imports
+import { basketAtom, userStateAtom } from '@/states/auth'
+
 // Model Imports
-import { ResponseModel, Variants, Variant } from '@/models/models'
+import { ResponseModel, Variants, Variant, ProductBasketModel } from '@/models/models'
 
 type VariantsExpand = Array<Boolean>
 
+type VariantBasketModel = Array<{
+  id: number;
+  value: number;
+}>
+
+type ChildVariant = {
+  description: string;
+  price: number;
+  bonus: number;
+  salePrice: number;
+  priceID: number;
+  parentID: number;
+  isActive: Boolean;
+}
+
+type ChildVariants = Array<ChildVariant>
+
+
 function ProductScreen({ route }: any) {
 
-  const [variantParents, setVariantParents] = useState<Variants>([])
-  const [variantChilds, setVariantChilds] = useState<Variants>([])
-  const [variantsExpand, setVariantsExpand] = useState<VariantsExpand>([])
+  const [userState,] = useAtom(userStateAtom)
 
+  const [variantParents, setVariantParents] = useState<Variants>([])
+  const [variantChilds, setVariantChilds] = useState<ChildVariants>([])
+  const [variantsExpand, setVariantsExpand] = useState<VariantsExpand>([])
+  const [variantsBasket, setVariantsBasket] = useState<VariantBasketModel>([])
+  const [Qty, setQty] = useState<string>("0")
 
   const navigation = useNavigation()
 
   const { productResponse } = route.params
+  const [totalPrice, setTotalPrice] = useState<number>(0)
 
-  let temp: Variants
+  let tempParents: Variants
+  let tempChilds: ChildVariants
 
   const buffer = productResponse.variants
 
   useEffect(() => {
     // Parent Variants Filter
-    temp = buffer.filter((variant: Variant) => variant.parentID === 0) // 0 means the variant is a parent
-    setVariantParents(temp)
-    setVariantsExpand(temp.map(() => false))
+    tempParents = buffer.filter((variant: Variant) => variant.parentID === 0) // 0 means the variant is a parent
+    setVariantParents(tempParents)
+    setVariantsExpand(tempParents.map(() => false))
     // Child Variants Filter
-    temp = buffer.filter((variant: Variant) => variant.parentID === 1) // 1 means the variant is a child
-    setVariantChilds(temp)
+    tempChilds = buffer.filter((variant: ChildVariant) => variant.parentID === 1) // 1 means the variant is a child
+    tempChilds = tempChilds.map((variant: ChildVariant) => {
+      return {
+        ...variant,
+        isActive: false
+      }
+    })
+    setVariantChilds(tempChilds)
   }, [])
+
+  useEffect(() => {
+    let total = 0
+    total = Number(Qty) * productResponse.product.price // varyant fiyatları eklenecek
+    setTotalPrice(total)
+  }, [variantChilds, Qty])
+
+  const variantChildPressHandler = (variantChild: ChildVariant) => {
+    // If variantChild is already active, don't bother executing the function
+    if (variantChild.isActive) {
+      return
+    }
+
+    let variantChildsBuffer = [...variantChilds],
+      variant: any
+
+    console.log(variantChildsBuffer)
+
+    for (variant of variantChildsBuffer) {
+      if (variant.parentID === variantChild.parentID && variant.priceID !== variantChild.priceID) {
+        variant.isActive = false
+      }
+      else if (variant.parentID === variantChild.parentID && variant.priceID === variantChild.priceID) {
+        variant.isActive = true
+      }
+    }
+    setVariantChilds(variantChildsBuffer)
+  }
+
+  const addBasketHandler = async () => {
+    let productApiObject: ProductBasketModel = {
+      ProductID: 0,
+      Qty: 0,
+      Variants: ""
+    },
+      variantsApiArray: Array<{ id: number, value: number }>
+
+    productApiObject.ProductID = productResponse.product.productID
+    productApiObject.Qty = Number(Qty)
+
+    variantsApiArray = variantChilds.filter((variant) => variant.isActive).map((variant) => { return { id: variant.priceID, value: 1 } })
+
+    productApiObject.Variants = JSON.stringify(variantsApiArray)
+    console.log(productApiObject)
+
+    fetch('https://api.entegre.pro/ui/UIntegration', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authentication": `${userState.data}`
+      },
+      body: JSON.stringify(productApiObject)
+    })
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((err) => console.log(err))
+
+  }
 
   return (
     <>
@@ -79,10 +173,7 @@ function ProductScreen({ route }: any) {
                 <Pressable
                   style={styles.option}
                   key={parentIndex}
-                  onPress={() => {
-                    setVariantsExpand(variantsExpand.map((item, index) => index === parentIndex ? !item : item))
-                    console.log(variantsExpand)
-                  }}
+                  onPress={() => setVariantsExpand(variantsExpand.map((item, index) => index === parentIndex ? !item : item))}
                 >
                   <Text style={styles.optionTitle}>{variantParent.description}</Text>
                   <View style={styles.optionSelect}>
@@ -99,10 +190,12 @@ function ProductScreen({ route }: any) {
                       {
                         variantsExpand[parentIndex] &&
                         variantChilds.filter((isParentsChild) => isParentsChild.parentID === variantParent.priceID)
-                          .map((variantChild, index) =>
+                          .map((variantChild, childIndex) =>
                           (
                             <Pressable
-                              key={index}
+                              style={variantChild.isActive ? [styles.optionVariantActive] : [styles.optionVariantInactive]}
+                              key={childIndex}
+                              onPress={() => variantChildPressHandler(variantChild)}
                             >
                               <Text>
                                 {variantChild.description}
@@ -123,10 +216,14 @@ function ProductScreen({ route }: any) {
               style={styles.optionNumber}
               placeholder="Adet"
               keyboardType="numeric"
+              onChangeText={setQty}
             />
-            <Pressable style={styles.optionCart}>
+            <Pressable
+              style={styles.optionCart}
+              onPress={() => addBasketHandler()}
+            >
               <Text style={styles.optionCartText}>Sepet'e Ekle</Text>
-              <Text style={styles.optionCartPrice}>15 Puan</Text>
+              <Text style={styles.optionCartPrice}>{totalPrice}₺</Text>
             </Pressable>
           </View>
 
@@ -272,6 +369,14 @@ const styles = StyleSheet.create({
   },
   optionSelectText: {
 
+  },
+  optionVariantActive: {
+    backgroundColor: '#aaa',
+    margin: 1
+  },
+  optionVariantInactive: {
+    backgroundColor: '#fff',
+    margin: 1
   }
 })
 
