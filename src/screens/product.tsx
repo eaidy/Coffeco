@@ -51,7 +51,7 @@ function ProductScreen({ route }: any) {
   const [variantChilds, setVariantChilds] = useState<ChildVariants>([])
   const [variantsExpand, setVariantsExpand] = useState<VariantsExpand>([])
   const [variantsBasket, setVariantsBasket] = useState<VariantBasketModel>([])
-  const [Qty, setQty] = useState<string>("0")
+  const [Qty, setQty] = useState<string>("1")
 
   const navigation = useNavigation()
 
@@ -177,7 +177,7 @@ function ProductScreen({ route }: any) {
                 >
                   <Text style={styles.optionTitle}>{variantParent.description}</Text>
                   <View style={styles.optionSelect}>
-                    <Text style={styles.optionSelectText}>Seçiniz Test</Text>
+                    <Text style={styles.optionSelectText}>Seçiniz</Text>
                     {/* <SvgXml
                           xml={iconArrow}
                           width="24"
@@ -197,7 +197,9 @@ function ProductScreen({ route }: any) {
                               key={childIndex}
                               onPress={() => variantChildPressHandler(variantChild)}
                             >
-                              <Text>
+                              <Text
+                                style={variantChild.isActive ? [styles.variantTextActive] : [styles.variantTextInactive]}
+                              >
                                 {variantChild.description}
                               </Text>
                             </Pressable>
@@ -217,6 +219,7 @@ function ProductScreen({ route }: any) {
               placeholder="Adet"
               keyboardType="numeric"
               onChangeText={setQty}
+              value={Qty}
             />
             <Pressable
               style={styles.optionCart}
@@ -371,12 +374,42 @@ const styles = StyleSheet.create({
 
   },
   optionVariantActive: {
-    backgroundColor: '#aaa',
-    margin: 1
+    // marginRight: 15,
+    backgroundColor: '#1b854b',
+    marginBottom: 5,
+    borderRadius: 14,
+    paddingLeft: 12,
+    paddingRight: 12,
+    paddingTop: 8,
+    paddingBottom: 8,
+    lineHeight: 1,
+    shadowColor: '#999',
+    shadowOffset: {
+      width: 0,
+      height: 20,
+    }
   },
   optionVariantInactive: {
-    backgroundColor: '#fff',
-    margin: 1
+    backgroundColor: '#f0f5f7',
+    marginBottom: 5,
+    borderRadius: 14,
+    paddingLeft: 12,
+    paddingRight: 12,
+    paddingTop: 8,
+    paddingBottom: 8,
+    lineHeight: 1,
+    shadowColor: '#999',
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    }
+  },
+  variantTextActive: {
+    color: '#fff',
+    fontFamily: 'Nunito-Bold',
+  },
+  variantTextInactive: {
+    fontFamily: 'Nunito-Bold',
   }
 })
 
