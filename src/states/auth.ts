@@ -11,5 +11,5 @@ export const userStateAtom = atom<UserState>({
 // Pages State
 export const categoriesAtom = atom([])
 export const productsAtom = atom([])
-export const basketAtom = atom([])
+export const basketAtom = atom<Number>(0)
 

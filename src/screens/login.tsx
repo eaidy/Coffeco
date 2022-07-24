@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useTheme } from '@shopify/restyle'
 import { useAtom } from 'jotai'
 import { useNavigation } from '@react-navigation/native'
+import { StackActions } from '@react-navigation/native';
 
 // Component Imports
 import { KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ScrollView, } from 'react-native'
@@ -47,7 +48,9 @@ function LoginScreen() {
     if (userState.status) {
       console.log('Ata')
       console.log(userState)
-      navigation.navigate('Main')
+      navigation.dispatch(
+        StackActions.replace('Main')
+      );
     } else {
       console.log(userState.message)
     }

@@ -16,19 +16,15 @@ import {
 } from 'react-native'
 import { SvgXml } from 'react-native-svg'
 import Header from '@/components/header'
+import Toast from 'react-native-simple-toast';
 
 //State Imports
 import { basketAtom, userStateAtom } from '@/states/auth'
 
 // Model Imports
-import { ResponseModel, Variants, Variant, ProductBasketModel } from '@/models/models'
+import { ResponseModel, Variants, Variant, ProductBasketModel, BasketModel } from '@/models/models'
 
 type VariantsExpand = Array<Boolean>
-
-type VariantBasketModel = Array<{
-  id: number;
-  value: number;
-}>
 
 type ChildVariant = {
   description: string;
@@ -46,11 +42,11 @@ type ChildVariants = Array<ChildVariant>
 function ProductScreen({ route }: any) {
 
   const [userState,] = useAtom(userStateAtom)
+  const [basketState, setBasketState] = useAtom(basketAtom)
 
   const [variantParents, setVariantParents] = useState<Variants>([])
   const [variantChilds, setVariantChilds] = useState<ChildVariants>([])
   const [variantsExpand, setVariantsExpand] = useState<VariantsExpand>([])
-  const [variantsBasket, setVariantsBasket] = useState<VariantBasketModel>([])
   const [Qty, setQty] = useState<string>("1")
 
   const navigation = useNavigation()
@@ -123,11 +119,11 @@ function ProductScreen({ route }: any) {
     productApiObject.Variants = JSON.stringify(variantsApiArray)
     console.log(productApiObject)
 
-    fetch('https://api.entegre.pro/ui/UIntegration', {
+    await fetch('https://api.entegre.pro/ui/UIntegration/AddBasket', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authentication": `${userState.data}`
+        "Authentication": `Bearer ${userState.data}`
       },
       body: JSON.stringify(productApiObject)
     })
@@ -137,7 +133,36 @@ function ProductScreen({ route }: any) {
       .then((data) => {
         console.log(data)
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        console.log(err)
+        Toast.showWithGravity(`Hata, ${err}`, Toast.LONG, Toast.TOP);
+      })
+
+
+    await fetch('https://api.entegre.pro/ui/UIntegration/Basket', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Authentication": `Bearer ${userState.data}`
+      }
+    })
+      .then((res) => {
+        return res.json()
+      })
+      .then((data: any) => {
+        let basketBuffer: BasketModel = { ...basketState }
+        basketBuffer.totalPrice = data.data.order.total
+        basketBuffer.basketProducts = data.data.lines
+        setBasketState(basketBuffer)
+        console.log(basketState.totalPrice)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        Toast.showWithGravity('Ürün sepete eklendi', Toast.LONG, Toast.TOP);
+        navigation.goBack()
+      })
 
   }
 
@@ -407,9 +432,11 @@ const styles = StyleSheet.create({
   variantTextActive: {
     color: '#fff',
     fontFamily: 'Nunito-Bold',
+    textAlign: 'center'
   },
   variantTextInactive: {
     fontFamily: 'Nunito-Bold',
+    textAlign: 'center'
   }
 })
 
