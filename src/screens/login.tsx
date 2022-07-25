@@ -36,7 +36,6 @@ function LoginScreen() {
     const response = await login(values.phoneNumber, '')
       .then((res) => {
         userStateBuffer = res
-        console.log(res)
       })
       .catch((err) => {
         console.log(err)
@@ -47,7 +46,6 @@ function LoginScreen() {
 
     if (userState.status) {
       console.log('Ata')
-      console.log(userState)
       navigation.dispatch(
         StackActions.replace('Main')
       );

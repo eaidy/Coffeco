@@ -135,7 +135,7 @@ function ProductScreen({ route }: any) {
       })
       .catch((err) => {
         console.log(err)
-        Toast.showWithGravity(`Hata, ${err}`, Toast.LONG, Toast.TOP);
+        Toast.showWithGravity(`Hata, ${err}`, Toast.SHORT, Toast.TOP);
       })
 
 
@@ -150,17 +150,14 @@ function ProductScreen({ route }: any) {
         return res.json()
       })
       .then((data: any) => {
-        let basketBuffer: BasketModel = { ...basketState }
-        basketBuffer.totalPrice = data.data.order.total
-        basketBuffer.basketProducts = data.data.lines
-        setBasketState(basketBuffer)
-        console.log(basketState.totalPrice)
+        setBasketState(data.data.order.total)
+        console.log(basketState)
       })
       .catch((err) => {
         console.log(err)
       })
       .finally(() => {
-        Toast.showWithGravity('Ürün sepete eklendi', Toast.LONG, Toast.TOP);
+        Toast.showWithGravity('Ürün sepete eklendi', Toast.SHORT, Toast.TOP);
         navigation.goBack()
       })
 

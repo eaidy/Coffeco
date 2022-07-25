@@ -16,6 +16,7 @@ const fetchData = async (Api: string, params: Params) => {
         //console.log('Başarılı Query', fetchUrl)
     } else {
         fetchUrl += Api
+        console.log(fetchUrl)
         //console.log('Başarılı Sabit Query', fetchUrl)
     }
 
@@ -32,6 +33,7 @@ const fetchData = async (Api: string, params: Params) => {
             return res.json()
         })
         .then((body) => {
+            console.log(body.message)
             return body.data
         })
         .catch((err) => {
