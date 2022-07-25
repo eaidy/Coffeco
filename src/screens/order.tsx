@@ -135,9 +135,12 @@ function OrderScreen() {
                               {product.description}
                             </Text>
                             {
-                              basketInfo.variants.filter((variant: any) => variant.lineID === product.lineID).map((variant: any) => {
+                              basketInfo.variants.filter((variant: any) => variant.lineID === product.lineID).map((variant: any, index) => {
                                 return (
-                                  <Text style={styles.productTitleSmall}>
+                                  <Text
+                                    style={styles.productTitleSmall}
+                                    key={index}
+                                  >
                                     {variant.priceDescription}
                                   </Text>
                                 )
