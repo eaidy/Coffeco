@@ -9,6 +9,7 @@ import Header from '@/components/header'
 import { Image, Pressable, ScrollView, StyleSheet, View, TextInput, TouchableHighlight } from 'react-native'
 import { Icons } from '@/constants'
 import { SvgXml } from 'react-native-svg'
+import NumericInput from 'react-native-numeric-input'
 
 // Service Imports
 import { fetchData } from '@/services/methods'
@@ -30,6 +31,8 @@ function OrderScreen() {
     products: [],
     variants: []
   })
+  const [isBonusUsed, setIsBonusUsed] = useState()
+
   const [userState,] = useAtom(userStateAtom)
   const [basketState, setBasketState] = useAtom(basketAtom)
   // var [isPress, setIsPress] = useState(false);
@@ -79,6 +82,10 @@ function OrderScreen() {
         console.log(basketInfo.orderID)
       })
       .catch((err) => console.log(err))
+  }
+
+  const removeProduct = (orderID: Number, lineID: Number) => {
+    console.log('test')
   }
 
   const touchProps = {
@@ -148,7 +155,14 @@ function OrderScreen() {
                             }
                           </View>
                         </View>
-                        <Text style={styles.productPrice}>{product.price}</Text>
+                        <Text style={styles.productPrice}>{product.price}₺</Text>
+                        <NumericInput
+                          onChange={value => console.log(value)}
+                          minValue={0}
+                          rounded
+                          iconSize={5}
+                          type='up-down'
+                        />
                       </View>
                     )
                   })
