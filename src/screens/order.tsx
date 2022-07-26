@@ -9,6 +9,7 @@ import Header from '@/components/header'
 import { Image, Pressable, ScrollView, StyleSheet, View, TextInput, TouchableHighlight } from 'react-native'
 import { Icons } from '@/constants'
 import { SvgXml } from 'react-native-svg'
+import NumericInput from 'react-native-numeric-input'
 
 // Service Imports
 import { fetchData } from '@/services/methods'
@@ -22,6 +23,11 @@ type BasketModel = {
   variants: Array<Object>;
 }
 
+type ProductsQuantity = Array<{
+  lineID: number;
+  Qty: number;
+}>
+
 function OrderScreen() {
 
   const [basketInfo, setBasketInfo] = useState<BasketModel>({
@@ -30,6 +36,9 @@ function OrderScreen() {
     products: [],
     variants: []
   })
+  const [isBonusUsed, setIsBonusUsed] = useState()
+  const [productsQuantity, setProductsQuantity] = useState<ProductsQuantity>([])
+
   const [userState,] = useAtom(userStateAtom)
   const [basketState, setBasketState] = useAtom(basketAtom)
   // var [isPress, setIsPress] = useState(false);
@@ -54,7 +63,16 @@ function OrderScreen() {
           }
           setBasketInfo(basketBuffer)
           setBasketState(basketInfo.totalPrice)
-          console.log(basketInfo)
+
+          let buffer: ProductsQuantity = []
+          data.lines.forEach((product: any) => {
+            buffer.push({
+              lineID: product.lineID,
+              Qty: product.qty
+            })
+          })
+          setProductsQuantity(buffer)
+          console.log(productsQuantity)
         })
         .catch(err => console.log(err))
     }, 400)
@@ -79,6 +97,18 @@ function OrderScreen() {
         console.log(basketInfo.orderID)
       })
       .catch((err) => console.log(err))
+  }
+
+  const removeProduct = (orderID: Number, lineID: Number) => {
+    console.log('test')
+  }
+
+  const numericInputHandler = (lineID: Number, value: Number) => {
+    let buffer: any = productsQuantity?.map((item) => {
+      item.lineID === lineID ? { ...item, Qty: value } : item
+    })
+    setProductsQuantity(buffer)
+    console.log(buffer)
   }
 
   const touchProps = {
@@ -148,7 +178,14 @@ function OrderScreen() {
                             }
                           </View>
                         </View>
-                        <Text style={styles.productPrice}>{product.price}</Text>
+                        <Text style={styles.productPrice}>{product.price}₺</Text>
+                        <NumericInput
+                          onChange={value => numericInputHandler(product.lineID, value)}
+                          minValue={0}
+                          rounded
+                          iconSize={5}
+                          type='up-down'
+                        />
                       </View>
                     )
                   })
