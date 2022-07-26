@@ -65,11 +65,11 @@ function OrderScreen() {
           setBasketState(basketInfo.totalPrice)
 
           let buffer: ProductsQuantity = []
-          data.lines.forEach((product: any) => {
-            buffer.push({
-              lineID: product.lineID,
-              Qty: product.qty
-            })
+          buffer = data.lines.map((item: any) => {
+            return {
+              lineID: item.lineID,
+              Qty: item.qty
+            }
           })
           setProductsQuantity(buffer)
           console.log(productsQuantity)
@@ -180,11 +180,10 @@ function OrderScreen() {
                         </View>
                         <Text style={styles.productPrice}>{product.price}₺</Text>
                         <NumericInput
-                          onChange={value => numericInputHandler(product.lineID, value)}
+                          onChange={value => console.log(value)}
                           minValue={0}
                           rounded
                           iconSize={5}
-                          type='up-down'
                         />
                       </View>
                     )
