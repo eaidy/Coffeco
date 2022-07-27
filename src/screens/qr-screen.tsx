@@ -1,16 +1,18 @@
 import React from 'react'
 import { Text, View, StyleSheet } from 'react-native'
-import QRCode from 'react-native-qrcode-svg';
+import Header from '@/components/header'
+import QRCode from 'react-native-qrcode-svg'
 
 const QrScreen = () => {
     return (
         <>
+            <Header />
             <View
                 style={[styles.qrCodeContainer]}
             >
                 <QRCode
-                    value="https://https://www.coffeco.com.tr/"
-                    size={350}
+                    value="https://www.coffeco.com.tr/"
+                    size={300}
                 />
             </View>
         </>

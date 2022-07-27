@@ -4,9 +4,13 @@ import MainNavigation from '@/navs/main'
 import { ScrollView, View } from 'react-native'
 import { Image, StyleSheet } from 'react-native'
 import { Pressable, ImageBackground, Text } from '@/atoms'
+import { NavigationContainer } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 
 
 function HomeScreen() {
+
+  const navigation = useNavigation()
 
   return (
     <>
@@ -37,7 +41,9 @@ function HomeScreen() {
             />
             <Text style={styles.buttonText}>ÖN{'\n'}SİPARİŞ</Text>
           </Pressable>
-          <Pressable style={styles.button}>
+          <Pressable style={styles.button}
+            onPress={() => navigation.navigate('Feedback')}
+          >
             <Image
               style={styles.buttonImg}
               source={require('@/assets/images/icon-2.png')}

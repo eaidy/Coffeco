@@ -9,6 +9,7 @@ import MainNavigation from '@/navs/main'
 // Single Screen Imports
 import ProfileScreen from '@/screens/Profile'
 import ProductScreen from '@/screens/product'
+import FeedbackScreen from '@/screens/feedback'
 
 
 const Stack = createNativeStackNavigator()
@@ -41,6 +42,13 @@ export default function Navigations() {
       <Stack.Screen
         name="Product"
         component={ProductScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Feedback"
+        component={FeedbackScreen}
         options={{
           headerShown: false,
         }}

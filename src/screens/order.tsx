@@ -195,6 +195,11 @@ function OrderScreen() {
               basketInfo.orderID &&
               (
                 <>
+                  <View>
+                    <Text>
+                      Bonus : 150
+                    </Text>
+                  </View>
                   <View style={styles.box}>
                     <View style={styles.boxTitle}>
                       <Text style={styles.boxTitleText}>Teslim Alınacak Şube</Text>
