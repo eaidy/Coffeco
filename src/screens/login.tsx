@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import { StackActions } from '@react-navigation/native';
 
 // Component Imports
-import { KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ScrollView, } from 'react-native'
+import { StyleSheet, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ScrollView, } from 'react-native'
 import { Formik } from 'formik'
 import { Box, Text, ImageBackground, TextInput, Button } from '@/atoms/'
 
@@ -31,19 +31,18 @@ function LoginScreen() {
 
   const submitLogin = async (values: FormValues) => {
 
-    let userStateBuffer: any = { ...userState }
-
     const response = await login(values.phoneNumber, '')
-      .then((res) => {
-        userStateBuffer = res
+      .then((res: any) => {
+        const buffer: UserState = res
+        setUserState(buffer)
+        console.log(userState)
       })
       .catch((err) => {
         console.log(err)
       })
+  }
 
-    setUserState(userStateBuffer)
-    console.log(userState)
-
+  useEffect(() => {
     if (userState.status) {
       console.log('Ata')
       navigation.dispatch(
@@ -52,7 +51,7 @@ function LoginScreen() {
     } else {
       console.log(userState.message)
     }
-  }
+  }, [userState])
 
   return (
     <ScrollView
@@ -115,6 +114,12 @@ function LoginScreen() {
                       elevation={20}
                       shadowOffset={{ width: 0, height: 6 }}
                     />
+                    {
+                      !userState.status && userState.data !== '' &&
+                      (
+                        <Text style={styles.errorValidation}>Telefon numarası ya da şifre hatalı</Text>
+                      )
+                    }
                   </>
                 )}
               </Formik>
@@ -127,3 +132,12 @@ function LoginScreen() {
 }
 
 export default LoginScreen
+
+const styles = StyleSheet.create({
+  errorValidation: {
+    color: 'red',
+    fontSize: 14,
+    alignSelf: 'center',
+    marginTop: 20
+  }
+})

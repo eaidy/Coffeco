@@ -3,6 +3,7 @@ type Params = {
     paramLabel?: string;
     authToken: string;
     method?: string;
+    body?: Object;
 }
 
 const fetchData = async (Api: string, params: Params) => {
@@ -26,7 +27,8 @@ const fetchData = async (Api: string, params: Params) => {
         headers: {
             "Content-Type": "application/json",
             "Authentiaction": `Bearer ${params.authToken}`
-        }
+        },
+        body: JSON.stringify(params.body)
     })
         .then((res) => {
             //console.log(res)

@@ -2,6 +2,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useAtom } from 'jotai'
+import { moment } from 'moment'
 
 // Component Imports
 import { Text } from '@/atoms'
@@ -10,23 +11,32 @@ import { Image, Pressable, ScrollView, StyleSheet, View, TextInput, TouchableHig
 import { Icons } from '@/constants'
 import { SvgXml } from 'react-native-svg'
 import NumericInput from 'react-native-numeric-input'
+import { Checkbox } from 'react-native-paper';
 
 // Service Imports
 import { fetchData } from '@/services/methods'
 import { userStateAtom, basketAtom } from '@/states/auth'
-import { variableDeclaration } from '@babel/types'
 
 type BasketModel = {
   totalPrice: Number;
   orderID?: Number | null;
   products: Array<Object>;
   variants: Array<Object>;
+  branches: Array<Object>;
 }
 
 type ProductsQuantity = Array<{
-  lineID: number;
-  Qty: number;
+  lineID: Number;
+  Qty: Number;
 }>
+
+type SendOrder = {
+  OrderID?: Number;
+  BranchID?: Number;
+  DeliveryMinute?: Number;
+  DeliveryNote?: String;
+  Bonus?: Boolean;
+}
 
 function OrderScreen() {
 
@@ -34,14 +44,21 @@ function OrderScreen() {
     totalPrice: 0,
     orderID: null,
     products: [],
-    variants: []
+    variants: [],
+    branches: []
   })
-  const [isBonusUsed, setIsBonusUsed] = useState()
   const [productsQuantity, setProductsQuantity] = useState<ProductsQuantity>([])
+  const [sendOrderInfo, setSendOrderInfo] = useState<SendOrder>({
+    OrderID: 0,
+    BranchID: 0,
+    DeliveryMinute: 20,
+    DeliveryNote: '',
+    Bonus: false
+  })
+  const [activeBranchId, setActiveBranchId] = useState<Number>(0)
 
   const [userState,] = useAtom(userStateAtom)
   const [basketState, setBasketState] = useAtom(basketAtom)
-  // var [isPress, setIsPress] = useState(false);
 
 
   useEffect(() => {
@@ -59,11 +76,18 @@ function OrderScreen() {
             totalPrice: data.order.total,
             orderID: data.order.orderID,
             products: data.lines,
-            variants: data.variants
+            variants: data.variants,
+            branches: []
           }
           setBasketInfo(basketBuffer)
           setBasketState(basketInfo.totalPrice)
-
+          setSendOrderInfo((prev) => {
+            let bufferPrev = prev
+            bufferPrev.OrderID = data.order.orderID
+            bufferPrev.BranchID = 0
+            return bufferPrev
+          })
+          console.log(sendOrderInfo)
           let buffer: ProductsQuantity = []
           buffer = data.lines.map((item: any) => {
             return {
@@ -72,7 +96,24 @@ function OrderScreen() {
             }
           })
           setProductsQuantity(buffer)
-          console.log(productsQuantity)
+        })
+        .then(() => {
+          fetchData('Branches', {
+            method: 'POST',
+            authToken: userState.data
+          })
+            .then((data) => {
+              setBasketInfo((prev) => {
+                return {
+                  ...prev,
+                  branches: data
+                }
+              })
+              console.log(basketInfo)
+            })
+            .catch((err) => {
+              console.log(err)
+            })
         })
         .catch(err => console.log(err))
     }, 400)
@@ -91,10 +132,10 @@ function OrderScreen() {
           totalPrice: 0,
           orderID: null,
           products: [],
-          variants: []
+          variants: [],
+          branches: []
         })
         setBasketState(0)
-        console.log(basketInfo.orderID)
       })
       .catch((err) => console.log(err))
   }
@@ -109,6 +150,32 @@ function OrderScreen() {
     })
     setProductsQuantity(buffer)
     console.log(buffer)
+  }
+
+  const branchPressHandler = (branchID: Number) => {
+    setActiveBranchId(branchID)
+    setSendOrderInfo((prev: any) => {
+      const buffer = prev
+      buffer.BranchID = branchID
+      return {
+        ...buffer
+      }
+    })
+  }
+
+  const sendOrder = () => {
+    console.log(sendOrderInfo)
+    fetchData('SendOrder', {
+      method: 'POST',
+      authToken: userState.data,
+      body: sendOrderInfo
+    })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   const touchProps = {
@@ -195,42 +262,71 @@ function OrderScreen() {
               basketInfo.orderID &&
               (
                 <>
-                  <View>
+                  <View style={styles.boxTitle}>
                     <Text>
-                      Bonus : 150
+                      Bonus Kullanılsın mı ? Bonus : 150
                     </Text>
+                    <Checkbox
+                      status={sendOrderInfo.Bonus ? 'checked' : 'unchecked'}
+                      onPress={() => {
+                        setSendOrderInfo((prev) => {
+                          const buffer = prev
+                          buffer.Bonus = !prev.Bonus
+                          return { ...buffer }
+                        });
+                      }}
+                      color="#1B854B"
+                    />
                   </View>
                   <View style={styles.box}>
                     <View style={styles.boxTitle}>
                       <Text style={styles.boxTitleText}>Teslim Alınacak Şube</Text>
                     </View>
                     <View style={[styles.boxContent, styles.boxContentAddress]}>
-                      <View style={[styles.address, styles.addressActive]}>
-                        <View style={styles.addressTop}>
-                          <Text
-                            style={[styles.addressTitle, styles.addressTitleActive]}
+                      {
+                        basketInfo.branches &&
+                        basketInfo.branches.map((branch: any, index) =>
+                        (
+                          <View
+                            key={index}
+                            style={activeBranchId === branch.branchID ?
+                              [styles.address, styles.addressActive] : [styles.address]
+                            }
                           >
-                            Ankara Şubesi
-                          </Text>
-                          <View style={styles.addressIcons}>
-                            <Pressable style={styles.addressIcon}>
-                              <SvgXml
-                                xml={Icons.iconCheck}
-                                width="18"
-                                height="18"
-                                style={[
-                                  styles.addressIconSvg,
-                                  styles.addressIconSvgActive,
-                                ]}
-                              />
+                            <Pressable
+                              onPress={() => branchPressHandler(branch.branchID)}
+                            >
+                              <View style={styles.addressTop}>
+                                <Text
+                                  style={[styles.addressTitle, styles.addressTitleActive]}
+                                >
+                                  {branch.city}
+                                </Text>
+                                <View style={styles.addressIcons}>
+                                  {
+                                    activeBranchId === branch.branchID &&
+                                    <Pressable style={styles.addressIcon}>
+                                      <SvgXml
+                                        xml={Icons.iconCheck}
+                                        width="18"
+                                        height="18"
+                                        style={[
+                                          styles.addressIconSvg,
+                                          styles.addressIconSvgActive,
+                                        ]}
+                                      />
+                                    </Pressable>
+                                  }
+                                </View>
+                              </View>
+                              <Text style={[styles.addressText, styles.addressTextActive]}>
+                                {branch.name}
+                              </Text>
                             </Pressable>
                           </View>
-                        </View>
-                        <Text style={[styles.addressText, styles.addressTextActive]}>
-                          Yenişehir Mah. Cumhuriyet Bulv. Işılpark Sitesi B Bl. Daire
-                          14 YENİŞEHİR /PENDİK /İstanbul
-                        </Text>
-                      </View>
+                        )
+                        )
+                      }
                     </View>
                   </View>
                   <View style={styles.box}>
@@ -239,20 +335,20 @@ function OrderScreen() {
                     </View>
                     <View style={[styles.boxContent, styles.boxContentTimes]}>
                       <Pressable style={styles.time}>
-                        <Text style={styles.timeTitle}>10 dk</Text>
+                        <Text style={styles.timeTitle}>15 dk</Text>
                         <Text style={styles.timeText}>16:30</Text>
                       </Pressable>
                       <Pressable style={[styles.time, styles.timeActive]}>
                         <Text style={[styles.timeTitle, styles.timeTitleActive]}>
-                          10 dk
+                          30 dk
                         </Text>
                         <Text style={[styles.timeText, styles.timeTextActive]}>
-                          16:30
+                          16:45
                         </Text>
                       </Pressable>
                       <Pressable style={styles.time}>
-                        <Text style={styles.timeTitle}>10 dk</Text>
-                        <Text style={styles.timeText}>16:30</Text>
+                        <Text style={styles.timeTitle}>45 dk</Text>
+                        <Text style={styles.timeText}>17:00</Text>
                       </Pressable>
                     </View>
                     <View style={styles.boxContent}>
@@ -281,7 +377,10 @@ function OrderScreen() {
           </View>
           {
             basketInfo.orderID && (
-              <Pressable style={styles.order}>
+              <Pressable
+                style={styles.order}
+                onPress={() => sendOrder()}
+              >
                 <Text style={styles.orderText}>SİPARİŞ VER</Text>
                 <Text style={styles.orderPrice}>{basketInfo.totalPrice}₺</Text>
               </Pressable>
@@ -399,6 +498,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  adressTopActive: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderRadius: 8,
+    borderColor: '#'
+  },
   addressIcons: {
     display: 'flex',
     flexDirection: 'row',
@@ -421,16 +528,17 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   addressActive: {
-    backgroundColor: '#1B854B',
+    borderWidth: 2,
+    borderColor: '#1B854B'
   },
   addressTitleActive: {
-    color: '#fff',
+    color: '#6d6d6d',
   },
   addressIconSvgActive: {
-    color: '#fff',
+    color: '#1B854B',
   },
   addressTextActive: {
-    color: '#fff',
+    color: '#6d6d6d',
   },
   time: {
     width: '31%',

@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { useTheme } from '@shopify/restyle'
 import { register } from '@/services/register'
+import * as Yup from 'yup'
 
 // Component Imports
 import {
@@ -9,13 +10,22 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ScrollView,
+  StyleSheet
 } from 'react-native'
 import { Box, Text, ImageBackground, TextInput, Button } from '@/atoms/'
 import { Formik } from 'formik'
-import HomeScreen from './home'
 
 // Model Imports
 import { RegisterFormModel } from '@/models/models'
+
+const validationSchema = Yup.object({
+  Adi: Yup.string().trim().required('İsminizi giriniz'),
+  Soyadi: Yup.string().trim().required('Soyadınızı giriniz'),
+  Cep: Yup.string().trim().required('Telefon numarası gereklidir'),
+  Email: Yup.string().email('Geçersiz E-Posta adresi').required('İsminizi giriniz'),
+  Password: Yup.string().trim().min(8, 'Şifre çok kısa').required('Şifre girmediniz'),
+  RePassword: Yup.string().equals([Yup.ref('Password'), null], 'Şifreler uyuşmuyor')
+})
 
 
 function SignupScreen() {
@@ -23,7 +33,6 @@ function SignupScreen() {
   const { colors, spacing } = useTheme()
 
   const initialFormValues: RegisterFormModel = {
-    Login: '',
     Adi: '',
     Soyadi: '',
     Cep: '',
@@ -34,9 +43,7 @@ function SignupScreen() {
 
   async function submitRegister(values: RegisterFormModel) {
     const response = await register(values)
-    console.log(response)
   }
-
 
 
   return (
@@ -64,85 +71,103 @@ function SignupScreen() {
             </Box>
             <Formik
               initialValues={initialFormValues}
+              validationSchema={validationSchema}
               onSubmit={values => submitRegister(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values }) => (
-                <>
-                  <Box
-                    alignItems="stretch"
-                    justifyContent="space-between"
-                    flexDirection="row"
-                    marginBottom="xl"
-                  >
-                    <Box flex={1} marginEnd="md">
-                      <TextInput
-                        placeholder="Ad"
-                        placeholderTextColor={colors.neutral500}
-                        value={values.Name}
-                        onChange={handleChange('Name')}
-                        onBlur={handleBlur('Name')}
-                      />
+              {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => {
+                return (
+                  <>
+                    <Box
+                      alignItems="stretch"
+                      justifyContent="space-between"
+                      flexDirection="row"
+                      marginBottom="xl"
+                    >
+                      <Box flex={1} marginEnd="md">
+                        <TextInput
+                          placeholder="Ad"
+                          placeholderTextColor={colors.neutral500}
+                          value={values.Adi}
+                          onChangeText={handleChange('Adi')}
+                          onBlur={handleBlur('Adi')}
+                        />
+                        <Text style={[styles.errorValidation]}>{touched.Adi && errors.Adi}</Text>
+                      </Box>
+                      <Box flex={1}>
+                        <TextInput
+                          placeholder="Soyad"
+                          value={values.Soyadi}
+                          onChangeText={handleChange('Soyadi')}
+                          onBlur={handleBlur('Soyadi')}
+                          placeholderTextColor={colors.neutral500}
+                        />
+                        <Text style={[styles.errorValidation]}>{touched.Soyadi && errors.Soyadi}</Text>
+                      </Box>
                     </Box>
-                    <Box flex={1}>
+                    <Box marginBottom="xl">
                       <TextInput
-                        placeholder="Soyad"
-                        value={values.Surname}
-                        onChangeText={handleChange('Surname')}
-                        onBlur={handleBlur('Surname')}
+                        placeholder="E-Posta"
+                        value={values.Email}
+                        onChangeText={handleChange('Email')}
+                        onBlur={handleBlur('Email')}
                         placeholderTextColor={colors.neutral500}
                       />
+                      <Text style={[styles.errorValidation]}>{touched.Email && errors.Email}</Text>
                     </Box>
-                  </Box>
-                  <Box marginBottom="xl">
-                    <TextInput
-                      keyboardType="phone-pad"
-                      placeholder="Telefon"
-                      value={values.Phone}
-                      onChangeText={handleChange('Phone')}
-                      onBlur={handleBlur('Phone')}
-                      placeholderTextColor={colors.neutral500}
+                    <Box marginBottom="xl">
+                      <TextInput
+                        keyboardType="phone-pad"
+                        placeholder="Cep"
+                        value={values.Cep}
+                        onChangeText={handleChange('Cep')}
+                        onBlur={handleBlur('Cep')}
+                        placeholderTextColor={colors.neutral500}
+                      />
+                      <Text style={[styles.errorValidation]}>{touched.Cep && errors.Cep}</Text>
+                    </Box>
+                    <Box marginBottom="xl">
+                      <TextInput
+                        secureTextEntry={true}
+                        placeholder="Şifre"
+                        value={values.Password}
+                        onChangeText={handleChange('Password')}
+                        onBlur={handleBlur('Password')}
+                        placeholderTextColor={colors.neutral500}
+                      />
+                      <Text style={[styles.errorValidation]}>{touched.Password && errors.Password}</Text>
+                    </Box>
+                    <Box marginBottom="xl">
+                      <TextInput
+                        secureTextEntry={true}
+                        placeholder="Şifre Onay"
+                        value={values.RePassword}
+                        onChangeText={handleChange('RePassword')}
+                        onBlur={handleBlur('RePassword')}
+                        placeholderTextColor={colors.neutral500}
+                      />
+                      <Text style={[styles.errorValidation]}>{touched.RePassword && errors.RePassword}</Text>
+                    </Box>
+                    <Box marginBottom="xl">
+                      <Text textAlign="center" color="actionText" fontSize={14}>
+                        Davetiye Kodu Gir
+                      </Text>
+                    </Box>
+                    <Button
+                      label="KAYIT OL"
+                      onPress={handleSubmit}
+                      backgroundColor="buttonBackground"
+                      padding="md"
+                      marginBottom="xl"
+                      borderRadius="sm"
+                      shadowColor="black"
+                      shadowOpacity={0.4}
+                      shadowRadius={8.3}
+                      elevation={20}
+                      shadowOffset={{ width: 0, height: 6 }}
                     />
-                  </Box>
-                  <Box marginBottom="xl">
-                    <TextInput
-                      secureTextEntry={true}
-                      placeholder="Şifre"
-                      value={values.Password}
-                      onChangeText={handleChange('Password')}
-                      onBlur={handleBlur('Password')}
-                      placeholderTextColor={colors.neutral500}
-                    />
-                  </Box>
-                  <Box marginBottom="xl">
-                    <TextInput
-                      secureTextEntry={true}
-                      placeholder="Şifre Onay"
-                      value={values.RePassword}
-                      onChangeText={handleChange('RePassword')}
-                      onBlur={handleBlur('RePassword')}
-                      placeholderTextColor={colors.neutral500}
-                    />
-                  </Box>
-                  <Box marginBottom="xl">
-                    <Text textAlign="center" color="actionText" fontSize={14}>
-                      Davetiye Kodu Gir
-                    </Text>
-                  </Box>
-                  <Button
-                    label="KAYIT OL"
-                    onPress={handleSubmit}
-                    backgroundColor="buttonBackground"
-                    padding="md"
-                    marginBottom="xl"
-                    borderRadius="sm"
-                    shadowColor="black"
-                    shadowOpacity={0.4}
-                    shadowRadius={8.3}
-                    elevation={20}
-                    shadowOffset={{ width: 0, height: 6 }}
-                  />
-                </>
-              )}
+                  </>
+                )
+              }}
             </Formik>
             <Box>
               <Text textAlign="center" color="mutedActionText" fontSize={14}>
@@ -157,3 +182,13 @@ function SignupScreen() {
 }
 
 export default SignupScreen
+
+
+const styles = StyleSheet.create({
+  errorValidation: {
+    color: '#5FD068',
+    fontSize: 14,
+    alignSelf: 'center',
+    marginTop: 5
+  }
+})

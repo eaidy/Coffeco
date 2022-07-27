@@ -1,6 +1,9 @@
 // API Imports
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
+import { Alert } from 'react-native'
+import { useAtom } from 'jotai'
+import moment from 'moment';
 
 // Component Imports
 import { Box, Text } from '@/atoms'
@@ -15,10 +18,61 @@ import {
 import Header from '@/components/header'
 import { SvgXml } from 'react-native-svg'
 import { Icons } from '@/constants'
+import { fetchData } from '@/services/methods'
+
+// Service Imports
+import { userStateAtom } from '@/states/auth'
+
+type PastOrders = {
+  orders: Array<Object>;
+  orderLines: Array<Object>;
+  variants: Array<Object>;
+}
 
 function ProfileScreen() {
 
   const navigation = useNavigation()
+
+  const [userState,] = useAtom(userStateAtom)
+
+  const [pastOrders, setPastOrders] = useState<PastOrders>({
+    orders: [],
+    orderLines: [],
+    variants: []
+  })
+
+  useEffect(() => {
+    fetchData('MyOrders', {
+      method: 'POST',
+      authToken: userState.data
+    })
+      .then((res) => {
+        const buffer = res
+        setPastOrders(buffer)
+        console.log(buffer)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+
+  const repeatOrder = (orderID: Number) => {
+    Alert.alert(
+      "Uyarı",
+      "Siparişi tekrarla henüz geliştirme aşamasındadır.",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "OK",
+          onPress: () => console.log("OK Pressed")
+        }
+      ]
+    )
+  }
 
   return (
     <>
@@ -37,173 +91,161 @@ function ProfileScreen() {
             <View style={styles.boxTitle}>
               <Text style={styles.boxTitleText}>Geçmiş Siparişlerim</Text>
             </View>
-            {/* item */}
-            <View style={styles.box}>
-              <View style={styles.boxTitle}>
-                <Text style={styles.boxTitleTextSmall}>
-                  #35123 - 16.11.2022
-                </Text>
-                <Pressable style={styles.boxTitleRemove}>
-                  <Text style={styles.boxTitleRemoveText}>
-                    Siparişi Tekrarla
-                  </Text>
-                </Pressable>
-              </View>
-              <View style={styles.boxContent}>
-                <View style={styles.product}>
-                  <View style={styles.productLeft}>
-                    <Image
-                      style={styles.productImage}
-                      source={require('../assets/images/product.png')}
-                    />
-                    <View style={styles.productContet}>
-                      <Text style={styles.productTitle}>Cappucino</Text>
-                      <Text style={styles.productTitleSmall}>
-                        Laktozsuz süt, Large, Fındık Şurubu
-                      </Text>
-                    </View>
-                  </View>
-                  <Text style={styles.productPrice}>19 TL</Text>
-                </View>
-                <View style={styles.product}>
-                  <View style={styles.productLeft}>
-                    <Image
-                      style={styles.productImage}
-                      source={require('../assets/images/product.png')}
-                    />
-                    <View style={styles.productContet}>
-                      <Text style={styles.productTitle}>Cappucino</Text>
-                      <Text style={styles.productTitleSmall}>
-                        Laktozsuz süt, Large, Fındık Şurubu
-                      </Text>
-                    </View>
-                  </View>
-                  <Text style={styles.productPrice}>19 TL</Text>
-                </View>
-                <Text style={styles.productPrice}>Toplam : 19 TL</Text>
-              </View>
-            </View>
-
-            {/* item */}
-            <View style={styles.box}>
-              <View style={styles.boxTitle}>
-                <Text style={styles.boxTitleTextSmall}>
-                  #35123 - 16.11.2022
-                </Text>
-                <Pressable style={styles.boxTitleRemove}>
-                  <Text style={styles.boxTitleRemoveText}>
-                    Siparişi Tekrarla
-                  </Text>
-                </Pressable>
-              </View>
-              <View style={styles.boxContent}>
-                <View style={styles.product}>
-                  <View style={styles.productLeft}>
-                    <Image
-                      style={styles.productImage}
-                      source={require('../assets/images/product.png')}
-                    />
-                    <View style={styles.productContet}>
-                      <Text style={styles.productTitle}>Cappucino</Text>
-                      <Text style={styles.productTitleSmall}>
-                        Laktozsuz süt, Large, Fındık Şurubu
-                      </Text>
-                    </View>
-                  </View>
-                  <Text style={styles.productPrice}>19 TL</Text>
-                </View>
-                <View style={styles.product}>
-                  <View style={styles.productLeft}>
-                    <Image
-                      style={styles.productImage}
-                      source={require('../assets/images/product.png')}
-                    />
-                    <View style={styles.productContet}>
-                      <Text style={styles.productTitle}>Cappucino</Text>
-                      <Text style={styles.productTitleSmall}>
-                        Laktozsuz süt, Large, Fındık Şurubu
-                      </Text>
-                    </View>
-                  </View>
-                  <Text style={styles.productPrice}>19 TL</Text>
-                </View>
-                <Text style={styles.productPrice}>Toplam : 19 TL</Text>
-              </View>
-            </View>
-            <View style={styles.box}>
-              <View style={styles.boxTitle}>
-                <Text style={styles.boxTitleText}>Adreslerim</Text>
-                <Pressable style={styles.boxTitleRemove}>
-                  <Text style={styles.boxTitleRemoveText}>Yeni Ekle</Text>
-                </Pressable>
-              </View>
-              <View style={[styles.boxContent, styles.boxContentAddress]}>
-                <View style={[styles.address, styles.addressActive]}>
-                  <View style={styles.addressTop}>
-                    <Text
-                      style={[styles.addressTitle, styles.addressTitleActive]}
-                    >
-                      Ev Adresi
+            {
+              pastOrders.orders &&
+              pastOrders.orders.filter((order: any) =>
+                order.siparisDurumS === 'YeniSiparis'
+              ).reverse().map((order: any, index) =>
+              (
+                <View
+                  style={styles.box}
+                  key={index}
+                >
+                  <View style={styles.boxTitle}>
+                    <Text style={styles.boxTitleTextSmall}>
+                      {moment(order.deliveryDate).format("DD.MM.YYYY hh:mm")}
                     </Text>
-                    <View style={styles.addressIcons}>
-                      <Pressable style={styles.addressIcon}>
-                        <SvgXml
-                          xml={Icons.iconEdit}
-                          width="14"
-                          height="14"
-                          style={[
-                            styles.addressIconSvg,
-                            styles.addressIconSvgActive,
-                          ]}
-                        />
-                      </Pressable>
-                      <Pressable style={styles.addressIcon}>
-                        <SvgXml
-                          xml={Icons.iconCheck}
-                          width="18"
-                          height="18"
-                          style={[
-                            styles.addressIconSvg,
-                            styles.addressIconSvgActive,
-                          ]}
-                        />
-                      </Pressable>
-                    </View>
+                    <Pressable
+                      style={styles.boxTitleRemove}
+                      onPress={() => repeatOrder(order.orderID)}
+                    >
+                      <Text style={styles.boxTitleRemoveText}>
+                        Siparişi Tekrarla
+                      </Text>
+                    </Pressable>
                   </View>
-                  <Text style={[styles.addressText, styles.addressTextActive]}>
-                    Yenişehir Mah. Cumhuriyet Bulv. Işılpark Sitesi B Bl. Daire
-                    14 YENİŞEHİR /PENDİK /İstanbul
-                  </Text>
-                </View>
-                <View style={[styles.address]}>
-                  <View style={styles.addressTop}>
-                    <Text style={[styles.addressTitle]}>Ev Adresi</Text>
-                    <View style={styles.addressIcons}>
-                      <Pressable style={styles.addressIcon}>
-                        <SvgXml
-                          xml={Icons.iconEdit}
-                          width="14"
-                          height="14"
-                          style={[styles.addressIconSvg]}
-                        />
-                      </Pressable>
-                      <Pressable style={styles.addressIcon}>
-                        <SvgXml
-                          xml={Icons.iconCheck}
-                          width="18"
-                          height="18"
-                          style={[styles.addressIconSvg]}
-                        />
-                      </Pressable>
-                    </View>
+                  <View style={styles.boxContent}>
+                    {
+                      pastOrders.orderLines &&
+                      pastOrders.orderLines.filter((ordersLines: any) =>
+                        ordersLines.orderID === order.orderID
+                      ).map((orderLine: any, indexLine) =>
+                      (
+                        <View
+                          style={styles.product}
+                          key={indexLine}
+                        >
+                          <View style={styles.productLeft}>
+                            <Image
+                              style={styles.productImage}
+                              source={require('../assets/images/product.png')}
+                            />
+                            <View style={styles.productContet}>
+                              <Text style={styles.productTitle}>
+                                {orderLine.description}
+                              </Text>
+                              {
+                                pastOrders.variants &&
+                                pastOrders.variants.filter((variant: any) =>
+                                  variant.orderID === order.orderID &&
+                                  variant.lineID === orderLine.lineID
+                                ).map((variant: any, indexVariant) =>
+                                (
+                                  <Text
+                                    style={styles.productTitleSmall}
+                                    key={indexVariant}
+                                  >
+                                    {variant.priceDescription}
+                                  </Text>
+                                )
+                                )
+                              }
+                            </View>
+                          </View>
+                          <Text style={styles.productPrice}>{orderLine.price}₺</Text>
+                        </View>
+                      )
+                      )
+                    }
+
+                    <Text style={styles.productPrice}> Toplam: {' '}
+                      {
+                        pastOrders.orderLines.filter((orderLine: any) =>
+                          orderLine.orderID === order.orderID)
+                          .reduce(
+                            (accm: Number, curr: any) => accm += curr.price
+                            , 0)
+                      }₺
+                    </Text>
                   </View>
-                  <Text style={styles.addressText}>
-                    Yenişehir Mah. Cumhuriyet Bulv. Işılpark Sitesi B Bl. Daire
-                    14 YENİŞEHİR /PENDİK /İstanbul
-                  </Text>
                 </View>
-              </View>
-            </View>
+              )
+              )
+            }
+
+            {
+              pastOrders.orders &&
+              pastOrders.orders.filter((order: any) =>
+                order.siparisDurumS === 'TeslimEdildi'
+              ).reverse().map((order: any, index) =>
+              (
+                <View
+                  style={styles.box}
+                  key={index}
+                >
+                  <View style={styles.boxTitle}>
+                    <Text style={styles.boxTitleTextSmall}>
+                      {order.deliveryDate}
+                    </Text>
+                    <Pressable
+                      style={styles.boxTitleRemove}
+                      onPress={() => repeatOrder(order.orderID)}
+                    >
+                      <Text style={styles.boxTitleRemoveText}>
+                        Siparişi Tekrarla
+                      </Text>
+                    </Pressable>
+                  </View>
+                  <View style={styles.boxContent}>
+                    {
+                      pastOrders.orderLines &&
+                      pastOrders.orderLines.filter((ordersLines: any) =>
+                        ordersLines.orderID === order.orderID
+                      ).map((orderLine: any, indexLine) =>
+                      (
+                        <View
+                          style={styles.product}
+                          key={indexLine}
+                        >
+                          <View style={styles.productLeft}>
+                            <Image
+                              style={styles.productImage}
+                              source={require('../assets/images/product.png')}
+                            />
+                            <View style={styles.productContet}>
+                              <Text style={styles.productTitle}>
+                                {orderLine.description}
+                              </Text>
+                              {
+                                pastOrders.variants &&
+                                pastOrders.variants.filter((variant: any) =>
+                                  variant.orderID === order.orderID &&
+                                  variant.lineID === orderLine.lineID
+                                ).map((variant: any, indexVariant) =>
+                                (
+                                  <Text
+                                    style={styles.productTitleSmall}
+                                    key={indexVariant}
+                                  >
+                                    {variant.priceDescription}
+                                  </Text>
+                                )
+                                )
+                              }
+                            </View>
+                          </View>
+                          <Text style={styles.productPrice}>{orderLine.price}₺</Text>
+                        </View>
+                      )
+                      )
+                    }
+
+                    <Text style={styles.productPrice}>Toplam : 19 TL</Text>
+                  </View>
+                </View>
+              )
+              )
+            }
             <View style={styles.box}>
               <View style={styles.boxTitle}>
                 <Text style={styles.boxTitleText}>Kişisel Bilgiler</Text>

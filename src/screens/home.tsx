@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '@/components/header'
 import MainNavigation from '@/navs/main'
 import { ScrollView, View } from 'react-native'
@@ -6,11 +6,42 @@ import { Image, StyleSheet } from 'react-native'
 import { Pressable, ImageBackground, Text } from '@/atoms'
 import { NavigationContainer } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
+import { fetchData } from '@/services/methods'
+import { userStateAtom } from '@/states/auth'
+import { useAtom } from 'jotai'
 
+type HomeContainer = {
+  campaign: Array<Object>;
+  bonus: Number;
+}
 
 function HomeScreen() {
 
   const navigation = useNavigation()
+
+  const [homeContainer, setHomeContainer] = useState<HomeContainer>({
+    campaign: [],
+    bonus: 0
+  })
+
+  const [userState,] = useAtom(userStateAtom)
+
+  useEffect(() => {
+    console.log(homeContainer)
+  }, [homeContainer])
+
+  useEffect(() => {
+    fetchData('Home', {
+      method: 'POST',
+      authToken: userState.data
+    })
+      .then((res) => {
+        setHomeContainer(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
 
   return (
     <>
@@ -28,12 +59,12 @@ function HomeScreen() {
               />
               <Text style={styles.cardText}>Ercan Güven</Text>
               <Text style={styles.cardTitle}>Bonus Harca</Text>
-              <Text style={styles.cardPrice}>125,00 TL</Text>
+              <Text style={styles.cardPrice}>{homeContainer.bonus}</Text>
             </ImageBackground>
           </Pressable>
           <Pressable
             style={styles.button}
-          //onPress
+            onPress={() => navigation.navigate('Products')}
           >
             <Image
               style={styles.buttonImg}
@@ -60,19 +91,30 @@ function HomeScreen() {
           <Pressable style={styles.button}>
             <Image
               style={styles.buttonImg}
-              source={require('@/assets/images/icon-4.png')}
+              source={{}}
             />
             <Text style={styles.buttonText}>BONUS{'\n'}HARCA</Text>
           </Pressable>
           <View style={styles.slider}>
             <ScrollView horizontal={true}>
-              <Pressable style={styles.sliderItem}>
-                <Image
-                  style={styles.sliderImg}
-                  source={require('@/assets/images/kampanya-1.png')}
-                />
-              </Pressable>
-              <Pressable style={styles.sliderItem}>
+              {
+                homeContainer.campaign &&
+                homeContainer.campaign.map((camp: any, index) => (
+                  <Pressable
+                    style={styles.sliderItem}
+                    key={index}
+                  >
+                    <Image
+                      style={styles.sliderImg}
+                      source={{
+                        uri: camp.image,
+                        width: 200, height: 160,
+                      }}
+                    />
+                  </Pressable>
+                ))
+              }
+              {/* <Pressable style={styles.sliderItem}>
                 <Image
                   style={styles.sliderImg}
                   source={require('@/assets/images/kampanya-2.png')}
@@ -83,7 +125,7 @@ function HomeScreen() {
                   style={styles.sliderImg}
                   source={require('@/assets/images/kampanya-1.png')}
                 />
-              </Pressable>
+              </Pressable> */}
             </ScrollView>
           </View>
         </View>

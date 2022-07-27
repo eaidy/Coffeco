@@ -48,7 +48,7 @@ export type Category = {
 }
 
 export type RegisterFormModel = {
-    Login: string;
+    // Login: string;
     Adi: string;
     Soyadi: string;
     Cep: string;

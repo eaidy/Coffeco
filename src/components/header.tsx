@@ -36,7 +36,9 @@ export default function Header() {
         >
           <Image
             style={styles.profileImg}
-            source={require('@/assets/images/profile.jpg')}
+            source={{
+              uri: 'https://panel.coffeco.com.tr/polar/icerik/img/profil-small.jpg'
+            }}
           />
           <Text style={styles.profileText}>Ercan G.</Text>
         </Pressable>
@@ -82,7 +84,7 @@ const styles = StyleSheet.create({
   profileText: {
     position: 'absolute',
     bottom: -5,
-    left: -44,
+    left: -60,
     fontWeight: 'bold',
     textAlign: 'right',
     color: '#000',

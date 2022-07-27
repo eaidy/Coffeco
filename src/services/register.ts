@@ -8,11 +8,11 @@ const register = async (RegisterFormValues: RegisterFormModel) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(RegisterFormValues),
+            body: JSON.stringify(RegisterFormValues)
         });
 
         console.log("burası")
-        const body = await response.json()
+        const body = response
         console.log(body)
 
         return body
