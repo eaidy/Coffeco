@@ -79,6 +79,7 @@ function ProfileScreen() {
       <Header />
       <ScrollView>
         <View style={styles.wrapper}>
+          <View style={styles.profileTitle}>
           <Text style={styles.title}>Hesabım</Text>
           <Pressable
             onPress={() => navigation.goBack()}
@@ -87,6 +88,7 @@ function ProfileScreen() {
               Profilden Çıkış
             </Text>
           </Pressable>
+          </View>
           <View style={styles.sectionContainer}>
             <View style={styles.boxTitle}>
               <Text style={styles.boxTitleText}>Geçmiş Siparişlerim</Text>
@@ -332,8 +334,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#1B854B',
     fontFamily: 'Nunito-Bold',
-    lineHeight: 38,
-    marginBottom: 15,
   },
   boxContent: {
     padding: 15,
@@ -541,6 +541,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
+  profileTitle:{
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15
+  }
 })
 
 export default ProfileScreen
