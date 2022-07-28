@@ -33,7 +33,7 @@ const variant = createVariant<Theme>({
     padding: 'md',
     fontFamily: 'Nunito-Semibold',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.2,
     shadowRadius: 8.3,
     elevation: 13,
   },

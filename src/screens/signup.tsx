@@ -95,7 +95,7 @@ function SignupScreen({ navigation }) {
                       alignItems="stretch"
                       justifyContent="space-between"
                       flexDirection="row"
-                      marginBottom="xl"
+                      marginBottom="sm"
                     >
                       <Box flex={1} marginEnd="md">
                         <TextInput
@@ -118,7 +118,7 @@ function SignupScreen({ navigation }) {
                         <Text style={[styles.errorValidation]}>{touched.Soyadi && errors.Soyadi}</Text>
                       </Box>
                     </Box>
-                    <Box marginBottom="xl">
+                    <Box marginBottom="sm">
                       <TextInput
                         placeholder="E-Posta"
                         value={values.Email}
@@ -128,7 +128,7 @@ function SignupScreen({ navigation }) {
                       />
                       <Text style={[styles.errorValidation]}>{touched.Email && errors.Email}</Text>
                     </Box>
-                    <Box marginBottom="xl">
+                    <Box marginBottom="sm">
                       <TextInput
                         keyboardType="phone-pad"
                         placeholder="Cep"
@@ -139,7 +139,7 @@ function SignupScreen({ navigation }) {
                       />
                       <Text style={[styles.errorValidation]}>{touched.Cep && errors.Cep}</Text>
                     </Box>
-                    <Box marginBottom="xl">
+                    <Box marginBottom="sm">
                       <TextInput
                         secureTextEntry={true}
                         placeholder="Şifre"
@@ -150,7 +150,7 @@ function SignupScreen({ navigation }) {
                       />
                       <Text style={[styles.errorValidation]}>{touched.Password && errors.Password}</Text>
                     </Box>
-                    <Box marginBottom="xl">
+                    <Box marginBottom="sm">
                       <TextInput
                         secureTextEntry={true}
                         placeholder="Şifre Onay"
@@ -160,11 +160,6 @@ function SignupScreen({ navigation }) {
                         placeholderTextColor={colors.neutral500}
                       />
                       <Text style={[styles.errorValidation]}>{touched.RePassword && errors.RePassword}</Text>
-                    </Box>
-                    <Box marginBottom="xl">
-                      <Text textAlign="center" color="actionText" fontSize={14}>
-                        Davetiye Kodu Gir
-                      </Text>
                     </Box>
                     <Button
                       label="KAYIT OL"
@@ -179,13 +174,19 @@ function SignupScreen({ navigation }) {
                       elevation={20}
                       shadowOffset={{ width: 0, height: 6 }}
                     />
+
+                    <Box marginBottom="xl">
+                      <Text textAlign="center" color="actionText" fontSize={14}>
+                        Davetiye Kodu Gir
+                      </Text>
+                    </Box>
                   </>
                 )
               }}
             </Formik>
             <Box>
               <Text textAlign="center" color="mutedActionText" fontSize={14}>
-                Zaten hesabın var mı?
+                Zaten hesabın var mı? &nbsp;
                 <Text color="actionText">Giriş Yap</Text>
               </Text>
             </Box>
@@ -203,7 +204,6 @@ const styles = StyleSheet.create({
   errorValidation: {
     color: '#5FD068',
     fontSize: 14,
-    alignSelf: 'center',
     marginTop: 5
   }
 })
