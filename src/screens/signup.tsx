@@ -202,8 +202,8 @@ export default SignupScreen
 const styles = StyleSheet.create({
   errorValidation: {
     color: '#5FD068',
-    fontSize: 14,
-    alignSelf: 'center',
+    fontSize: 12,
+    marginLeft: 8,
     marginTop: 5
   }
 })
