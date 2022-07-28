@@ -161,6 +161,11 @@ function SignupScreen({ navigation }) {
                       />
                       <Text style={[styles.errorValidation]}>{touched.RePassword && errors.RePassword}</Text>
                     </Box>
+                    <Box marginBottom="xl">
+                      <Text textAlign="center" color="actionText" fontSize={14}>
+                        Davetiye Kodu Gir
+                      </Text>
+                    </Box>
                     <Button
                       label="KAYIT OL"
                       onPress={handleSubmit}
@@ -174,19 +179,13 @@ function SignupScreen({ navigation }) {
                       elevation={20}
                       shadowOffset={{ width: 0, height: 6 }}
                     />
-
-                    <Box marginBottom="xl">
-                      <Text textAlign="center" color="actionText" fontSize={14}>
-                        Davetiye Kodu Gir
-                      </Text>
-                    </Box>
                   </>
                 )
               }}
             </Formik>
             <Box>
               <Text textAlign="center" color="mutedActionText" fontSize={14}>
-                Zaten hesabın var mı? &nbsp;
+                Zaten hesabın var mı?
                 <Text color="actionText">Giriş Yap</Text>
               </Text>
             </Box>
@@ -203,7 +202,8 @@ export default SignupScreen
 const styles = StyleSheet.create({
   errorValidation: {
     color: '#5FD068',
-    fontSize: 14,
+    fontSize: 12,
+    marginLeft: 8,
     marginTop: 5
   }
 })

@@ -1,11 +1,11 @@
 import React from 'react'
 import { Box, Text } from '@/atoms'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
-import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 
 function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
-    <View style={styles.navbar}>
+    <View style={{ flexDirection: 'row' }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key]
         const label =
@@ -45,11 +45,11 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             key={index}
             onPress={onPress}
             onLongPress={onLongPress}
-            style={styles.navbarButton}
+            style={{ flex: 1 }}
           >
             <Text
               fontSize={12}
-              style={[{ color: isFocused ? '#1c844a' : '#343434' }, styles.navbarButtonText]}
+              style={{ color: isFocused ? '#673ab7' : '#222' }}
             >
               {label}
             </Text>
@@ -61,94 +61,3 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 }
 
 export default TabBar
-
-
-const styles = StyleSheet.create({
-  navItem: {
-    marginRight: 15,
-    backgroundColor: '#fff',
-    borderRadius: 14,
-    paddingLeft: 30,
-    paddingRight: 30,
-    paddingTop: 15,
-    paddingBottom: 15,
-    shadowColor: '#999',
-    shadowOffset: {
-      width: 0,
-      height: 133,
-    },
-    shadowOpacity: 0.17,
-    shadowRadius: 4.65,
-    elevation: 6,
-  },
-  navItemText: {
-    color: '#1b854b',
-    fontFamily: 'Nunito-ExtraBold',
-  },
-  navbar: {
-    backgroundColor: '#fff',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
-    height: 70,
-    borderTopRightRadius: 26,
-    borderTopLeftRadius: 26,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 16.0,
-
-    elevation: 24,
-  },
-  navbarQR: {
-    width: '20%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  navbarQRText: {
-    color: '#fff',
-    backgroundColor: '#1b854b',
-    width: 50,
-    borderRadius: 50,
-    height: 50,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  navbarQrIcon: {
-    width: 26,
-    resizeMode: 'contain',
-  },
-  navbarButton: {
-    width: '20%',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  navbarButtonText: {
-    color: '#9795A4',
-    textAlign: 'center',
-    fontSize: 11,
-    fontFamily: 'Nunito-ExtraBold',
-  },
-  navbarButtonTextActive: {
-    color: '#1b854b',
-    textAlign: 'center',
-    fontSize: 11,
-    fontFamily: 'Nunito-ExtraBold',
-  },
-  navIcon: {
-    color: '#9795A4',
-    marginBottom: 5,
-  },
-  navIconActive: {
-    color: '#1b854b',
-  },
-});
