@@ -95,7 +95,7 @@ function SignupScreen({ navigation }) {
                       alignItems="stretch"
                       justifyContent="space-between"
                       flexDirection="row"
-                      marginBottom="xl"
+                      marginBottom="sm"
                     >
                       <Box flex={1} marginEnd="md">
                         <TextInput
@@ -118,7 +118,7 @@ function SignupScreen({ navigation }) {
                         <Text style={[styles.errorValidation]}>{touched.Soyadi && errors.Soyadi}</Text>
                       </Box>
                     </Box>
-                    <Box marginBottom="xl">
+                    <Box marginBottom="sm">
                       <TextInput
                         placeholder="E-Posta"
                         value={values.Email}
@@ -128,7 +128,7 @@ function SignupScreen({ navigation }) {
                       />
                       <Text style={[styles.errorValidation]}>{touched.Email && errors.Email}</Text>
                     </Box>
-                    <Box marginBottom="xl">
+                    <Box marginBottom="sm">
                       <TextInput
                         keyboardType="phone-pad"
                         placeholder="Cep"
@@ -139,7 +139,7 @@ function SignupScreen({ navigation }) {
                       />
                       <Text style={[styles.errorValidation]}>{touched.Cep && errors.Cep}</Text>
                     </Box>
-                    <Box marginBottom="xl">
+                    <Box marginBottom="sm">
                       <TextInput
                         secureTextEntry={true}
                         placeholder="Şifre"
@@ -150,7 +150,7 @@ function SignupScreen({ navigation }) {
                       />
                       <Text style={[styles.errorValidation]}>{touched.Password && errors.Password}</Text>
                     </Box>
-                    <Box marginBottom="xl">
+                    <Box marginBottom="sm">
                       <TextInput
                         secureTextEntry={true}
                         placeholder="Şifre Onay"
