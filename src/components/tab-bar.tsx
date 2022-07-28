@@ -3,6 +3,9 @@ import { Box, Text } from '@/atoms'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { View, TouchableOpacity, StyleSheet } from 'react-native'
 
+import {SvgXml} from 'react-native-svg';
+import {Icons} from '../constants';
+
 function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
     <View style={styles.navbar}>
@@ -47,6 +50,12 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             onLongPress={onLongPress}
             style={styles.navbarButton}
           >
+            <SvgXml
+          xml={Icons.iconHome}
+          width="24"
+          height="24"
+          style={[styles.navIcon, styles.navIconActive]}
+        />
             <Text
               fontSize={12}
               style={[{ color: isFocused ? '#1c844a' : '#343434' }, styles.navbarButtonText]}
