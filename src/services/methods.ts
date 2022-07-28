@@ -26,20 +26,20 @@ const fetchData = async (Api: string, params: Params) => {
         method: `${params.method}`,
         headers: {
             "Content-Type": "application/json",
-            "Authentication": `Bearer ${params.authToken}`
+            "Authorization": `Bearer ${params.authToken}`
         },
         body: JSON.stringify(params.body)
     })
         .then((res) => {
-            //console.log(res)
+            console.log(res)
             return res.json()
         })
         .then((body) => {
-            console.log(body.message)
+            console.log('fetchDatadan message --> ' + body.message)
             return body.data
         })
         .catch((err) => {
-            console.log(err)
+            console.log('fetchDatadan error --> ' + err)
         })
 
     return fetchBuffer

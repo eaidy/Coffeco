@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useTheme } from '@shopify/restyle'
 import { register } from '@/services/register'
 import * as Yup from 'yup'
+import { StackActions } from '@react-navigation/native';
 
 // Component Imports
 import {
@@ -10,13 +11,17 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ScrollView,
-  StyleSheet
+  StyleSheet,
+  Pressable
 } from 'react-native'
 import { Box, Text, ImageBackground, TextInput, Button } from '@/atoms/'
 import { Formik } from 'formik'
+import Toast from 'react-native-simple-toast';
 
 // Model Imports
 import { RegisterFormModel } from '@/models/models'
+import { NavigationContainer } from '@react-navigation/native'
+
 
 const validationSchema = Yup.object({
   Adi: Yup.string().trim().required('İsminizi giriniz'),
@@ -28,7 +33,7 @@ const validationSchema = Yup.object({
 })
 
 
-function SignupScreen() {
+function SignupScreen({ navigation }) {
 
   const { colors, spacing } = useTheme()
 
@@ -43,6 +48,15 @@ function SignupScreen() {
 
   async function submitRegister(values: RegisterFormModel) {
     const response = await register(values)
+
+    if (response.status) {
+      Toast.showWithGravity(`Üyelik başarılı! Giriş yapabilirsiniz.`, Toast.SHORT, Toast.TOP);
+      navigation.dispatch(
+        StackActions.replace('Login')
+      );
+    } else {
+      Toast.showWithGravity(response.message, Toast.SHORT, Toast.TOP);
+    }
   }
 
 
@@ -171,7 +185,8 @@ function SignupScreen() {
             </Formik>
             <Box>
               <Text textAlign="center" color="mutedActionText" fontSize={14}>
-                Zaten hesabın var mı? <Text color="actionText">Giriş Yap</Text>
+                Zaten hesabın var mı?
+                <Text color="actionText">Giriş Yap</Text>
               </Text>
             </Box>
           </ImageBackground>
