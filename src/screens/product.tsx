@@ -173,8 +173,9 @@ function ProductScreen({ route }: any) {
         >
           <Pressable
             onPress={() => navigation.goBack()}
+            style={styles.backButton}
           >
-            <Text>
+            <Text style={styles.backButtonText}>
               Geri Dön
             </Text>
           </Pressable>
@@ -434,6 +435,16 @@ const styles = StyleSheet.create({
   variantTextInactive: {
     fontFamily: 'Nunito-Bold',
     textAlign: 'center'
+  },
+  backButton:{
+    position: 'absolute',
+    right: 15,
+    top:15
+  },
+  backButtonText:{
+    color: '#fff',
+    fontFamily: 'Nunito-Bold',
+    fontSize: 16,    
   }
 })
 

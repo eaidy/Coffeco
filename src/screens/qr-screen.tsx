@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     qrCodeContainer: {
         flex: 1,
         alignItems: 'center',
-        marginTop: 100,
+        marginTop: 80,
 
     }
 })
