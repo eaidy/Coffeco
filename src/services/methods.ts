@@ -26,7 +26,7 @@ const fetchData = async (Api: string, params: Params) => {
         method: `${params.method}`,
         headers: {
             "Content-Type": "application/json",
-            "Authentiaction": `Bearer ${params.authToken}`
+            "Authentication": `Bearer ${params.authToken}`
         },
         body: JSON.stringify(params.body)
     })

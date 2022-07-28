@@ -31,9 +31,10 @@ function LoginScreen() {
 
   const submitLogin = async (values: FormValues) => {
 
-    const response = await login(values.phoneNumber, '')
+    const response = await login(values.phoneNumber, values.password)
       .then((res: any) => {
-        const buffer: UserState = res
+        const buffer: UserState = res ? res : {}
+        console.log(buffer, 'Deneme')
         setUserState(buffer)
         console.log(userState)
       })

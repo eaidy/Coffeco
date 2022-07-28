@@ -12,7 +12,7 @@ const register = async (RegisterFormValues: RegisterFormModel) => {
         });
 
         console.log("burası")
-        const body = response
+        const body = await response.json()
         console.log(body)
 
         return body
