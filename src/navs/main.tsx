@@ -49,7 +49,7 @@ function MainNavigation() {
       <Tab.Screen
         name="DiscountTags"
         component={DiscountTagsScreen}
-        options={{ title: 'İndirim Kartları' }}
+        options={{ title: 'Kartlar' }}
       />
       <Tab.Screen
         name="QrScreen"

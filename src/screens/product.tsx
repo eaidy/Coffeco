@@ -123,7 +123,7 @@ function ProductScreen({ route }: any) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authentication": `Bearer ${userState.data}`
+        "Authorization": `Bearer ${userState.data}`
       },
       body: JSON.stringify(productApiObject)
     })
@@ -132,6 +132,7 @@ function ProductScreen({ route }: any) {
       })
       .then((data) => {
         console.log(data)
+        Toast.showWithGravity('Ürün sepete eklendi', Toast.SHORT, Toast.TOP);
       })
       .catch((err) => {
         console.log(err)
@@ -143,7 +144,7 @@ function ProductScreen({ route }: any) {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
-        "Authentication": `Bearer ${userState.data}`
+        "Authorization": `Bearer ${userState.data}`
       }
     })
       .then((res) => {
@@ -151,13 +152,12 @@ function ProductScreen({ route }: any) {
       })
       .then((data: any) => {
         setBasketState(data.data.order.total)
-        console.log(basketState)
+        console.log(basketState + ' Ata')
       })
       .catch((err) => {
         console.log(err)
       })
       .finally(() => {
-        Toast.showWithGravity('Ürün sepete eklendi', Toast.SHORT, Toast.TOP);
         navigation.goBack()
       })
 
@@ -436,15 +436,15 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito-Bold',
     textAlign: 'center'
   },
-  backButton:{
+  backButton: {
     position: 'absolute',
     right: 15,
-    top:15
+    top: 15
   },
-  backButtonText:{
+  backButtonText: {
     color: '#fff',
     fontFamily: 'Nunito-Bold',
-    fontSize: 16,    
+    fontSize: 16,
   }
 })
 

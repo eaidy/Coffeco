@@ -92,7 +92,7 @@ function ProfileScreen() {
               <Text style={styles.boxTitleText}>Geçmiş Siparişlerim</Text>
             </View>
             {
-              pastOrders.orders &&
+              pastOrders &&
               pastOrders.orders.filter((order: any) =>
                 order.siparisDurumS === 'YeniSiparis'
               ).reverse().map((order: any, index) =>
@@ -174,7 +174,7 @@ function ProfileScreen() {
             }
 
             {
-              pastOrders.orders &&
+              pastOrders &&
               pastOrders.orders.filter((order: any) =>
                 order.siparisDurumS === 'TeslimEdildi'
               ).reverse().map((order: any, index) =>
