@@ -109,7 +109,7 @@ function ProductsScreen() {
               >
                 <Image
                   style={styles.productImg}
-                  source={require('@/assets/images/urun-1.png')}
+                  source={{ uri: product.photo }}
                 />
                 <View style={styles.productBottom}>
                   <Text style={styles.productTitle}>{product.productName}</Text>
