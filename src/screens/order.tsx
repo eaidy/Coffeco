@@ -59,6 +59,11 @@ function OrderScreen({ navigation }) {
     Bonus: false
   })
   const [activeBranchId, setActiveBranchId] = useState<Number>(0)
+  const [deliveryTimes, setDeliveryTimes] = useState([
+    { duration: '15dk', time: '16:30', isActive: false },
+    { duration: '30dk', time: '16:45', isActive: false },
+    { duration: '45dk', time: '17:00', isActive: false },
+  ])
 
   const [userState,] = useAtom(userStateAtom)
   const [basketState, setBasketState] = useAtom(basketAtom)
@@ -76,14 +81,14 @@ function OrderScreen({ navigation }) {
         })
         .then((data) => {
           let basketBuffer: BasketModel = {
-            totalPrice: data.order.total,
+            totalPrice: data.order.total.toFixed(1),
             orderID: data.order.orderID,
             products: data.lines,
             variants: data.variants,
             branches: []
           }
           setBasketInfo(basketBuffer)
-          setBasketState(basketInfo.totalPrice)
+          setBasketState(basketInfo.totalPrice.toFixed(1))
           setSendOrderInfo((prev) => {
             let bufferPrev = prev
             bufferPrev.OrderID = data.order.orderID
@@ -112,10 +117,10 @@ function OrderScreen({ navigation }) {
                   branches: data
                 }
               })
-              console.log(basketInfo)
+              console.log('Şubeler alındı')
             })
             .catch((err) => {
-              console.log(err)
+              console.log('Şubeler alınamadı')
             })
         })
         .catch(err => console.log(err))
@@ -254,7 +259,7 @@ function OrderScreen({ navigation }) {
                           </View>
                         </View>
                         <View style={{ flex: 3, flexDirection: 'row' }}>
-                          <Text style={styles.productPrice}>{product.price}₺</Text>
+                          <Text style={styles.productPrice}>{(product.price * product.qty).toFixed(1)}₺</Text>
                           <NumericInput
                             onChange={value => console.log(value)}
                             minValue={0}
@@ -347,22 +352,40 @@ function OrderScreen({ navigation }) {
                       <Text style={styles.boxTitleText}>Teslimat Saati</Text>
                     </View>
                     <View style={[styles.boxContent, styles.boxContentTimes]}>
-                      <Pressable style={styles.time}>
-                        <Text style={styles.timeTitle}>15 dk</Text>
-                        <Text style={styles.timeText}>16:30</Text>
-                      </Pressable>
-                      <Pressable style={[styles.time, styles.timeActive]}>
-                        <Text style={[styles.timeTitle, styles.timeTitleActive]}>
-                          30 dk
-                        </Text>
-                        <Text style={[styles.timeText, styles.timeTextActive]}>
-                          16:45
-                        </Text>
-                      </Pressable>
-                      <Pressable style={styles.time}>
-                        <Text style={styles.timeTitle}>45 dk</Text>
-                        <Text style={styles.timeText}>17:00</Text>
-                      </Pressable>
+                      {
+                        deliveryTimes &&
+                        deliveryTimes.map((deliveryTime, index) =>
+                        (
+                          <Pressable
+                            key={index}
+                            onPress={() => setDeliveryTimes((prev) => {
+                              const buffer = prev.map((item, i) => {
+                                return {
+                                  ...item,
+                                  isActive: index === i ? true : false
+                                }
+                              })
+                              return [
+                                ...buffer
+                              ]
+                            }
+                            )}
+                            style={deliveryTime.isActive ?
+                              [styles.time, styles.timeActive] : [styles.time]
+                            }
+                          >
+                            <Text
+                              style={deliveryTime.isActive ?
+                                [styles.timeTitle, styles.timeTitleActive] : [styles.timeTitle]
+                              }
+                            >
+                              {deliveryTime.duration}
+                            </Text>
+                            <Text style={{ color: 'gray' }}>{deliveryTime.time}</Text>
+                          </Pressable>
+                        )
+                        )
+                      }
                     </View>
                     <View style={styles.boxContent}>
                       <View style={styles.custom}>
