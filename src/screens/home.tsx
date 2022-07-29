@@ -91,7 +91,7 @@ function HomeScreen() {
           <Pressable style={styles.button}>
             <Image
               style={styles.buttonImg}
-              source={{}}
+              source={require('@/assets/images/icon-4.png')}
             />
             <Text style={styles.buttonText}>BONUS{'\n'}HARCA</Text>
           </Pressable>
@@ -175,8 +175,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     marginLeft: 10,
-    fontSize: 18,
-    fontFamily: 'Nunito-ExtraBold',
+    fontSize: 15,
+    fontFamily: 'Nunito-Bold',
   },
   card: {
     width: '100%',

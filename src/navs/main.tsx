@@ -43,27 +43,27 @@ function MainNavigation() {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{ title: 'Anasayfa' }}
+        options={{ title: 'Anasayfa', headerShown: false }}
       />
       <Tab.Screen
         name="DiscountTags"
         component={DiscountTagsScreen}
-        options={{ title: 'Kartlar' }}
+        options={{ title: 'Kartlar', headerShown: false }}
       />
       <Tab.Screen
         name="QrScreen"
         component={QrScreen}
-        options={{ title: 'QR' }}
+        options={{ title: 'QR', headerShown: false }}
       />
       <Tab.Screen
         name="Products"
         component={ProductsScreen}
-        options={{ title: 'Ürünler' }}
+        options={{ title: 'Ürünler', headerShown: false }}
       />
       <Tab.Screen
         name="Order"
         component={OrderScreen}
-        options={{ title: 'Sipariş Ver' }}
+        options={{ title: 'Sepet', headerShown: false }}
       />
     </Tab.Navigator>
   )

@@ -220,9 +220,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 10,
     bottom: 10,
-    fontSize: 18,
+    fontSize: 17,
     color: '#1b854b',
-    fontFamily: 'Nunito-ExtraBold',
+    fontFamily: 'Nunito-Bold',
   },
   productPlus: {
     position: 'absolute',

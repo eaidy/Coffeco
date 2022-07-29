@@ -77,9 +77,9 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
               options.title === 'QR' &&
               (
                 <SvgXml
-                  xml={Icons.iconHome}
-                  width="24"
-                  height="24"
+                  xml={Icons.iconQR}
+                  width="30"
+                  height="30"
                   fill={isFocused ? 'green' : 'gray'}
                 />
               )
@@ -96,7 +96,7 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
               )
             }
             {
-              options.title === 'Sipariş Ver' &&
+              options.title === 'Sepet' &&
               (
                 <SvgXml
                   xml={Icons.iconCart}
@@ -106,12 +106,17 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                 />
               )
             }
-            <Text
-              fontSize={12}
-              style={[{ color: isFocused ? '#1c844a' : '#343434' }, styles.navbarButtonText]}
-            >
-              {label}
-            </Text>
+            {
+              label !== 'QR' &&
+              (
+                <Text
+                  fontSize={12}
+                  style={[{ color: isFocused ? '#1c844a' : '#343434' }, styles.navbarButtonText]}
+                >
+                  {label}
+                </Text>
+              )
+            }
           </TouchableOpacity>
         )
       })}
@@ -155,8 +160,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     height: 70,
-    borderTopRightRadius: 26,
-    borderTopLeftRadius: 26,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -164,7 +167,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 1,
     shadowRadius: 16.0,
-
     elevation: 24,
   },
   navbarQR: {

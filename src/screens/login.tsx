@@ -118,16 +118,22 @@ function LoginScreen() {
                       elevation={20}
                       shadowOffset={{ width: 0, height: 6 }}
                     />
-                    <View style={styles.rememberMe}>
-                      <Text style={styles.rememberMeText}>Beni Hatırla : </Text>
-                      <Checkbox
-                        status={rememberMe ? 'checked' : 'unchecked'}
-                        onPress={() => setRememberMe((prev) => !prev)}
-                        color="#1B854B"
-                      />
-                      <Pressable>
-                        <Text style={[styles.rememberMeText, { color: '#1B854B', marginLeft: 40 }]}>Şifremi unuttum?</Text>
-                      </Pressable>
+                    <View style={styles.altBox}>
+                      <View style={{ flex: 3 }}>
+                        <View style={styles.rememberMe}>
+                          <Text style={styles.rememberMeText}>Beni Hatırla : </Text>
+                          <Checkbox
+                            status={rememberMe ? 'checked' : 'unchecked'}
+                            onPress={() => setRememberMe((prev) => !prev)}
+                            color="#1B854B"
+                          />
+                        </View>
+                      </View>
+                      <View style={{ flex: 3 }}>
+                        <Pressable>
+                          <Text style={[styles.rememberMeText, { color: '#1B854B', marginLeft: 40 }]}>Şifremi unuttum?</Text>
+                        </Pressable>
+                      </View>
                     </View>
                     {
                       !userState.status && userState.data !== '' &&
@@ -173,5 +179,9 @@ const styles = StyleSheet.create({
     height: 200,
     width: 200,
     marginBottom: 60
+  },
+  altBox: {
+    flex: 1,
+    flexDirection: 'row'
   }
 })
