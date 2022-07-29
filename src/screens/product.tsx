@@ -211,7 +211,7 @@ function ProductScreen({ route }: any) {
                             /> */}
                       </View>
                       {
-                        (<View>
+                        (<View style={styles.sizeSelect}>
                           {
                             variantsExpand[parentIndex] &&
                             variantChilds.filter((isParentsChild) => isParentsChild.parentID === variantParent.priceID)
@@ -250,7 +250,7 @@ function ProductScreen({ route }: any) {
                   style={styles.optionCart}
                   onPress={() => addBasketHandler()}
                 >
-                  <Text style={styles.optionCartText}>Sepet'e Ekle</Text>
+                  <Text style={styles.optionCartText}>SEPETE EKLE</Text>
                   <Text style={styles.optionCartPrice}>{totalPrice}₺</Text>
                 </Pressable>
               </View>
@@ -266,6 +266,11 @@ function ProductScreen({ route }: any) {
 const styles = StyleSheet.create({
   pageWrapper: {
     height: '100%',
+  },
+  sizeSelect:{
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
   },
   detailBg: {
     display: 'flex',
@@ -317,6 +322,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flexWrap: 'wrap',
     padding: 10,
     borderRadius: 14,
     shadowColor: '#000',
@@ -324,11 +330,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.15,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 4,
   },
   optionTitle: {
     fontFamily: 'Nunito-Bold',
@@ -418,10 +424,11 @@ const styles = StyleSheet.create({
   },
   optionVariantInactive: {
     backgroundColor: '#f0f5f7',
-    marginBottom: 5,
+    marginTop: 10,
+    marginRight:10,
     borderRadius: 14,
-    paddingLeft: 12,
-    paddingRight: 12,
+    paddingLeft: 18,
+    paddingRight: 18,
     paddingTop: 8,
     paddingBottom: 8,
     lineHeight: 1,

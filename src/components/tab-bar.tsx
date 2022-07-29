@@ -191,13 +191,14 @@ const styles = StyleSheet.create({
   navbarButton: {
     width: '20%',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   navbarButtonText: {
     color: '#9795A4',
     textAlign: 'center',
     fontSize: 11,
     fontFamily: 'Nunito-ExtraBold',
+    marginTop:4
   },
   navbarButtonTextActive: {
     color: '#1b854b',

@@ -142,11 +142,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   navItem: {
-    marginRight: 15,
+    marginRight: 10,
     backgroundColor: '#fff',
     borderRadius: 14,
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingLeft: 20,
+    paddingRight: 20,
     paddingTop: 12,
     paddingBottom: 12,
     lineHeight: 1,
@@ -165,10 +165,12 @@ const styles = StyleSheet.create({
   navItemText: {
     color: '#6d6d6d',
     fontFamily: 'Nunito-ExtraBold',
+    fontSize:12
   },
   navItemTextActive: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize:12
   },
   productList: {
     display: 'flex',
