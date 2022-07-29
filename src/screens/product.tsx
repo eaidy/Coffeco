@@ -23,6 +23,7 @@ import { basketAtom, userStateAtom } from '@/states/auth'
 
 // Model Imports
 import { ResponseModel, Variants, Variant, ProductBasketModel, BasketModel } from '@/models/models'
+import NumericInput from 'react-native-numeric-input'
 
 type VariantsExpand = Array<Boolean>
 
@@ -47,7 +48,7 @@ function ProductScreen({ route }: any) {
   const [variantParents, setVariantParents] = useState<Variants>([])
   const [variantChilds, setVariantChilds] = useState<ChildVariants>([])
   const [variantsExpand, setVariantsExpand] = useState<VariantsExpand>([])
-  const [Qty, setQty] = useState<string>("1")
+  const [Qty, setQty] = useState<number>(1)
 
   const navigation = useNavigation()
 
@@ -77,7 +78,7 @@ function ProductScreen({ route }: any) {
 
   useEffect(() => {
     let total = 0
-    total = Number(Qty) * productResponse.product.price // varyant fiyatları eklenecek
+    total = (Qty * productResponse.product.price).toFixed(1) // varyant fiyatları eklenecek
     setTotalPrice(total)
   }, [variantChilds, Qty])
 
@@ -112,7 +113,7 @@ function ProductScreen({ route }: any) {
       variantsApiArray: Array<{ id: number, value: number }>
 
     productApiObject.ProductID = productResponse.product.productID
-    productApiObject.Qty = Number(Qty)
+    productApiObject.Qty = Qty
 
     variantsApiArray = variantChilds.filter((variant) => variant.isActive).map((variant) => { return { id: variant.priceID, value: 1 } })
 
@@ -239,13 +240,23 @@ function ProductScreen({ route }: any) {
               </ScrollView>
 
               <View style={styles.optionListFooter}>
-                <TextInput
+                <NumericInput
+                  onChange={value => setQty(value)}
+                  minValue={0}
+                  rounded
+                  iconSize={5}
+                  totalWidth={100}
+                  totalHeight={50}
+                  type='up-down'
+                  value={Qty}
+                />
+                {/* <TextInput
                   style={styles.optionNumber}
                   placeholder="Adet"
                   keyboardType="numeric"
                   onChangeText={setQty}
                   value={Qty}
-                />
+                /> */}
                 <Pressable
                   style={styles.optionCart}
                   onPress={() => addBasketHandler()}
