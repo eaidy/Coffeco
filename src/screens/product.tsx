@@ -194,7 +194,7 @@ function ProductScreen({ route }: any) {
             <View style={styles.optionList}>
               <ScrollView style={styles.optionListScroll}>
 
-                {/* {
+                {
                   variantParents.map((variantParent: Variant, parentIndex) =>
                   (
                     <Pressable
@@ -237,7 +237,7 @@ function ProductScreen({ route }: any) {
                       }
                     </Pressable>
                   ))
-                } */}
+                }
               </ScrollView>
 
               <View style={styles.optionListFooter}>
