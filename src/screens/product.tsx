@@ -14,7 +14,8 @@ import {
   Image,
   Pressable,
 } from 'react-native'
-import { SvgXml } from 'react-native-svg'
+import {SvgXml} from 'react-native-svg';
+import { Icons } from '../constants';
 import Header from '@/components/header'
 import Toast from 'react-native-simple-toast';
 
@@ -204,12 +205,12 @@ function ProductScreen({ route }: any) {
                       <Text style={styles.optionTitle}>{variantParent.description}</Text>
                       <View style={styles.optionSelect}>
                         <Text style={styles.optionSelectText}>Seçiniz</Text>
-                        {/* <SvgXml
-                              xml={iconArrow}
+                        <SvgXml
+                              xml={Icons.iconArrow}
                               width="24"
                               height="24"
                               style={styles.navIcon}
-                            /> */}
+                            />
                       </View>
                       {
                         (<View style={styles.sizeSelect}>
