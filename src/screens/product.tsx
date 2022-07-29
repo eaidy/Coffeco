@@ -194,7 +194,7 @@ function ProductScreen({ route }: any) {
             <View style={styles.optionList}>
               <ScrollView style={styles.optionListScroll}>
 
-                {
+                {/* {
                   variantParents.map((variantParent: Variant, parentIndex) =>
                   (
                     <Pressable
@@ -237,7 +237,7 @@ function ProductScreen({ route }: any) {
                       }
                     </Pressable>
                   ))
-                }
+                } */}
               </ScrollView>
 
               <View style={styles.optionListFooter}>
@@ -294,6 +294,9 @@ const styles = StyleSheet.create({
   detailImage: {
     height: '50%',
   },
+  detailImageSingle:{
+    height:'75%'
+  },
   detailTitle: {
     fontSize: 20,
     color: '#fff',
@@ -319,6 +322,20 @@ const styles = StyleSheet.create({
     width: '100%',
     elevation: 15,
     paddingTop: 25,
+    paddingBottom: 80,
+    color: '#000',
+  },
+  optionListSingle: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    height: '25%',
+    width: '100%',
+    elevation: 15,
+    paddingTop: 15,
     paddingBottom: 80,
     color: '#000',
   },
