@@ -1,12 +1,12 @@
 // API Imports
 import React, { useEffect, useState } from 'react'
-import { useTheme } from '@shopify/restyle'
+import { color, useTheme } from '@shopify/restyle'
 import { useAtom } from 'jotai'
 import { useNavigation } from '@react-navigation/native'
 import { StackActions } from '@react-navigation/native';
 
 // Component Imports
-import { StyleSheet, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ScrollView, } from 'react-native'
+import { StyleSheet, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ScrollView, View, Image, Pressable, } from 'react-native'
 import { Formik } from 'formik'
 import { Box, Text, ImageBackground, TextInput, Button } from '@/atoms/'
 
@@ -16,6 +16,8 @@ import { categoriesAtom, productsAtom, userStateAtom } from '@/states/auth'
 
 // Model Imports
 import { UserState } from '@/models/models'
+import CheckBox from '@react-native-community/checkbox';
+import { Checkbox } from 'react-native-paper';
 
 type FormValues = {
   phoneNumber: string;
@@ -24,6 +26,7 @@ type FormValues = {
 
 function LoginScreen() {
 
+  const [rememberMe, setRememberMe] = useState(false)
   const [userState, setUserState] = useAtom(userStateAtom)
 
   const navigation = useNavigation()
@@ -115,6 +118,17 @@ function LoginScreen() {
                       elevation={20}
                       shadowOffset={{ width: 0, height: 6 }}
                     />
+                    <View style={styles.rememberMe}>
+                      <Text style={styles.rememberMeText}>Beni Hatırla : </Text>
+                      <Checkbox
+                        status={rememberMe ? 'checked' : 'unchecked'}
+                        onPress={() => setRememberMe((prev) => !prev)}
+                        color="#1B854B"
+                      />
+                      <Pressable>
+                        <Text style={[styles.rememberMeText, { color: '#1B854B', marginLeft: 40 }]}>Şifremi unuttum?</Text>
+                      </Pressable>
+                    </View>
                     {
                       !userState.status && userState.data !== '' &&
                       (
@@ -140,5 +154,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     alignSelf: 'center',
     marginTop: 20
+  },
+  rememberMe: {
+    flex: 1,
+    flexDirection: 'row',
+    marginTop: 10,
+    marginLeft: 20,
+    height: 100,
+  },
+  rememberMeText: {
+    marginTop: 7,
+    color: '#7F8487',
+    fontFamily: 'Nunito-Bold'
+
+  },
+  logoBottom: {
+    alignSelf: 'center',
+    height: 200,
+    width: 200,
+    marginBottom: 60
   }
 })

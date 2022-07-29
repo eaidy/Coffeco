@@ -27,7 +27,7 @@ const validationSchema = Yup.object({
   Adi: Yup.string().trim().required('İsminizi giriniz'),
   Soyadi: Yup.string().trim().required('Soyadınızı giriniz'),
   Cep: Yup.string().trim().required('Telefon numarası gereklidir'),
-  Email: Yup.string().email('Geçersiz E-Posta adresi').required('İsminizi giriniz'),
+  Email: Yup.string().email('Geçersiz E-Posta adresi').required('E-Postanızı giriniz'),
   Password: Yup.string().trim().min(8, 'Şifre çok kısa').required('Şifre girmediniz'),
   RePassword: Yup.string().equals([Yup.ref('Password'), null], 'Şifreler uyuşmuyor')
 })

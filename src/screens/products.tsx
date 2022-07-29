@@ -67,6 +67,7 @@ function ProductsScreen() {
       method: 'POST'
     })
       .then((res) => {
+        console.log(res)
         navigation.navigate('Product', {
           productResponse: res
         })
@@ -112,8 +113,8 @@ function ProductsScreen() {
                 />
                 <View style={styles.productBottom}>
                   <Text style={styles.productTitle}>{product.productName}</Text>
-                  <Text style={styles.productText}>Laktozsuz süt seçeneği ile</Text>
-                  <Text style={styles.productPrice}>{product.price}</Text>
+                  <Text style={styles.productText}>{product.shortDescription}</Text>
+                  <Text style={styles.productPrice}>{product.price}₺</Text>
                   <Pressable
                     style={styles.productPlus}
                     onPress={() => productPressHandler(product.productID)}

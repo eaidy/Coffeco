@@ -17,7 +17,6 @@ export type MainNavigation = {
   QrScreen: undefined
   Products: undefined
   Order: undefined
-  Product: undefined
 }
 
 const Tab = createBottomTabNavigator<MainNavigation>()
@@ -66,7 +65,6 @@ function MainNavigation() {
         component={OrderScreen}
         options={{ title: 'Sipariş Ver' }}
       />
-
     </Tab.Navigator>
   )
 }

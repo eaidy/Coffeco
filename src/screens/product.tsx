@@ -186,74 +186,78 @@ function ProductScreen({ route }: any) {
           <Text style={styles.detailTitle}>Cappucino</Text>
           <Text style={styles.detailText}>Laktozsuz süt seçeneği ile</Text>
         </ImageBackground>
-        <View style={styles.optionList}>
+        {
+          variantParents !== [] &&
+          (
+            <View style={styles.optionList}>
+              <ScrollView style={styles.optionListScroll}>
 
-          <ScrollView style={styles.optionListScroll}>
-
-            {
-              variantParents.map((variantParent: Variant, parentIndex) =>
-              (
-                <Pressable
-                  style={styles.option}
-                  key={parentIndex}
-                  onPress={() => setVariantsExpand(variantsExpand.map((item, index) => index === parentIndex ? !item : item))}
-                >
-                  <Text style={styles.optionTitle}>{variantParent.description}</Text>
-                  <View style={styles.optionSelect}>
-                    <Text style={styles.optionSelectText}>Seçiniz</Text>
-                    {/* <SvgXml
-                          xml={iconArrow}
-                          width="24"
-                          height="24"
-                          style={styles.navIcon}
-                        /> */}
-                  </View>
-                  {
-                    (<View>
+                {
+                  variantParents.map((variantParent: Variant, parentIndex) =>
+                  (
+                    <Pressable
+                      style={styles.option}
+                      key={parentIndex}
+                      onPress={() => setVariantsExpand(variantsExpand.map((item, index) => index === parentIndex ? !item : item))}
+                    >
+                      <Text style={styles.optionTitle}>{variantParent.description}</Text>
+                      <View style={styles.optionSelect}>
+                        <Text style={styles.optionSelectText}>Seçiniz</Text>
+                        {/* <SvgXml
+                              xml={iconArrow}
+                              width="24"
+                              height="24"
+                              style={styles.navIcon}
+                            /> */}
+                      </View>
                       {
-                        variantsExpand[parentIndex] &&
-                        variantChilds.filter((isParentsChild) => isParentsChild.parentID === variantParent.priceID)
-                          .map((variantChild, childIndex) =>
-                          (
-                            <Pressable
-                              style={variantChild.isActive ? [styles.optionVariantActive] : [styles.optionVariantInactive]}
-                              key={childIndex}
-                              onPress={() => variantChildPressHandler(variantChild)}
-                            >
-                              <Text
-                                style={variantChild.isActive ? [styles.variantTextActive] : [styles.variantTextInactive]}
-                              >
-                                {variantChild.description}
-                              </Text>
-                            </Pressable>
-                          ))
+                        (<View>
+                          {
+                            variantsExpand[parentIndex] &&
+                            variantChilds.filter((isParentsChild) => isParentsChild.parentID === variantParent.priceID)
+                              .map((variantChild, childIndex) =>
+                              (
+                                <Pressable
+                                  style={variantChild.isActive ? [styles.optionVariantActive] : [styles.optionVariantInactive]}
+                                  key={childIndex}
+                                  onPress={() => variantChildPressHandler(variantChild)}
+                                >
+                                  <Text
+                                    style={variantChild.isActive ? [styles.variantTextActive] : [styles.variantTextInactive]}
+                                  >
+                                    {variantChild.description}
+                                  </Text>
+                                </Pressable>
+                              ))
+                          }
+                        </View>
+                        )
                       }
-                    </View>
-                    )
-                  }
+                    </Pressable>
+                  ))
+                }
+              </ScrollView>
+
+              <View style={styles.optionListFooter}>
+                <TextInput
+                  style={styles.optionNumber}
+                  placeholder="Adet"
+                  keyboardType="numeric"
+                  onChangeText={setQty}
+                  value={Qty}
+                />
+                <Pressable
+                  style={styles.optionCart}
+                  onPress={() => addBasketHandler()}
+                >
+                  <Text style={styles.optionCartText}>Sepet'e Ekle</Text>
+                  <Text style={styles.optionCartPrice}>{totalPrice}₺</Text>
                 </Pressable>
-              ))
-            }
-          </ScrollView>
+              </View>
 
-          <View style={styles.optionListFooter}>
-            <TextInput
-              style={styles.optionNumber}
-              placeholder="Adet"
-              keyboardType="numeric"
-              onChangeText={setQty}
-              value={Qty}
-            />
-            <Pressable
-              style={styles.optionCart}
-              onPress={() => addBasketHandler()}
-            >
-              <Text style={styles.optionCartText}>Sepet'e Ekle</Text>
-              <Text style={styles.optionCartPrice}>{totalPrice}₺</Text>
-            </Pressable>
-          </View>
-
-        </View>
+            </View>
+          )
+        }
       </View>
     </>
   )

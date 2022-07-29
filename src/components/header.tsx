@@ -24,7 +24,10 @@ export default function Header() {
         source={require('@/assets/images/top-bg.png')}
         style={styles.headerBg}
       >
-        <Pressable style={styles.logo}>
+        <Pressable
+          style={styles.logo}
+          onPress={() => { navigation.navigate('Home') }}
+        >
           <Image
             style={styles.logoImg}
             source={require('@/assets/images/logo.png')}

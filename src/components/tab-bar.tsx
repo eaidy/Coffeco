@@ -3,8 +3,9 @@ import { Box, Text } from '@/atoms'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { View, TouchableOpacity, StyleSheet } from 'react-native'
 
-import {SvgXml} from 'react-native-svg';
-import {Icons} from '../constants';
+import { SvgXml } from 'react-native-svg';
+import { Icons } from '../constants';
+
 
 function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
@@ -50,12 +51,61 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             onLongPress={onLongPress}
             style={styles.navbarButton}
           >
-            <SvgXml
-          xml={Icons.iconHome}
-          width="24"
-          height="24"
-          style={[styles.navIcon, styles.navIconActive]}
-        />
+            {
+              options.title === 'Anasayfa' &&
+              (
+                <SvgXml
+                  xml={Icons.iconHome}
+                  width="24"
+                  height="24"
+                  fill={isFocused ? 'green' : 'gray'}
+                />
+              )
+            }
+            {
+              options.title === 'Kartlar' &&
+              (
+                <SvgXml
+                  xml={Icons.iconTag}
+                  width="24"
+                  height="24"
+                  fill={isFocused ? 'green' : 'gray'}
+                />
+              )
+            }
+            {
+              options.title === 'QR' &&
+              (
+                <SvgXml
+                  xml={Icons.iconHome}
+                  width="24"
+                  height="24"
+                  fill={isFocused ? 'green' : 'gray'}
+                />
+              )
+            }
+            {
+              options.title === 'Ürünler' &&
+              (
+                <SvgXml
+                  xml={Icons.iconMap}
+                  width="24"
+                  height="24"
+                  fill={isFocused ? 'green' : 'gray'}
+                />
+              )
+            }
+            {
+              options.title === 'Sipariş Ver' &&
+              (
+                <SvgXml
+                  xml={Icons.iconCart}
+                  width="24"
+                  height="24"
+                  fill={isFocused ? 'green' : 'gray'}
+                />
+              )
+            }
             <Text
               fontSize={12}
               style={[{ color: isFocused ? '#1c844a' : '#343434' }, styles.navbarButtonText]}
@@ -139,7 +189,7 @@ const styles = StyleSheet.create({
   navbarButton: {
     width: '20%',
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   navbarButtonText: {
     color: '#9795A4',

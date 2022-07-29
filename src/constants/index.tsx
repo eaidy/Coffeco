@@ -3,8 +3,8 @@ import { Dimensions, StatusBar } from 'react-native'
 export const bottombarHeight =
   Dimensions.get('screen').height == Dimensions.get('window').height
     ? Dimensions.get('screen').height -
-      Dimensions.get('window').height +
-      StatusBar.currentHeight
+    Dimensions.get('window').height +
+    StatusBar.currentHeight
     : StatusBar.currentHeight
 
 export const Colors = {

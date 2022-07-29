@@ -16,23 +16,23 @@ function FeedbackScreen() {
                     paddingTop: 150
                 }}
             >
+                <Text
+                    style={{
+                        fontSize: 17,
+                        marginBottom: 20,
+                        width: 200,
+                        textAlign: 'center'
+
+                    }}
+                >
+                    Bu safya geliştirme aşamasındadır.
+                </Text>
                 <Pressable
                     onPress={() =>
                         navigation.dispatch(
                             StackActions.replace('Main')
                         )}
                 >
-                    <Text
-                        style={{
-                            fontSize: 17,
-                            marginBottom: 20,
-                            width: 200,
-                            textAlign: 'center'
-
-                        }}
-                    >
-                        Bu safya geliştirme aşamasındadır.
-                    </Text>
                     <Text
                         style={{
                             fontSize: 20,

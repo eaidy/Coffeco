@@ -2,7 +2,8 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useAtom } from 'jotai'
-import { moment } from 'moment'
+import { StackActions } from '@react-navigation/native';
+
 
 // Component Imports
 import { Text } from '@/atoms'
@@ -12,6 +13,8 @@ import { Icons } from '@/constants'
 import { SvgXml } from 'react-native-svg'
 import NumericInput from 'react-native-numeric-input'
 import { Checkbox } from 'react-native-paper';
+import Toast from 'react-native-simple-toast';
+
 
 // Service Imports
 import { fetchData } from '@/services/methods'
@@ -38,7 +41,7 @@ type SendOrder = {
   Bonus?: Boolean;
 }
 
-function OrderScreen() {
+function OrderScreen({ navigation }) {
 
   const [basketInfo, setBasketInfo] = useState<BasketModel>({
     totalPrice: 0,
@@ -171,9 +174,12 @@ function OrderScreen() {
       body: sendOrderInfo
     })
       .then((res) => {
-        console.log(res)
+        Toast.showWithGravity('Siparişiniz alındı, Anasayfada durumunu görebilirsiniz.', Toast.LONG, Toast.TOP);
+        emptyTheBasket()
+        navigation.navigate('Home')
       })
       .catch((err) => {
+        Toast.showWithGravity('Hata, sipariş alınamadı : ' + err, Toast.LONG, Toast.TOP)
         console.log(err)
       })
   }
@@ -222,36 +228,43 @@ function OrderScreen() {
                         style={styles.product}
                         key={product.lineID}
                       >
-                        <View style={styles.productLeft}>
-                          <Image
-                            style={styles.productImage}
-                            source={require('@/assets/images/product.png')}
-                          />
-                          <View style={styles.productContet}>
-                            <Text style={styles.productTitle}>
-                              {product.description}
-                            </Text>
-                            {
-                              basketInfo.variants.filter((variant: any) => variant.lineID === product.lineID).map((variant: any, index) => {
-                                return (
-                                  <Text
-                                    style={styles.productTitleSmall}
-                                    key={index}
-                                  >
-                                    {variant.priceDescription}
-                                  </Text>
-                                )
-                              })
-                            }
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                          <View style={styles.productLeft}>
+                            <Image
+                              style={styles.productImage}
+                              source={require('@/assets/images/product.png')}
+                            />
+                            <View style={styles.productContet}>
+                              <Text style={styles.productTitle}>
+                                {product.description}
+                              </Text>
+                              {
+                                basketInfo.variants.filter((variant: any) => variant.lineID === product.lineID).map((variant: any, index) => {
+                                  return (
+                                    <Text
+                                      style={styles.productTitleSmall}
+                                      key={index}
+                                    >
+                                      {variant.priceDescription}
+                                    </Text>
+                                  )
+                                })
+                              }
+                            </View>
                           </View>
                         </View>
-                        <Text style={styles.productPrice}>{product.price}₺</Text>
-                        <NumericInput
-                          onChange={value => console.log(value)}
-                          minValue={0}
-                          rounded
-                          iconSize={5}
-                        />
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                          <Text style={styles.productPrice}>{product.price}₺</Text>
+                          <NumericInput
+                            onChange={value => console.log(value)}
+                            minValue={0}
+                            rounded
+                            iconSize={5}
+                            totalWidth={80}
+                            totalHeight={38}
+                            type='up-down'
+                          />
+                        </View>
                       </View>
                     )
                   })
@@ -263,8 +276,8 @@ function OrderScreen() {
               (
                 <>
                   <View style={styles.boxTitle}>
-                    <Text>
-                      Bonus Kullanılsın mı ? Bonus : 150
+                    <Text style={{ fontFamily: 'Nunito-Bold' }}>
+                      150 Bonus Kullanılsın mı ?
                     </Text>
                     <Checkbox
                       status={sendOrderInfo.Bonus ? 'checked' : 'unchecked'}
@@ -475,9 +488,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   productPrice: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 'bold',
     color: '#1B854B',
+    marginRight: 20,
+    marginLeft: 20,
+    marginBottom: 2,
+    alignSelf: 'center'
   },
   address: {
     width: '48%',
