@@ -119,7 +119,7 @@ function LoginScreen() {
                       shadowOffset={{ width: 0, height: 6 }}
                     />
                     <View style={styles.altBox}>
-                      <View style={{ flex: 3 }}>
+                      <View>
                         <View style={styles.rememberMe}>
                           <Text style={styles.rememberMeText}>Beni Hatırla : </Text>
                           <Checkbox
@@ -129,7 +129,7 @@ function LoginScreen() {
                           />
                         </View>
                       </View>
-                      <View style={{ flex: 3 }}>
+                      <View>
                         <Pressable>
                           <Text style={[styles.rememberMeText, { color: '#1B854B', marginLeft: 40 }]}>Şifremi unuttum?</Text>
                         </Pressable>
@@ -162,17 +162,14 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   rememberMe: {
-    flex: 1,
+    display:'flex',
+    justifyContent: 'space-between',
+    alignItems:'center',
     flexDirection: 'row',
-    marginTop: 10,
-    marginLeft: 20,
-    height: 100,
   },
   rememberMeText: {
-    marginTop: 7,
     color: '#7F8487',
     fontFamily: 'Nunito-Bold'
-
   },
   logoBottom: {
     alignSelf: 'center',
@@ -181,7 +178,10 @@ const styles = StyleSheet.create({
     marginBottom: 60
   },
   altBox: {
-    flex: 1,
-    flexDirection: 'row'
+    display:'flex',
+    justifyContent: 'space-between',
+    alignItems:'center',
+    flexDirection: 'row',
+    marginTop:15
   }
 })
