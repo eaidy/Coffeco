@@ -204,6 +204,7 @@ const styles = StyleSheet.create({
     color: '#5FD068',
     fontSize: 12,
     marginLeft: 8,
-    marginTop: 5
+    marginTop: 5,
+    fontFamily: 'Nunito-SemiBold'
   }
 })

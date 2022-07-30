@@ -105,25 +105,25 @@ function OrderScreen({ navigation }) {
           })
           setProductsQuantity(buffer)
         })
-        .then(() => {
-          fetchData('Branches', {
-            method: 'POST',
-            authToken: userState.data
-          })
-            .then((data) => {
-              setBasketInfo((prev) => {
-                return {
-                  ...prev,
-                  branches: data
-                }
-              })
-              console.log('Şubeler alındı')
-            })
-            .catch((err) => {
-              console.log('Şubeler alınamadı')
-            })
-        })
         .catch(err => console.log(err))
+
+      fetchData('Branches', {
+        method: 'POST',
+        authToken: userState.data
+      })
+        .then((data) => {
+          setBasketInfo((prev) => {
+            return {
+              ...prev,
+              branches: data
+            }
+          })
+          console.log('Şubeler alındı')
+        })
+        .catch((err) => {
+          console.log('Şubeler alınamadı')
+        })
+
     }, 400)
 
   }, [basketState])
@@ -256,10 +256,10 @@ function OrderScreen({ navigation }) {
                                 })
                               }
                             </View>
+                            <Text style={styles.productPrice}>{(product.price * product.qty).toFixed(1)}₺</Text>
                           </View>
                         </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                          <Text style={styles.productPrice}>{(product.price * product.qty).toFixed(1)}₺</Text>
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
                           <NumericInput
                             onChange={value => console.log(value)}
                             minValue={0}
@@ -497,25 +497,25 @@ const styles = StyleSheet.create({
   },
   productLeft: {
     display: 'flex',
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   productTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 12,
+    fontFamily: 'Nunito-Bold',
     color: '#000',
-    marginBottom: 2,
   },
   productTitleSmall: {
+    fontFamily: 'Nunito-Regular',
     fontSize: 12,
   },
   productPrice: {
-    fontSize: 17,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontFamily: 'Nunito-SemiBold',
     color: '#1B854B',
-    marginRight: 20,
-    marginLeft: 20,
+    marginRight: 10,
     marginBottom: 2,
     alignSelf: 'center'
   },

@@ -131,7 +131,7 @@ function LoginScreen() {
                       </View>
                       <View>
                         <Pressable>
-                          <Text style={[styles.rememberMeText, { color: '#1B854B', marginLeft: 40 }]}>Şifremi unuttum?</Text>
+                          <Text style={[styles.rememberMeText, { color: '#1B854B', marginLeft: 15 }]}>Şifremi unuttum?</Text>
                         </Pressable>
                       </View>
                     </View>
@@ -159,17 +159,18 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 14,
     alignSelf: 'center',
+    fontFamily: 'Nunito-SemiBold',
     marginTop: 20
   },
   rememberMe: {
-    display:'flex',
+    display: 'flex',
     justifyContent: 'space-between',
-    alignItems:'center',
+    alignItems: 'center',
     flexDirection: 'row',
   },
   rememberMeText: {
     color: '#7F8487',
-    fontFamily: 'Nunito-Bold'
+    fontFamily: 'Nunito-Regular'
   },
   logoBottom: {
     alignSelf: 'center',
@@ -178,10 +179,10 @@ const styles = StyleSheet.create({
     marginBottom: 60
   },
   altBox: {
-    display:'flex',
+    display: 'flex',
     justifyContent: 'space-between',
-    alignItems:'center',
+    alignItems: 'center',
     flexDirection: 'row',
-    marginTop:15
+    marginTop: 15
   }
 })

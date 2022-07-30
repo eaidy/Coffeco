@@ -6,7 +6,7 @@ import { useAtom } from 'jotai'
 import moment from 'moment';
 
 // Component Imports
-import { Box, Text } from '@/atoms'
+import { Button, Text } from '@/atoms'
 import {
   Image,
   Pressable,
@@ -72,6 +72,10 @@ function ProfileScreen() {
         }
       ]
     )
+  }
+
+  const handleUpdate = () => {
+    console.log('Handle Update')
   }
 
   return (
@@ -277,9 +281,19 @@ function ProfileScreen() {
               </View>
             </View>
           </View>
-          <Pressable style={styles.primaryBtn}>
-            <Text style={styles.primaryBtnText}>GÜNCELLE</Text>
-          </Pressable>
+          <Button
+              label="GÜNCELLE"
+              onPress={handleUpdate}
+              backgroundColor="buttonBackground"
+              marginTop="sm"
+              padding="md"
+              borderRadius="sm"
+              shadowColor="black"
+              shadowOpacity={0.4}
+              shadowRadius={8.3}
+              elevation={20}
+              shadowOffset={{ width: 0, height: 6 }}
+          />
         </View>
       </ScrollView>
     </>

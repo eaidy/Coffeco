@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Text } from '@/atoms'
+import { Text } from '@/atoms'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { View, TouchableOpacity, StyleSheet } from 'react-native'
 
@@ -76,19 +76,21 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             {
               options.title === 'QR' &&
               (
-                <SvgXml
-                  xml={Icons.iconQR}
-                  width="30"
-                  height="30"
-                  fill={isFocused ? 'green' : 'gray'}
-                />
+                <View>
+                  <SvgXml
+                      xml={Icons.iconQR}
+                      width="45"
+                      height="45"
+                      fill={isFocused ? 'green' : 'gray'}
+                  />
+                </View>
               )
             }
             {
               options.title === 'Ürünler' &&
               (
                 <SvgXml
-                  xml={Icons.iconMap}
+                  xml={Icons.iconCoffee}
                   width="24"
                   height="24"
                   fill={isFocused ? 'green' : 'gray'}
@@ -150,16 +152,18 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito-ExtraBold',
   },
   navbar: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFFFC',
     position: 'absolute',
     bottom: 0,
     left: 0,
     width: '100%',
     display: 'flex',
     justifyContent: 'space-between',
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
     alignItems: 'center',
     flexDirection: 'row',
-    height: 70,
+    height: 80,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -197,7 +201,7 @@ const styles = StyleSheet.create({
     color: '#9795A4',
     textAlign: 'center',
     fontSize: 11,
-    fontFamily: 'Nunito-ExtraBold',
+    fontFamily: 'Nunito-SemiBold',
     marginTop:4
   },
   navbarButtonTextActive: {

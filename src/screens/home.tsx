@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Header from '@/components/header'
-import MainNavigation from '@/navs/main'
 import { ScrollView, View } from 'react-native'
 import { Image, StyleSheet } from 'react-native'
 import { Pressable, ImageBackground, Text } from '@/atoms'
-import { NavigationContainer } from '@react-navigation/native'
+//import { NavigationContainer } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
 import { fetchData } from '@/services/methods'
 import { userStateAtom } from '@/states/auth'
@@ -47,6 +46,12 @@ function HomeScreen() {
     <>
       <Header />
       <ScrollView>
+        <ImageBackground
+            source={require('@/assets/images/text-bg.png')}
+            resizeMode="cover"
+            minHeight="100%"
+            flex={1}
+        >
         <View style={styles.wrapper}>
           <Pressable style={styles.card}>
             <ImageBackground
@@ -129,6 +134,7 @@ function HomeScreen() {
             </ScrollView>
           </View>
         </View>
+        </ImageBackground>
       </ScrollView>
     </>
   )
@@ -176,7 +182,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginLeft: 10,
     fontSize: 15,
-    fontFamily: 'Nunito-Bold',
+   // fontFamily: 'Nunito-Bold',
+    fontFamily: 'Nunito-Regular'
   },
   card: {
     width: '100%',
@@ -199,7 +206,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     fontSize: 18,
-    fontFamily: 'Nunito-SemiBold',
+    fontFamily: 'Nunito-Regular',
   },
   cardTitle: {
     position: 'absolute',
@@ -207,7 +214,7 @@ const styles = StyleSheet.create({
     left: 0,
     fontSize: 30,
     color: '#fff',
-    fontFamily: 'Nunito-Bold',
+    fontFamily: 'Nunito-Regular',
   },
   cardPrice: {
     position: 'absolute',
@@ -216,7 +223,8 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: '200',
     color: '#fff',
-    fontFamily: 'Dosis-Regular',
+    //fontFamily: 'Dosis-Regular',
+    fontFamily: 'Nunito-SemiBold'
   },
   slider: {
     //width: '100%',
