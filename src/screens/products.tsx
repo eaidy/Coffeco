@@ -211,12 +211,12 @@ const styles = StyleSheet.create({
   productTitle: {
     color: '#000',
     fontFamily: 'Nunito-SemiBold',
-    fontSize: 16,
+    fontSize: 12,
   },
   productText: {
     color: '#969696',
     fontFamily: 'Nunito-Regular',
-    fontSize: 10,
+    fontSize: 9,
     marginTop: 3,
   },
   productPrice: {

@@ -14,36 +14,40 @@ import {
   Image,
   Pressable,
 } from 'react-native'
-import {SvgXml} from 'react-native-svg';
-import { Icons } from '../constants';
+import { SvgXml } from 'react-native-svg'
+import { Icons } from '../constants'
 import Header from '@/components/header'
-import Toast from 'react-native-simple-toast';
+import Toast from 'react-native-simple-toast'
 
 //State Imports
 import { basketAtom, userStateAtom } from '@/states/auth'
 
 // Model Imports
-import { ResponseModel, Variants, Variant, ProductBasketModel, BasketModel } from '@/models/models'
+import {
+  ResponseModel,
+  Variants,
+  Variant,
+  ProductBasketModel,
+  BasketModel,
+} from '@/models/models'
 import NumericInput from 'react-native-numeric-input'
 
 type VariantsExpand = Array<Boolean>
 
 type ChildVariant = {
-  description: string;
-  price: number;
-  bonus: number;
-  salePrice: number;
-  priceID: number;
-  parentID: number;
-  isActive: Boolean;
+  description: string
+  price: number
+  bonus: number
+  salePrice: number
+  priceID: number
+  parentID: number
+  isActive: Boolean
 }
 
 type ChildVariants = Array<ChildVariant>
 
-
 function ProductScreen({ route }: any) {
-
-  const [userState,] = useAtom(userStateAtom)
+  const [userState] = useAtom(userStateAtom)
   const [basketState, setBasketState] = useAtom(basketAtom)
 
   const [variantParents, setVariantParents] = useState<Variants>([])
@@ -67,11 +71,13 @@ function ProductScreen({ route }: any) {
     setVariantParents(tempParents)
     setVariantsExpand(tempParents.map(() => false))
     // Child Variants Filter
-    tempChilds = buffer.filter((variant: ChildVariant) => variant.parentID === 1) // 1 means the variant is a child
+    tempChilds = buffer.filter(
+      (variant: ChildVariant) => variant.parentID === 1
+    ) // 1 means the variant is a child
     tempChilds = tempChilds.map((variant: ChildVariant) => {
       return {
         ...variant,
-        isActive: false
+        isActive: false,
       }
     })
     setVariantChilds(tempChilds)
@@ -95,10 +101,15 @@ function ProductScreen({ route }: any) {
     console.log(variantChildsBuffer)
 
     for (variant of variantChildsBuffer) {
-      if (variant.parentID === variantChild.parentID && variant.priceID !== variantChild.priceID) {
+      if (
+        variant.parentID === variantChild.parentID &&
+        variant.priceID !== variantChild.priceID
+      ) {
         variant.isActive = false
-      }
-      else if (variant.parentID === variantChild.parentID && variant.priceID === variantChild.priceID) {
+      } else if (
+        variant.parentID === variantChild.parentID &&
+        variant.priceID === variantChild.priceID
+      ) {
         variant.isActive = true
       }
     }
@@ -107,62 +118,64 @@ function ProductScreen({ route }: any) {
 
   const addBasketHandler = async () => {
     let productApiObject: ProductBasketModel = {
-      ProductID: 0,
-      Qty: 0,
-      Variants: ""
-    },
-      variantsApiArray: Array<{ id: number, value: number }>
+        ProductID: 0,
+        Qty: 0,
+        Variants: '',
+      },
+      variantsApiArray: Array<{ id: number; value: number }>
 
     productApiObject.ProductID = productResponse.product.productID
     productApiObject.Qty = Qty
 
-    variantsApiArray = variantChilds.filter((variant) => variant.isActive).map((variant) => { return { id: variant.priceID, value: 1 } })
+    variantsApiArray = variantChilds
+      .filter(variant => variant.isActive)
+      .map(variant => {
+        return { id: variant.priceID, value: 1 }
+      })
 
     productApiObject.Variants = JSON.stringify(variantsApiArray)
     console.log(productApiObject)
 
     await fetch('https://api.entegre.pro/ui/UIntegration/AddBasket', {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${userState.data}`
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userState.data}`,
       },
-      body: JSON.stringify(productApiObject)
+      body: JSON.stringify(productApiObject),
     })
-      .then((response) => {
+      .then(response => {
         return response.json()
       })
-      .then((data) => {
+      .then(data => {
         console.log(data)
-        Toast.showWithGravity('Ürün sepete eklendi', Toast.SHORT, Toast.TOP);
+        Toast.showWithGravity('Ürün sepete eklendi', Toast.SHORT, Toast.TOP)
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err)
-        Toast.showWithGravity(`Hata, ${err}`, Toast.SHORT, Toast.TOP);
+        Toast.showWithGravity(`Hata, ${err}`, Toast.SHORT, Toast.TOP)
       })
-
 
     await fetch('https://api.entegre.pro/ui/UIntegration/Basket', {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${userState.data}`
-      }
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userState.data}`,
+      },
     })
-      .then((res) => {
+      .then(res => {
         return res.json()
       })
       .then((data: any) => {
         setBasketState(data.data.order.total)
         console.log(basketState + ' Ata')
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err)
       })
       .finally(() => {
         navigation.goBack()
       })
-
   }
 
   return (
@@ -177,99 +190,109 @@ function ProductScreen({ route }: any) {
             onPress={() => navigation.goBack()}
             style={styles.backButton}
           >
-            <Text style={styles.backButtonText}>
-              Geri Dön
-            </Text>
+            <Text style={styles.backButtonText}>Geri Dön</Text>
           </Pressable>
-          <Image
-            style={styles.detailImage}
-            source={require('@/assets/images/product.png')}
-          />
-          <Text style={styles.detailTitle}>Cappucino</Text>
-          <Text style={styles.detailText}>Laktozsuz süt seçeneği ile</Text>
+          <View style={styles.detailPage}>
+            <Image
+              style={styles.detailImage}
+              source={require('@/assets/images/product.png')}
+            />
+            <Text style={styles.detailTitle}>Cappucino</Text>
+            <Text style={styles.detailText}>Laktozsuz süt seçeneği ile</Text>
+          </View>
         </ImageBackground>
-        {
-          variantParents !== [] &&
-          (
-            <View style={styles.optionList}>
-              <ScrollView style={styles.optionListScroll}>
+        {variantParents !== [] && (
+          <View style={styles.optionList}>
+            <ScrollView style={styles.optionListScroll}>
+              {variantParents.map((variantParent: Variant, parentIndex) => (
+                <Pressable
+                  style={styles.option}
+                  key={parentIndex}
+                  onPress={() =>
+                    setVariantsExpand(
+                      variantsExpand.map((item, index) =>
+                        index === parentIndex ? !item : item
+                      )
+                    )
+                  }
+                >
+                  <Text style={styles.optionTitle}>
+                    {variantParent.description}
+                  </Text>
+                  <View style={styles.optionSelect}>
+                    <Text style={styles.optionSelectText}>Seçiniz</Text>
+                    <SvgXml
+                      xml={Icons.iconArrow}
+                      width="24"
+                      height="24"
+                      style={styles.navIcon}
+                    />
+                  </View>
+                  {
+                    <View style={styles.sizeSelect}>
+                      {variantsExpand[parentIndex] &&
+                        variantChilds
+                          .filter(
+                            isParentsChild =>
+                              isParentsChild.parentID === variantParent.priceID
+                          )
+                          .map((variantChild, childIndex) => (
+                            <Pressable
+                              style={
+                                variantChild.isActive
+                                  ? [styles.optionVariantActive]
+                                  : [styles.optionVariantInactive]
+                              }
+                              key={childIndex}
+                              onPress={() =>
+                                variantChildPressHandler(variantChild)
+                              }
+                            >
+                              <Text
+                                style={
+                                  variantChild.isActive
+                                    ? [styles.variantTextActive]
+                                    : [styles.variantTextInactive]
+                                }
+                              >
+                                {variantChild.description}
+                              </Text>
+                            </Pressable>
+                          ))}
+                    </View>
+                  }
+                </Pressable>
+              ))}
+            </ScrollView>
 
-                {
-                  variantParents.map((variantParent: Variant, parentIndex) =>
-                  (
-                    <Pressable
-                      style={styles.option}
-                      key={parentIndex}
-                      onPress={() => setVariantsExpand(variantsExpand.map((item, index) => index === parentIndex ? !item : item))}
-                    >
-                      <Text style={styles.optionTitle}>{variantParent.description}</Text>
-                      <View style={styles.optionSelect}>
-                        <Text style={styles.optionSelectText}>Seçiniz</Text>
-                        <SvgXml
-                              xml={Icons.iconArrow}
-                              width="24"
-                              height="24"
-                              style={styles.navIcon}
-                            />
-                      </View>
-                      {
-                        (<View style={styles.sizeSelect}>
-                          {
-                            variantsExpand[parentIndex] &&
-                            variantChilds.filter((isParentsChild) => isParentsChild.parentID === variantParent.priceID)
-                              .map((variantChild, childIndex) =>
-                              (
-                                <Pressable
-                                  style={variantChild.isActive ? [styles.optionVariantActive] : [styles.optionVariantInactive]}
-                                  key={childIndex}
-                                  onPress={() => variantChildPressHandler(variantChild)}
-                                >
-                                  <Text
-                                    style={variantChild.isActive ? [styles.variantTextActive] : [styles.variantTextInactive]}
-                                  >
-                                    {variantChild.description}
-                                  </Text>
-                                </Pressable>
-                              ))
-                          }
-                        </View>
-                        )
-                      }
-                    </Pressable>
-                  ))
-                }
-              </ScrollView>
-
-              <View style={styles.optionListFooter}>
-                <NumericInput
-                  onChange={value => setQty(value)}
-                  minValue={0}
-                  rounded
-                  iconSize={5}
-                  totalWidth={100}
-                  totalHeight={50}
-                  type='up-down'
-                  value={Qty}
-                />
-                {/* <TextInput
+            <View style={styles.optionListFooter}>
+              <NumericInput
+                onChange={value => setQty(value)}
+                minValue={0}
+                rounded
+                iconSize={5}
+                totalWidth={100}
+                totalHeight={50}
+                type="up-down"
+                value={Qty}
+              />
+              {/* <TextInput
                   style={styles.optionNumber}
                   placeholder="Adet"
                   keyboardType="numeric"
                   onChangeText={setQty}
                   value={Qty}
                 /> */}
-                <Pressable
-                  style={styles.optionCart}
-                  onPress={() => addBasketHandler()}
-                >
-                  <Text style={styles.optionCartText}>SEPETE EKLE</Text>
-                  <Text style={styles.optionCartPrice}>{totalPrice}₺</Text>
-                </Pressable>
-              </View>
-
+              <Pressable
+                style={styles.optionCart}
+                onPress={() => addBasketHandler()}
+              >
+                <Text style={styles.optionCartText}>SEPETE EKLE</Text>
+                <Text style={styles.optionCartPrice}>{totalPrice}₺</Text>
+              </Pressable>
             </View>
-          )
-        }
+          </View>
+        )}
       </View>
     </>
   )
@@ -279,23 +302,26 @@ const styles = StyleSheet.create({
   pageWrapper: {
     height: '100%',
   },
-  sizeSelect:{
+  sizeSelect: {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
   },
   detailBg: {
+    height: '100%',
+  },
+  detailPage: {
+    width: '100%',
+    height: '45%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 60,
-    paddingTop: 15,
   },
   detailImage: {
-    height: '50%',
+    height: '70%',
   },
-  detailImageSingle:{
-    height:'75%'
+  detailImageSingle: {
+    height: '75%',
   },
   detailTitle: {
     fontSize: 20,
@@ -318,11 +344,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
-    height: '53%',
     width: '100%',
     elevation: 15,
     paddingTop: 25,
-    paddingBottom: 80,
     color: '#000',
   },
   optionListSingle: {
@@ -342,6 +366,7 @@ const styles = StyleSheet.create({
   optionListScroll: {
     flex: 1,
     elevation: 36,
+    maxHeight: '53%',
   },
   option: {
     width: '90%',
@@ -432,14 +457,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito-Bold',
     fontSize: 18,
   },
-  optionSelectText: {
-
-  },
+  optionSelectText: {},
   optionVariantActive: {
     // marginRight: 15,
     backgroundColor: '#1b854b',
     marginTop: 10,
-    marginRight:10,
+    marginRight: 10,
     borderRadius: 14,
     paddingLeft: 18,
     paddingRight: 18,
@@ -450,12 +473,12 @@ const styles = StyleSheet.create({
     shadowOffset: {
       width: 0,
       height: 20,
-    }
+    },
   },
   optionVariantInactive: {
     backgroundColor: '#f0f5f7',
     marginTop: 10,
-    marginRight:10,
+    marginRight: 10,
     borderRadius: 14,
     paddingLeft: 18,
     paddingRight: 18,
@@ -466,27 +489,27 @@ const styles = StyleSheet.create({
     shadowOffset: {
       width: 0,
       height: 10,
-    }
+    },
   },
   variantTextActive: {
     color: '#fff',
     fontFamily: 'Nunito-Bold',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   variantTextInactive: {
     fontFamily: 'Nunito-Bold',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   backButton: {
     position: 'absolute',
     right: 15,
-    top: 15
+    top: 15,
   },
   backButtonText: {
     color: '#fff',
     fontFamily: 'Nunito-Bold',
     fontSize: 16,
-  }
+  },
 })
 
 export default ProductScreen
