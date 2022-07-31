@@ -12,11 +12,12 @@ import {
 import { Text, Pressable, ImageBackground } from '@/atoms'
 
 // State Imports
-import { userStateAtom } from '@/states/auth'
+import { userInfoStateAtom, userStateAtom } from '@/states/auth'
 
 export default function Header() {
 
   const [userState,] = useAtom(userStateAtom)
+  const [userInfoState,] = useAtom(userInfoStateAtom)
 
   const navigation = useNavigation()
 
@@ -47,7 +48,7 @@ export default function Header() {
                 uri: 'https://panel.coffeco.com.tr/polar/icerik/img/profil-small.jpg'
               }}
             />
-            <Text style={styles.profileText}>Ercan G.</Text>
+            <Text style={styles.profileText}>{userInfoState.adi + ' ' + userInfoState.soyadi}</Text>
           </Pressable>)
         }
       </ImageBackground>
@@ -85,16 +86,18 @@ const styles = StyleSheet.create({
   profileImg: {
     width: 64,
     height: 64,
-    borderRadius: 64,
-    borderWidth: 3,
+    borderRadius: 32,
+    borderWidth: 2,
     borderColor: '#1B854B',
   },
   profileText: {
     position: 'absolute',
     bottom: -5,
-    left: -60,
-    fontWeight: 'bold',
-    textAlign: 'right',
+    left: -80,
+    fontFamily: 'Nunito-SemiBold',
+    textAlign: 'left',
+    fontSize: 14,
+    width: 82,
     color: '#000',
   },
 })

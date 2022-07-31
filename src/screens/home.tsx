@@ -6,7 +6,7 @@ import { Pressable, ImageBackground, Text } from '@/atoms'
 //import { NavigationContainer } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
 import { fetchData } from '@/services/methods'
-import { userStateAtom } from '@/states/auth'
+import { userInfoStateAtom, userStateAtom } from '@/states/auth'
 import { useAtom } from 'jotai'
 
 type HomeContainer = {
@@ -24,10 +24,11 @@ function HomeScreen() {
   })
 
   const [userState,] = useAtom(userStateAtom)
+  const [userInfoState, setUserInfoState] = useAtom(userInfoStateAtom)
 
   useEffect(() => {
-    console.log(homeContainer)
-  }, [homeContainer])
+    console.log(userInfoState)
+  }, [userInfoState])
 
   useEffect(() => {
     fetchData('Home', {
@@ -36,6 +37,11 @@ function HomeScreen() {
     })
       .then((res) => {
         setHomeContainer(res)
+        setUserInfoState(() => {
+          const { aciklama, adi, soyadi, gsm, email, password, cinsiyet, bonus } = res.user
+          let buffer = { aciklama, adi, soyadi, gsm, email, password, cinsiyet, bonus }
+          return buffer
+        })
       })
       .catch((err) => {
         console.log(err)
@@ -62,7 +68,7 @@ function HomeScreen() {
                   source={require('@/assets/images/qr-code-scan.png')}
                   style={styles.cardQr}
                 />
-                <Text style={styles.cardText}>Ercan Güven</Text>
+                <Text style={styles.cardText}>{userInfoState.adi + ' ' + userInfoState.soyadi}</Text>
                 <Text style={styles.cardTitle}>Bonus</Text>
                 <Text style={styles.cardPrice}>{homeContainer.bonus}</Text>
               </ImageBackground>

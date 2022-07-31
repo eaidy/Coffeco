@@ -21,7 +21,7 @@ import { Icons } from '@/constants'
 import { fetchData } from '@/services/methods'
 
 // Service Imports
-import { userStateAtom } from '@/states/auth'
+import { userInfoStateAtom, userStateAtom } from '@/states/auth'
 
 type PastOrders = {
   orders: Array<Object>;
@@ -34,6 +34,7 @@ function ProfileScreen() {
   const navigation = useNavigation()
 
   const [userState,] = useAtom(userStateAtom)
+  const [userInfoState,] = useAtom(userInfoStateAtom)
 
   const [pastOrders, setPastOrders] = useState<PastOrders>({
     orders: [],
@@ -260,24 +261,25 @@ function ProfileScreen() {
                 <TextInput
                   style={styles.input}
                   placeholder="Ad Soyad"
-                  value="Ercan Güven"
+                  value={userInfoState.adi + ' ' + userInfoState.soyadi}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Telefon"
-                  value="531 869 08 48"
+                  value={userInfoState.gsm}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="E-Posta"
-                  value="ercangvn@gmail.com"
+                  value={userInfoState.email}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Şifre"
-                  value="******"
+                  secureTextEntry={true}
+                  value={userInfoState.password}
                 />
-                <TextInput style={styles.input} placeholder="Şifre Tekrar" />
+                <TextInput style={styles.input} placeholder="Şifre Tekrar" secureTextEntry={true} />
               </View>
             </View>
           </View>

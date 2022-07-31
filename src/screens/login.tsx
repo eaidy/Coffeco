@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { color, useTheme } from '@shopify/restyle'
 import { useAtom } from 'jotai'
 import { useNavigation } from '@react-navigation/native'
-import { StackActions } from '@react-navigation/native';
+import { StackActions } from '@react-navigation/native'
 
 // Component Imports
 import { StyleSheet, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ScrollView, View, Image, Pressable, } from 'react-native'
@@ -118,6 +118,12 @@ function LoginScreen() {
                       elevation={20}
                       shadowOffset={{ width: 0, height: 6 }}
                     />
+                    {
+                      !userState.status && userState.data !== '' &&
+                      (
+                        <Text style={styles.errorValidation}>Telefon numarası ya da şifre hatalı</Text>
+                      )
+                    }
                     <View style={styles.altBox}>
                       <View>
                         <View style={styles.rememberMe}>
@@ -137,12 +143,6 @@ function LoginScreen() {
                         </Pressable>
                       </View>
                     </View>
-                    {
-                      !userState.status && userState.data !== '' &&
-                      (
-                        <Text style={styles.errorValidation}>Telefon numarası ya da şifre hatalı</Text>
-                      )
-                    }
                   </>
                 )}
               </Formik>

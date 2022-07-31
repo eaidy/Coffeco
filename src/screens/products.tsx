@@ -109,11 +109,12 @@ function ProductsScreen() {
               >
                 <Image
                   style={styles.productImg}
-                  source={{ uri: product.photo }}
+                  source={product.photo !== "https://panel.coffeco.com.tr/" ? { uri: product.photo } : require("@/assets/images/product.png")}
                 />
                 <View style={styles.productBottom}>
                   <Text style={styles.productTitle}>{product.productName}</Text>
                   <Text style={styles.productText}>{product.shortDescription}</Text>
+                  <Text style={styles.productBonus}>{product.bonus.toFixed(2)} bonus kazan</Text>
                   <Text style={styles.productPrice}>{product.price}₺</Text>
                   <Pressable
                     style={styles.productPlus}
@@ -209,22 +210,28 @@ const styles = StyleSheet.create({
   },
   productTitle: {
     color: '#000',
-    fontFamily: 'Nunito-ExtraBold',
-    fontSize: 17,
+    fontFamily: 'Nunito-SemiBold',
+    fontSize: 16,
   },
   productText: {
     color: '#969696',
     fontFamily: 'Nunito-Regular',
-    fontSize: 12,
-    marginTop: 4,
+    fontSize: 10,
+    marginTop: 3,
   },
   productPrice: {
     position: 'absolute',
     left: 10,
     bottom: 10,
-    fontSize: 17,
+    fontSize: 15,
     color: '#1b854b',
-    fontFamily: 'Nunito-Bold',
+    fontFamily: 'Nunito-Regular',
+  },
+  productBonus: {
+    fontFamily: 'Nunito-Regular',
+    fontSize: 12,
+    color: '#1b854b',
+    marginTop: 3
   },
   productPlus: {
     position: 'absolute',
