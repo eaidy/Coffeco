@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito-SemiBold',
     textAlign: 'left',
     fontSize: 14,
-    width: 82,
+    width: 160,
     color: '#000',
   },
 })
