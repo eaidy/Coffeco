@@ -89,7 +89,7 @@ function ProfileScreen() {
               onPress={() => navigation.goBack()}
             >
               <Text>
-                Profilden Çıkış
+                Geri Dön
               </Text>
             </Pressable>
           </View>
@@ -282,17 +282,17 @@ function ProfileScreen() {
             </View>
           </View>
           <Button
-              label="GÜNCELLE"
-              onPress={handleUpdate}
-              backgroundColor="buttonBackground"
-              marginTop="sm"
-              padding="md"
-              borderRadius="sm"
-              shadowColor="black"
-              shadowOpacity={0.4}
-              shadowRadius={8.3}
-              elevation={20}
-              shadowOffset={{ width: 0, height: 6 }}
+            label="GÜNCELLE"
+            onPress={handleUpdate}
+            backgroundColor="buttonBackground"
+            marginTop="sm"
+            padding="md"
+            borderRadius="sm"
+            shadowColor="black"
+            shadowOpacity={0.4}
+            shadowRadius={8.3}
+            elevation={20}
+            shadowOffset={{ width: 0, height: 6 }}
           />
         </View>
       </ScrollView>

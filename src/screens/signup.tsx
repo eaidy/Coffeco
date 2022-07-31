@@ -26,7 +26,7 @@ import { NavigationContainer } from '@react-navigation/native'
 const validationSchema = Yup.object({
   Adi: Yup.string().trim().required('İsminizi giriniz'),
   Soyadi: Yup.string().trim().required('Soyadınızı giriniz'),
-  Cep: Yup.string().trim().required('Telefon numarası gereklidir'),
+  Cep: Yup.string().trim().max(10, 'Numaranızı başında 0 olmadan giriniz.').min(10, 'Numaranızı başında 0 olmadan giriniz.').required('Telefon numarası gereklidir'),
   Email: Yup.string().email('Geçersiz E-Posta adresi').required('E-Postanızı giriniz'),
   Password: Yup.string().trim().min(8, 'Şifre çok kısa').required('Şifre girmediniz'),
   RePassword: Yup.string().equals([Yup.ref('Password'), null], 'Şifreler uyuşmuyor')
@@ -79,7 +79,7 @@ function SignupScreen({ navigation }) {
             flex={1}
           >
             <Box flex={1}>
-              <Text color="loginHeader" fontSize={36} marginBottom="xl">
+              <Text color="loginHeader" fontSize={36} marginBottom="xl" textAlign="center">
                 Üyelik Oluştur
               </Text>
             </Box>
@@ -161,11 +161,6 @@ function SignupScreen({ navigation }) {
                       />
                       <Text style={[styles.errorValidation]}>{touched.RePassword && errors.RePassword}</Text>
                     </Box>
-                    <Box marginBottom="xl">
-                      <Text textAlign="center" color="actionText" fontSize={14}>
-                        Davetiye Kodu Gir
-                      </Text>
-                    </Box>
                     <Button
                       label="KAYIT OL"
                       onPress={handleSubmit}
@@ -186,7 +181,11 @@ function SignupScreen({ navigation }) {
             <Box>
               <Text textAlign="center" color="mutedActionText" fontSize={14}>
                 Zaten hesabın var mı?
-                <Text color="actionText">Giriş Yap</Text>
+                <Pressable
+                  onPress={() => navigation.navigate('Login')}
+                >
+                  <Text color="actionText">Giriş Yap</Text>
+                </Pressable>
               </Text>
             </Box>
           </ImageBackground>

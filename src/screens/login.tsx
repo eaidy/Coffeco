@@ -77,9 +77,9 @@ function LoginScreen() {
             flex={1}
           >
             <Box flex={1}>
-              <Text color="loginHeader" fontSize={36} marginBottom="xl">
+              {/* <Text color="loginHeader" fontSize={36} marginBottom="xl">
                 Giriş Yap
-              </Text>
+              </Text> */}
               <Formik
                 initialValues={{ phoneNumber: '', password: '' }}
                 onSubmit={(values: FormValues) => submitLogin(values)}
@@ -130,7 +130,9 @@ function LoginScreen() {
                         </View>
                       </View>
                       <View>
-                        <Pressable>
+                        <Pressable
+                          onPress={() => navigation.navigate('ForgetPassword')}
+                        >
                           <Text style={[styles.rememberMeText, { color: '#1B854B', marginLeft: 15 }]}>Şifremi unuttum?</Text>
                         </Pressable>
                       </View>
@@ -144,6 +146,16 @@ function LoginScreen() {
                   </>
                 )}
               </Formik>
+
+              <View style={styles.link}>
+                <Text style={styles.linkText}>Hesabın yok mu?</Text>
+                <Pressable
+                  onPress={() => navigation.navigate('Signup')}
+                >
+                  <Text style={styles.linkBold}>Kayıt Ol</Text>
+                </Pressable>
+              </View>
+
             </Box>
           </ImageBackground>
         </TouchableWithoutFeedback>
@@ -184,5 +196,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginTop: 15
+  },
+  link: {
+    marginTop: '4%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
+  linkText: {
+    color: '#7F8487',
+    fontFamily: 'Nunito-Regular',
+    textAlign: 'center'
+  },
+  linkBold: {
+    marginLeft: 6,
+    fontFamily: 'Nunito-SemiBold',
+    color: '#1B854B',
+    textAlign: 'center'
   }
 })

@@ -165,12 +165,12 @@ const styles = StyleSheet.create({
   navItemText: {
     color: '#6d6d6d',
     fontFamily: 'Nunito-ExtraBold',
-    fontSize:12
+    fontSize: 12
   },
   navItemTextActive: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize:12
+    fontSize: 12
   },
   productList: {
     display: 'flex',
@@ -236,7 +236,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#1b854b',
-    borderRadius: 50,
+    borderRadius: 15,
+    paddingBottom: 2
   },
   productPlusText: {
     color: '#fff',

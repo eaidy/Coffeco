@@ -10,6 +10,8 @@ import MainNavigation from '@/navs/main'
 import ProfileScreen from '@/screens/Profile'
 import ProductScreen from '@/screens/product'
 import FeedbackScreen from '@/screens/feedback'
+import { ForgetPassword } from './screens/forget-password'
+import { Branches } from './screens/branches'
 
 
 const Stack = createNativeStackNavigator()
@@ -49,6 +51,20 @@ export default function Navigations() {
       <Stack.Screen
         name="Feedback"
         component={FeedbackScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ForgetPassword"
+        component={ForgetPassword}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Branches"
+        component={Branches}
         options={{
           headerShown: false,
         }}

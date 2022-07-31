@@ -47,79 +47,85 @@ function HomeScreen() {
       <Header />
       <ScrollView>
         <ImageBackground
-            source={require('@/assets/images/text-bg.png')}
-            resizeMode="cover"
-            minHeight="100%"
-            flex={1}
+          source={require('@/assets/images/text-bg.png')}
+          resizeMode="cover"
+          minHeight="100%"
+          flex={1}
         >
-        <View style={styles.wrapper}>
-          <Pressable style={styles.card}>
-            <ImageBackground
-              source={require('@/assets/images/card-bg.png')}
-              style={styles.cardBg}
-            >
+          <View style={styles.wrapper}>
+            <Pressable style={styles.card}>
               <ImageBackground
-                source={require('@/assets/images/qr-code-scan.png')}
-                style={styles.cardQr}
+                source={require('@/assets/images/card-bg.png')}
+                style={styles.cardBg}
+              >
+                <ImageBackground
+                  source={require('@/assets/images/qr-code-scan.png')}
+                  style={styles.cardQr}
+                />
+                <Text style={styles.cardText}>Ercan Güven</Text>
+                <Text style={styles.cardTitle}>Bonus</Text>
+                <Text style={styles.cardPrice}>{homeContainer.bonus}</Text>
+              </ImageBackground>
+            </Pressable>
+            <Pressable
+              style={styles.button}
+              onPress={() => navigation.navigate('Products')}
+            >
+              <Image
+                style={styles.buttonImg}
+                source={require('@/assets/images/icon-1.png')}
               />
-              <Text style={styles.cardText}>Ercan Güven</Text>
-              <Text style={styles.cardTitle}>Bonus Harca</Text>
-              <Text style={styles.cardPrice}>{homeContainer.bonus}</Text>
-            </ImageBackground>
-          </Pressable>
-          <Pressable
-            style={styles.button}
-            onPress={() => navigation.navigate('Products')}
-          >
-            <Image
-              style={styles.buttonImg}
-              source={require('@/assets/images/icon-1.png')}
-            />
-            <Text style={styles.buttonText}>ÖN{'\n'}SİPARİŞ</Text>
-          </Pressable>
-          <Pressable style={styles.button}
-            onPress={() => navigation.navigate('Feedback')}
-          >
-            <Image
-              style={styles.buttonImg}
-              source={require('@/assets/images/icon-2.png')}
-            />
-            <Text style={styles.buttonText}>GERİ{'\n'}BİLDİRİM</Text>
-          </Pressable>
-          <Pressable style={styles.button}>
-            <Image
-              style={styles.buttonImg}
-              source={require('@/assets/images/icon-3.png')}
-            />
-            <Text style={styles.buttonText}>ŞUBELER</Text>
-          </Pressable>
-          <Pressable style={styles.button}>
-            <Image
-              style={styles.buttonImg}
-              source={require('@/assets/images/icon-4.png')}
-            />
-            <Text style={styles.buttonText}>BONUS{'\n'}HARCA</Text>
-          </Pressable>
-          <View style={styles.slider}>
-            <ScrollView horizontal={true}>
-              {
-                homeContainer.campaign &&
-                homeContainer.campaign.map((camp: any, index) => (
-                  <Pressable
-                    style={styles.sliderItem}
-                    key={index}
-                  >
-                    <Image
-                      style={styles.sliderImg}
-                      source={{
-                        uri: camp.image,
-                        width: 200, height: 160,
-                      }}
-                    />
-                  </Pressable>
-                ))
-              }
-              {/* <Pressable style={styles.sliderItem}>
+              <Text style={styles.buttonText}>ÖN{'\n'}SİPARİŞ</Text>
+            </Pressable>
+            <Pressable style={styles.button}
+              onPress={() => navigation.navigate('Feedback')}
+            >
+              <Image
+                style={styles.buttonImg}
+                source={require('@/assets/images/icon-2.png')}
+              />
+              <Text style={styles.buttonText}>GERİ{'\n'}BİLDİRİM</Text>
+            </Pressable>
+            <Pressable
+              style={styles.button}
+              onPress={() => navigation.navigate('Branches')}
+            >
+              <Image
+                style={styles.buttonImg}
+                source={require('@/assets/images/icon-3.png')}
+              />
+              <Text style={styles.buttonText}>ŞUBELER</Text>
+            </Pressable>
+            <Pressable
+              style={styles.button}
+              onPress={() => navigation.navigate('Products')}
+            >
+              <Image
+                style={styles.buttonImg}
+                source={require('@/assets/images/icon-4.png')}
+              />
+              <Text style={styles.buttonText}>BONUS{'\n'}HARCA</Text>
+            </Pressable>
+            <View style={styles.slider}>
+              <ScrollView horizontal={true}>
+                {
+                  homeContainer.campaign &&
+                  homeContainer.campaign.map((camp: any, index) => (
+                    <Pressable
+                      style={styles.sliderItem}
+                      key={index}
+                    >
+                      <Image
+                        style={styles.sliderImg}
+                        source={{
+                          uri: camp.image,
+                          width: 200, height: 160,
+                        }}
+                      />
+                    </Pressable>
+                  ))
+                }
+                {/* <Pressable style={styles.sliderItem}>
                 <Image
                   style={styles.sliderImg}
                   source={require('@/assets/images/kampanya-2.png')}
@@ -131,9 +137,9 @@ function HomeScreen() {
                   source={require('@/assets/images/kampanya-1.png')}
                 />
               </Pressable> */}
-            </ScrollView>
+              </ScrollView>
+            </View>
           </View>
-        </View>
         </ImageBackground>
       </ScrollView>
     </>
@@ -182,7 +188,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginLeft: 10,
     fontSize: 15,
-   // fontFamily: 'Nunito-Bold',
+    // fontFamily: 'Nunito-Bold',
     fontFamily: 'Nunito-Regular'
   },
   card: {

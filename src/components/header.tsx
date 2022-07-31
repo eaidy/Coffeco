@@ -16,6 +16,8 @@ import { userStateAtom } from '@/states/auth'
 
 export default function Header() {
 
+  const [userState,] = useAtom(userStateAtom)
+
   const navigation = useNavigation()
 
   return (
@@ -33,18 +35,21 @@ export default function Header() {
             source={require('@/assets/images/logo.png')}
           />
         </Pressable>
-        <Pressable
-          style={styles.profile}
-          onPress={() => navigation.navigate('Profile')}
-        >
-          <Image
-            style={styles.profileImg}
-            source={{
-              uri: 'https://panel.coffeco.com.tr/polar/icerik/img/profil-small.jpg'
-            }}
-          />
-          <Text style={styles.profileText}>Ercan G.</Text>
-        </Pressable>
+        {
+          userState.status &&
+          (<Pressable
+            style={styles.profile}
+            onPress={() => navigation.navigate('Profile')}
+          >
+            <Image
+              style={styles.profileImg}
+              source={{
+                uri: 'https://panel.coffeco.com.tr/polar/icerik/img/profil-small.jpg'
+              }}
+            />
+            <Text style={styles.profileText}>Ercan G.</Text>
+          </Pressable>)
+        }
       </ImageBackground>
     </View>
   )

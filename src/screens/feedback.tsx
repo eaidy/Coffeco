@@ -4,11 +4,13 @@ import { useNavigation, StackActions } from '@react-navigation/native'
 import { Pressable, Text, View } from 'react-native'
 import MainNavigation from '@/navs/main'
 import { backgroundColor } from '@shopify/restyle'
+import Header from '@/components/header'
 
 function FeedbackScreen() {
     const navigation = useNavigation()
     return (
         <>
+            <Header />
             <View
                 style={{
                     flex: 1,

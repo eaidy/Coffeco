@@ -6,6 +6,7 @@ import { Theme } from '@/themes'
 import LoginScreen from '@/screens/login'
 import SignupScreen from '@/screens/signup'
 import HomeScreen from '@/screens/home'
+import Header from '@/components/header'
 
 export type AuthNavigation = {
   Login: undefined
@@ -18,30 +19,33 @@ function AuthNavigation({ navigation }) {
   const { colors, spacing } = useTheme<Theme>()
 
   return (
-    <Tab.Navigator
-      initialRouteName="Login"
-      screenOptions={{
-        tabBarIndicatorStyle: {
-          backgroundColor: colors.topbarTabNavigationIndicator,
-        },
-        tabBarLabelStyle: {
-          color: colors.topBarLabel,
-          fontSize: spacing.lg,
-          textTransform: 'none',
-        },
-      }}
-    >
-      <Tab.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{ title: 'Giriş Yap' }}
-      />
-      <Tab.Screen
-        name="Signup"
-        component={SignupScreen}
-        options={{ title: 'Yeni Üyelik' }}
-      />
-    </Tab.Navigator>
+    <>
+      <Header />
+      <Tab.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          tabBarIndicatorStyle: {
+            backgroundColor: colors.topbarTabNavigationIndicator,
+          },
+          tabBarLabelStyle: {
+            color: colors.topBarLabel,
+            fontSize: spacing.lg,
+            textTransform: 'none',
+          },
+        }}
+      >
+        <Tab.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ title: 'Giriş Yap' }}
+        />
+        <Tab.Screen
+          name="Signup"
+          component={SignupScreen}
+          options={{ title: 'Yeni Üyelik' }}
+        />
+      </Tab.Navigator>
+    </>
   )
 }
 
