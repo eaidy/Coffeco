@@ -10,10 +10,12 @@ import DiscountTagsScreen from '@/screens/discount-tags'
 import ProductsScreen from '@/screens/products'
 import OrderScreen from '@/screens/order'
 import { backgroundColor } from '@shopify/restyle'
+import ProfileScreen from '@/screens/Profile'
+import { basketAtom } from '@/states/auth'
 
 export type MainNavigation = {
   Home: undefined
-  DiscountTags: undefined
+  Profile: undefined
   QrScreen: undefined
   Products: undefined
   Order: undefined
@@ -46,9 +48,9 @@ function MainNavigation() {
         options={{ title: 'Anasayfa', headerShown: false }}
       />
       <Tab.Screen
-        name="DiscountTags"
-        component={DiscountTagsScreen}
-        options={{ title: 'Kartlar', headerShown: false }}
+        name="Profile"
+        component={ProfileScreen}
+        options={{ title: 'Profil', headerShown: false }}
       />
       <Tab.Screen
         name="QrScreen"

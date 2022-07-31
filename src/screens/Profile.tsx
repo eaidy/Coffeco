@@ -79,6 +79,10 @@ function ProfileScreen() {
     console.log('Handle Update')
   }
 
+  const handleExit = () => {
+    console.log('Exit')
+  }
+
   return (
     <>
       <Header />
@@ -87,10 +91,15 @@ function ProfileScreen() {
           <View style={styles.profileTitle}>
             <Text style={styles.title}>Hesabım</Text>
             <Pressable
-              onPress={() => navigation.goBack()}
+              style={{
+                backgroundColor: '#1B854B',
+                padding: 8,
+                borderRadius: 14
+              }}
+              onPress={() => handleExit()}
             >
-              <Text>
-                Geri Dön
+              <Text style={{ color: '#fff' }}>
+                Çıkış Yap
               </Text>
             </Pressable>
           </View>

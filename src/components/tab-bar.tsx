@@ -7,8 +7,8 @@ import { SvgXml } from 'react-native-svg';
 import { Icons } from '../constants';
 import Header from '@/components/header'
 
-
 function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+
   return (
     <>
       <View style={styles.navbar}>
@@ -65,10 +65,10 @@ function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                 )
               }
               {
-                options.title === 'Kartlar' &&
+                options.title === 'Profil' &&
                 (
                   <SvgXml
-                    xml={Icons.iconTag}
+                    xml={Icons.iconProfile}
                     width="24"
                     height="24"
                     fill={isFocused ? 'green' : 'gray'}

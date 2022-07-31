@@ -33,14 +33,13 @@ export default function Header() {
         >
           <Image
             style={styles.logoImg}
-            source={require('@/assets/images/logo.png')}
+            source={require('@/assets/images/864.png')}
           />
         </Pressable>
         {
           userState.status &&
           (<Pressable
             style={styles.profile}
-            onPress={() => navigation.navigate('Profile')}
           >
             <Image
               style={styles.profileImg}
@@ -57,8 +56,9 @@ export default function Header() {
 }
 const styles = StyleSheet.create({
   logo: {
-    paddingRight: 15,
-    paddingLeft: 5,
+    paddingRight: 3,
+    paddingLeft: 3,
+    borderRadius: 64,
     backgroundColor: '#fff',
   },
   logoImg: {
