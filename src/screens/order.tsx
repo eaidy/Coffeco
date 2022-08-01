@@ -309,8 +309,8 @@ function OrderScreen({ navigation }) {
                     </View>
                     <View style={[styles.boxContent, styles.boxContentAddress]}>
                       {
-                        basketInfo.branches &&
-                        basketInfo.branches.map((branch: any, index) =>
+                        branches &&
+                        branches.map((branch: any, index) =>
                         (
                           <View
                             key={index}
@@ -433,8 +433,7 @@ function OrderScreen({ navigation }) {
             basketInfo.orderID && (
               <Pressable
                 style={styles.order}
-                // onPress={() => sendOrder()}
-                onPress={() => setModalVisible(true)}
+                onPress={() => sendOrder()}
               >
                 <Text style={styles.orderText}>SİPARİŞ VER</Text>
                 <Text style={styles.orderPrice}>{basketInfo.totalPrice}₺</Text>

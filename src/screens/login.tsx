@@ -17,7 +17,7 @@ import { categoriesAtom, productsAtom, userStateAtom } from '@/states/auth'
 // Model Imports
 import { UserState } from '@/models/models'
 import CheckBox from '@react-native-community/checkbox';
-import { Checkbox } from 'react-native-paper';
+import { ActivityIndicator, Checkbox } from 'react-native-paper';
 
 type FormValues = {
   phoneNumber: string;
@@ -26,6 +26,7 @@ type FormValues = {
 
 function LoginScreen() {
 
+  const [isLoading, setIsLoading] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const [userState, setUserState] = useAtom(userStateAtom)
 
@@ -33,7 +34,7 @@ function LoginScreen() {
   const { colors, spacing } = useTheme()
 
   const submitLogin = async (values: FormValues) => {
-
+    setIsLoading(true)
     const response = await login(values.phoneNumber, values.password)
       .then((res: any) => {
         const buffer: UserState = res ? res : {}
@@ -48,11 +49,12 @@ function LoginScreen() {
 
   useEffect(() => {
     if (userState.status) {
-      console.log('Ata')
+      setIsLoading(false)
       navigation.dispatch(
         StackActions.replace('Main')
       );
     } else {
+      setIsLoading(false)
       console.log(userState.message)
     }
   }, [userState])
@@ -77,6 +79,12 @@ function LoginScreen() {
             flex={1}
           >
             <Box flex={1}>
+              {
+                isLoading &&
+                (
+                  <ActivityIndicator animating={true} color='#1B854B' style={{ marginBottom: 15 }} />
+                )
+              }
               {/* <Text color="loginHeader" fontSize={36} marginBottom="xl">
                 Giriş Yap
               </Text> */}
