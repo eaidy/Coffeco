@@ -8,11 +8,11 @@ import { StackActions } from '@react-navigation/native';
 // Component Imports
 import { Text } from '@/atoms'
 import Header from '@/components/header'
-import { Image, Pressable, ScrollView, StyleSheet, View, TextInput, TouchableHighlight } from 'react-native'
+import { Image, Pressable, ScrollView, StyleSheet, View, TouchableHighlight } from 'react-native'
 import { Icons } from '@/constants'
 import { SvgXml } from 'react-native-svg'
 import NumericInput from 'react-native-numeric-input'
-import { Checkbox } from 'react-native-paper';
+import { Checkbox, TextInput } from 'react-native-paper';
 import Toast from 'react-native-simple-toast';
 
 
@@ -68,6 +68,10 @@ function OrderScreen({ navigation }) {
   const [userState,] = useAtom(userStateAtom)
   const [basketState, setBasketState] = useAtom(basketAtom)
 
+  useEffect(() => {
+    console.log(basketInfo.branches)
+  }, [basketInfo.branches])
+
 
   useEffect(() => {
 
@@ -80,6 +84,7 @@ function OrderScreen({ navigation }) {
           return response
         })
         .then((data) => {
+          console.log(basketInfo.branches)
           let basketBuffer: BasketModel = {
             totalPrice: data.order.total.toFixed(1),
             orderID: data.order.orderID,
@@ -88,7 +93,7 @@ function OrderScreen({ navigation }) {
             branches: []
           }
           setBasketInfo(basketBuffer)
-          setBasketState(basketInfo.totalPrice.toFixed(1))
+          setBasketState(Number(basketInfo.totalPrice.toFixed(1)))
           setSendOrderInfo((prev) => {
             let bufferPrev = prev
             bufferPrev.OrderID = data.order.orderID
@@ -106,7 +111,12 @@ function OrderScreen({ navigation }) {
           setProductsQuantity(buffer)
         })
         .catch(err => console.log(err))
+    }, 1000)
 
+  }, [basketState])
+
+  useEffect(() => {
+    if (basketInfo.branches === []) {
       fetchData('Branches', {
         method: 'POST',
         authToken: userState.data
@@ -123,10 +133,10 @@ function OrderScreen({ navigation }) {
         .catch((err) => {
           console.log('Şubeler alınamadı')
         })
+    }
+    console.log(1)
 
-    }, 400)
-
-  }, [basketState])
+  }, [basketInfo.branches])
 
   const emptyTheBasket = () => {
     fetchData('RemoveBasket', {
@@ -262,6 +272,7 @@ function OrderScreen({ navigation }) {
                         <View style={{ flex: 1, flexDirection: 'row' }}>
                           <NumericInput
                             onChange={value => console.log(value)}
+                            value={product.qty}
                             minValue={0}
                             rounded
                             iconSize={5}
@@ -396,14 +407,25 @@ function OrderScreen({ navigation }) {
                         </View>
                         <View style={styles.customInputs}>
                           <TextInput
-                            style={[styles.input, styles.inputText]}
-                            value="16:55"
+                            placeholder="16:55"
+                            activeOutlineColor='#1b854b'
+                            dense
+                            mode='outlined'
+                            style={{ marginBottom: 5, marginRight: 5, backgroundColor: '#fff' }}
                           />
-                          <Pressable style={[styles.input, styles.inputBtn]}>
+                          {/* <Pressable style={[styles.input, styles.inputBtn]}>
                             <Text style={styles.inputBtnText}>Onayla</Text>
-                          </Pressable>
+                          </Pressable> */}
                         </View>
                       </View>
+                    </View>
+                    <View style={{ padding: 20 }}>
+                      <TextInput
+                        placeholder='Sipariş notu'
+                        mode='outlined'
+                        activeOutlineColor='#1b854b'
+                        style={{ backgroundColor: '#fff' }}
+                      />
                     </View>
                   </View>
                 </>
@@ -493,7 +515,6 @@ const styles = StyleSheet.create({
   productImage: {
     width: 50,
     height: 50,
-    marginRight: 10,
   },
   productLeft: {
     display: 'flex',

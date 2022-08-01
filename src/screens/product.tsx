@@ -118,10 +118,10 @@ function ProductScreen({ route }: any) {
 
   const addBasketHandler = async () => {
     let productApiObject: ProductBasketModel = {
-        ProductID: 0,
-        Qty: 0,
-        Variants: '',
-      },
+      ProductID: 0,
+      Qty: 0,
+      Variants: '',
+    },
       variantsApiArray: Array<{ id: number; value: number }>
 
     productApiObject.ProductID = productResponse.product.productID
@@ -195,9 +195,11 @@ function ProductScreen({ route }: any) {
           <View style={styles.detailPage}>
             <Image
               style={styles.detailImage}
-              source={require('@/assets/images/product.png')}
+              source={productResponse.product.photo !== "https://panel.coffeco.com.tr/" ?
+                { uri: productResponse.product.photo } : require("@/assets/images/product.png")
+              }
             />
-            <Text style={styles.detailTitle}>Cappucino</Text>
+            <Text style={styles.detailTitle}>{productResponse.product.productName}</Text>
             <Text style={styles.detailText}>Laktozsuz süt seçeneği ile</Text>
           </View>
         </ImageBackground>
