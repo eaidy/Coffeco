@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useTheme } from '@shopify/restyle'
 import { register } from '@/services/register'
 import * as Yup from 'yup'
-import { StackActions } from '@react-navigation/native';
+import { StackActions } from '@react-navigation/native'
 
 // Component Imports
 import {
@@ -12,29 +12,38 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   StyleSheet,
-  Pressable
+  Pressable,
 } from 'react-native'
 import { Box, Text, ImageBackground, TextInput, Button } from '@/atoms/'
 import { Formik } from 'formik'
-import Toast from 'react-native-simple-toast';
+import Toast from 'react-native-simple-toast'
 
 // Model Imports
 import { RegisterFormModel } from '@/models/models'
 import { NavigationContainer } from '@react-navigation/native'
 
-
 const validationSchema = Yup.object({
   Adi: Yup.string().trim().required('İsminizi giriniz'),
   Soyadi: Yup.string().trim().required('Soyadınızı giriniz'),
-  Cep: Yup.string().trim().max(10, 'Numaranızı başında 0 olmadan giriniz.').min(10, 'Numaranızı başında 0 olmadan giriniz.').required('Telefon numarası gereklidir'),
-  Email: Yup.string().email('Geçersiz E-Posta adresi').required('E-Postanızı giriniz'),
-  Password: Yup.string().trim().min(8, 'Şifre çok kısa').required('Şifre girmediniz'),
-  RePassword: Yup.string().equals([Yup.ref('Password'), null], 'Şifreler uyuşmuyor')
+  Cep: Yup.string()
+    .trim()
+    .max(10, 'Numaranızı başında 0 olmadan giriniz.')
+    .min(10, 'Numaranızı başında 0 olmadan giriniz.')
+    .required('Telefon numarası gereklidir'),
+  Email: Yup.string()
+    .email('Geçersiz E-Posta adresi')
+    .required('E-Postanızı giriniz'),
+  Password: Yup.string()
+    .trim()
+    .min(8, 'Şifre çok kısa')
+    .required('Şifre girmediniz'),
+  RePassword: Yup.string().equals(
+    [Yup.ref('Password'), null],
+    'Şifreler uyuşmuyor'
+  ),
 })
 
-
 function SignupScreen({ navigation }) {
-
   const { colors, spacing } = useTheme()
 
   const initialFormValues: RegisterFormModel = {
@@ -43,22 +52,23 @@ function SignupScreen({ navigation }) {
     Cep: '',
     Email: '',
     Password: '',
-    RePassword: ''
+    RePassword: '',
   }
 
   async function submitRegister(values: RegisterFormModel) {
     const response = await register(values)
 
     if (response.status) {
-      Toast.showWithGravity(`Üyelik başarılı! Giriş yapabilirsiniz.`, Toast.SHORT, Toast.TOP);
-      navigation.dispatch(
-        StackActions.replace('Login')
-      );
+      Toast.showWithGravity(
+        `Üyelik başarılı! Giriş yapabilirsiniz.`,
+        Toast.SHORT,
+        Toast.TOP
+      )
+      navigation.dispatch(StackActions.replace('Login'))
     } else {
-      Toast.showWithGravity(response.message, Toast.SHORT, Toast.TOP);
+      Toast.showWithGravity(response.message, Toast.SHORT, Toast.TOP)
     }
   }
-
 
   return (
     <ScrollView
@@ -79,7 +89,13 @@ function SignupScreen({ navigation }) {
             flex={1}
           >
             <Box flex={1}>
-              <Text color="loginHeader" fontSize={36} marginBottom="xl" textAlign="center">
+              <Text
+                color="loginHeader"
+                fontSize={26}
+                marginBottom="xl"
+                textAlign="center"
+                style={styles.pageTitle}
+              >
                 Üyelik Oluştur
               </Text>
             </Box>
@@ -88,7 +104,15 @@ function SignupScreen({ navigation }) {
               validationSchema={validationSchema}
               onSubmit={values => submitRegister(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => {
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                touched,
+                isSubmitting,
+              }) => {
                 return (
                   <>
                     <Box
@@ -105,7 +129,9 @@ function SignupScreen({ navigation }) {
                           onChangeText={handleChange('Adi')}
                           onBlur={handleBlur('Adi')}
                         />
-                        <Text style={[styles.errorValidation]}>{touched.Adi && errors.Adi}</Text>
+                        <Text style={[styles.errorValidation]}>
+                          {touched.Adi && errors.Adi}
+                        </Text>
                       </Box>
                       <Box flex={1}>
                         <TextInput
@@ -115,7 +141,9 @@ function SignupScreen({ navigation }) {
                           onBlur={handleBlur('Soyadi')}
                           placeholderTextColor={colors.neutral500}
                         />
-                        <Text style={[styles.errorValidation]}>{touched.Soyadi && errors.Soyadi}</Text>
+                        <Text style={[styles.errorValidation]}>
+                          {touched.Soyadi && errors.Soyadi}
+                        </Text>
                       </Box>
                     </Box>
                     <Box marginBottom="sm">
@@ -126,7 +154,9 @@ function SignupScreen({ navigation }) {
                         onBlur={handleBlur('Email')}
                         placeholderTextColor={colors.neutral500}
                       />
-                      <Text style={[styles.errorValidation]}>{touched.Email && errors.Email}</Text>
+                      <Text style={[styles.errorValidation]}>
+                        {touched.Email && errors.Email}
+                      </Text>
                     </Box>
                     <Box marginBottom="sm">
                       <TextInput
@@ -137,7 +167,9 @@ function SignupScreen({ navigation }) {
                         onBlur={handleBlur('Cep')}
                         placeholderTextColor={colors.neutral500}
                       />
-                      <Text style={[styles.errorValidation]}>{touched.Cep && errors.Cep}</Text>
+                      <Text style={[styles.errorValidation]}>
+                        {touched.Cep && errors.Cep}
+                      </Text>
                     </Box>
                     <Box marginBottom="sm">
                       <TextInput
@@ -148,7 +180,9 @@ function SignupScreen({ navigation }) {
                         onBlur={handleBlur('Password')}
                         placeholderTextColor={colors.neutral500}
                       />
-                      <Text style={[styles.errorValidation]}>{touched.Password && errors.Password}</Text>
+                      <Text style={[styles.errorValidation]}>
+                        {touched.Password && errors.Password}
+                      </Text>
                     </Box>
                     <Box marginBottom="sm">
                       <TextInput
@@ -159,7 +193,9 @@ function SignupScreen({ navigation }) {
                         onBlur={handleBlur('RePassword')}
                         placeholderTextColor={colors.neutral500}
                       />
-                      <Text style={[styles.errorValidation]}>{touched.RePassword && errors.RePassword}</Text>
+                      <Text style={[styles.errorValidation]}>
+                        {touched.RePassword && errors.RePassword}
+                      </Text>
                     </Box>
                     <Button
                       label="KAYIT OL"
@@ -181,9 +217,7 @@ function SignupScreen({ navigation }) {
             <Box>
               <Text textAlign="center" color="mutedActionText" fontSize={14}>
                 Zaten hesabın var mı?
-                <Pressable
-                  onPress={() => navigation.navigate('Login')}
-                >
+                <Pressable onPress={() => navigation.navigate('Login')}>
                   <Text color="actionText">Giriş Yap</Text>
                 </Pressable>
               </Text>
@@ -197,13 +231,15 @@ function SignupScreen({ navigation }) {
 
 export default SignupScreen
 
-
 const styles = StyleSheet.create({
   errorValidation: {
     color: '#5FD068',
     fontSize: 12,
     marginLeft: 8,
     marginTop: 5,
-    fontFamily: 'Nunito-SemiBold'
-  }
+    fontFamily: 'Nunito-SemiBold',
+  },
+  pageTitle: {
+    fontFamily: 'Nunito-Bold',
+  },
 })

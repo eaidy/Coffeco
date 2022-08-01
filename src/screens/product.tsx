@@ -320,9 +320,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   detailImage: {
-    height: '70%',
-  },
-  detailImageSingle: {
     height: '75%',
   },
   detailTitle: {
@@ -343,12 +340,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    bottom: 0,
+    bottom: 80,
     left: 0,
-    position: 'absolute',
     width: '100%',
+    position: 'absolute',
+    maxHeight: '75%',
     elevation: 15,
-    paddingTop: 25,
+    paddingTop: 15,
+    paddingBottom: 70,
     color: '#000',
   },
   optionListSingle: {
@@ -368,7 +367,7 @@ const styles = StyleSheet.create({
   optionListScroll: {
     flex: 1,
     elevation: 36,
-    maxHeight: '53%',
+    maxHeight: '100%',
   },
   option: {
     width: '90%',
@@ -383,7 +382,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     shadowColor: '#000',
     backgroundColor: '#fff',
-    marginBottom: 10,
+    marginBottom: 5,
+    marginTop: 5,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -413,7 +413,11 @@ const styles = StyleSheet.create({
     paddingLeft: '4%',
     paddingRight: '4%',
     paddingTop: 10,
+    width: '100%',
     paddingBottom: 10,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
   },
   optionNumber: {
     width: '30%',
