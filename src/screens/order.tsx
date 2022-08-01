@@ -8,7 +8,7 @@ import { StackActions } from '@react-navigation/native';
 // Component Imports
 import { Text } from '@/atoms'
 import Header from '@/components/header'
-import { Image, Pressable, ScrollView, StyleSheet, View, TouchableHighlight } from 'react-native'
+import { Image, Pressable, ScrollView, StyleSheet, View, TouchableHighlight, Modal } from 'react-native'
 import { Icons } from '@/constants'
 import { SvgXml } from 'react-native-svg'
 import NumericInput from 'react-native-numeric-input'
@@ -25,7 +25,6 @@ type BasketModel = {
   orderID?: Number | null;
   products: Array<Object>;
   variants: Array<Object>;
-  branches: Array<Object>;
 }
 
 type ProductsQuantity = Array<{
@@ -43,13 +42,14 @@ type SendOrder = {
 
 function OrderScreen({ navigation }) {
 
+  const [modalVisible, setModalVisible] = useState(false)
   const [basketInfo, setBasketInfo] = useState<BasketModel>({
     totalPrice: 0,
     orderID: null,
     products: [],
     variants: [],
-    branches: []
   })
+  const [branches, setBranches] = useState([])
   const [productsQuantity, setProductsQuantity] = useState<ProductsQuantity>([])
   const [sendOrderInfo, setSendOrderInfo] = useState<SendOrder>({
     OrderID: 0,
@@ -69,11 +69,18 @@ function OrderScreen({ navigation }) {
   const [basketState, setBasketState] = useAtom(basketAtom)
 
   useEffect(() => {
-    console.log(basketInfo.branches)
-  }, [basketInfo.branches])
 
-
-  useEffect(() => {
+    fetchData('Branches', {
+      method: 'POST',
+      authToken: userState.data
+    })
+      .then((data) => {
+        setBranches(data)
+        console.log('Şubeler alındı', branches)
+      })
+      .catch((err) => {
+        console.log('Şubeler alınamadı')
+      })
 
     setTimeout(() => {
       fetchData('Basket', {
@@ -84,13 +91,11 @@ function OrderScreen({ navigation }) {
           return response
         })
         .then((data) => {
-          console.log(basketInfo.branches)
           let basketBuffer: BasketModel = {
             totalPrice: data.order.total.toFixed(1),
             orderID: data.order.orderID,
             products: data.lines,
-            variants: data.variants,
-            branches: []
+            variants: data.variants
           }
           setBasketInfo(basketBuffer)
           setBasketState(Number(basketInfo.totalPrice.toFixed(1)))
@@ -115,29 +120,6 @@ function OrderScreen({ navigation }) {
 
   }, [basketState])
 
-  useEffect(() => {
-    if (basketInfo.branches === []) {
-      fetchData('Branches', {
-        method: 'POST',
-        authToken: userState.data
-      })
-        .then((data) => {
-          setBasketInfo((prev) => {
-            return {
-              ...prev,
-              branches: data
-            }
-          })
-          console.log('Şubeler alındı')
-        })
-        .catch((err) => {
-          console.log('Şubeler alınamadı')
-        })
-    }
-    console.log(1)
-
-  }, [basketInfo.branches])
-
   const emptyTheBasket = () => {
     fetchData('RemoveBasket', {
       method: 'POST',
@@ -151,7 +133,6 @@ function OrderScreen({ navigation }) {
           orderID: null,
           products: [],
           variants: [],
-          branches: []
         })
         setBasketState(0)
       })
@@ -210,6 +191,21 @@ function OrderScreen({ navigation }) {
 
   return (
     <>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={{ backgroundColor: 'red' }}>
+          <Text>Burası Modal</Text>
+          <Pressable onPress={() => setModalVisible(false)}>
+            <Text>Modal Kapa</Text>
+          </Pressable>
+        </View>
+      </Modal>
       <Header />
       <ScrollView>
         <View style={styles.wrapper}>
@@ -437,7 +433,8 @@ function OrderScreen({ navigation }) {
             basketInfo.orderID && (
               <Pressable
                 style={styles.order}
-                onPress={() => sendOrder()}
+                // onPress={() => sendOrder()}
+                onPress={() => setModalVisible(true)}
               >
                 <Text style={styles.orderText}>SİPARİŞ VER</Text>
                 <Text style={styles.orderPrice}>{basketInfo.totalPrice}₺</Text>

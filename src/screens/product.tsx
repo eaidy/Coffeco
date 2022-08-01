@@ -321,6 +321,7 @@ const styles = StyleSheet.create({
   },
   detailImage: {
     height: '75%',
+    marginTop: 20
   },
   detailTitle: {
     fontSize: 20,
@@ -455,13 +456,13 @@ const styles = StyleSheet.create({
   },
   optionCartText: {
     color: '#fff',
-    fontFamily: 'Nunito-Bold',
-    fontSize: 16,
+    fontFamily: 'Nunito-SemiBold',
+    fontSize: 15,
   },
   optionCartPrice: {
     color: '#fff',
-    fontFamily: 'Nunito-Bold',
-    fontSize: 18,
+    fontFamily: 'Nunito-Regular',
+    fontSize: 16,
   },
   optionSelectText: {},
   optionVariantActive: {

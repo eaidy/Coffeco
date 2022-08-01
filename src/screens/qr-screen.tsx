@@ -3,8 +3,13 @@ import { Text, View, StyleSheet } from 'react-native'
 import Header from '@/components/header'
 import QRCode from 'react-native-qrcode-svg'
 import ImageBackground from '@/atoms/image-background'
+import { useAtom } from 'jotai'
+import { userInfoStateAtom } from '@/states/auth'
 
 const QrScreen = () => {
+
+    const [userInfoState,] = useAtom(userInfoStateAtom)
+
     return (
         <>
             <Header />
@@ -14,14 +19,14 @@ const QrScreen = () => {
                 minHeight="100%"
                 flex={1}
             >
-            <View
-                style={[styles.qrCodeContainer]}
-            >
-                <QRCode
-                    value="https://www.coffeco.com.tr/"
-                    size={300}
-                />
-            </View>
+                <View
+                    style={[styles.qrCodeContainer]}
+                >
+                    <QRCode
+                        value={userInfoState.email}
+                        size={300}
+                    />
+                </View>
             </ImageBackground>
         </>
     )

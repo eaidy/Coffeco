@@ -3,8 +3,7 @@ import React, { useState } from 'react'
 import { useTheme } from '@shopify/restyle'
 import { register } from '@/services/register'
 import * as Yup from 'yup'
-import { StackActions } from '@react-navigation/native'
-
+import { ActivityIndicator, MD2Colors } from 'react-native-paper'
 // Component Imports
 import {
   KeyboardAvoidingView,
@@ -55,7 +54,10 @@ function SignupScreen({ navigation }) {
     RePassword: '',
   }
 
+  const [isLoading, setIsLoading] = useState(false)
+
   async function submitRegister(values: RegisterFormModel) {
+    setIsLoading(true)
     const response = await register(values)
 
     if (response.status) {
@@ -64,9 +66,11 @@ function SignupScreen({ navigation }) {
         Toast.SHORT,
         Toast.TOP
       )
-      navigation.dispatch(StackActions.replace('Login'))
+      setIsLoading(false)
+      navigation.navigate('Login')
     } else {
       Toast.showWithGravity(response.message, Toast.SHORT, Toast.TOP)
+      setIsLoading(false)
     }
   }
 
@@ -92,12 +96,18 @@ function SignupScreen({ navigation }) {
               <Text
                 color="loginHeader"
                 fontSize={26}
-                marginBottom="xl"
+                marginBottom="md"
                 textAlign="center"
                 style={styles.pageTitle}
               >
                 Üyelik Oluştur
               </Text>
+              {
+                isLoading &&
+                (
+                  <ActivityIndicator animating={true} color='#1B854B' style={{ marginBottom: 15 }} />
+                )
+              }
             </Box>
             <Formik
               initialValues={initialFormValues}
@@ -197,6 +207,7 @@ function SignupScreen({ navigation }) {
                         {touched.RePassword && errors.RePassword}
                       </Text>
                     </Box>
+
                     <Button
                       label="KAYIT OL"
                       onPress={handleSubmit}
