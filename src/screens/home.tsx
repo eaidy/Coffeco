@@ -10,20 +10,19 @@ import { userInfoStateAtom, userStateAtom } from '@/states/auth'
 import { useAtom } from 'jotai'
 
 type HomeContainer = {
-  campaign: Array<Object>;
-  bonus: Number;
+  campaign: Array<Object>
+  bonus: Number
 }
 
 function HomeScreen() {
-
   const navigation = useNavigation()
 
   const [homeContainer, setHomeContainer] = useState<HomeContainer>({
     campaign: [],
-    bonus: 0
+    bonus: 0,
   })
 
-  const [userState,] = useAtom(userStateAtom)
+  const [userState] = useAtom(userStateAtom)
   const [userInfoState, setUserInfoState] = useAtom(userInfoStateAtom)
 
   useEffect(() => {
@@ -33,17 +32,35 @@ function HomeScreen() {
   useEffect(() => {
     fetchData('Home', {
       method: 'POST',
-      authToken: userState.data
+      authToken: userState.data,
     })
-      .then((res) => {
+      .then(res => {
         setHomeContainer(res)
         setUserInfoState(() => {
-          const { aciklama, adi, soyadi, gsm, email, password, cinsiyet, bonus } = res.user
-          let buffer = { aciklama, adi, soyadi, gsm, email, password, cinsiyet, bonus }
+          const {
+            aciklama,
+            adi,
+            soyadi,
+            gsm,
+            email,
+            password,
+            cinsiyet,
+            bonus,
+          } = res.user
+          let buffer = {
+            aciklama,
+            adi,
+            soyadi,
+            gsm,
+            email,
+            password,
+            cinsiyet,
+            bonus,
+          }
           return buffer
         })
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err)
       })
   }, [])
@@ -68,7 +85,9 @@ function HomeScreen() {
                   source={require('@/assets/images/qr-code-scan.png')}
                   style={styles.cardQr}
                 />
-                <Text style={styles.cardText}>{userInfoState.adi + ' ' + userInfoState.soyadi}</Text>
+                <Text style={styles.cardText}>
+                  {userInfoState.adi + ' ' + userInfoState.soyadi}
+                </Text>
                 <Text style={styles.cardTitle}>Bonus</Text>
                 <Text style={styles.cardPrice}>{homeContainer.bonus}</Text>
               </ImageBackground>
@@ -83,7 +102,8 @@ function HomeScreen() {
               />
               <Text style={styles.buttonText}>ÖN{'\n'}SİPARİŞ</Text>
             </Pressable>
-            <Pressable style={styles.button}
+            <Pressable
+              style={styles.button}
               onPress={() => navigation.navigate('Feedback')}
             >
               <Image
@@ -114,23 +134,19 @@ function HomeScreen() {
             </Pressable>
             <View style={styles.slider}>
               <ScrollView horizontal={true}>
-                {
-                  homeContainer.campaign &&
+                {homeContainer.campaign &&
                   homeContainer.campaign.map((camp: any, index) => (
-                    <Pressable
-                      style={styles.sliderItem}
-                      key={index}
-                    >
+                    <Pressable style={styles.sliderItem} key={index}>
                       <Image
                         style={styles.sliderImg}
                         source={{
                           uri: camp.image,
-                          width: 200, height: 160,
+                          width: 200,
+                          height: 160,
                         }}
                       />
                     </Pressable>
-                  ))
-                }
+                  ))}
                 {/* <Pressable style={styles.sliderItem}>
                 <Image
                   style={styles.sliderImg}
@@ -195,7 +211,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 15,
     // fontFamily: 'Nunito-Bold',
-    fontFamily: 'Nunito-Regular'
+    fontFamily: 'Nunito-Regular',
   },
   card: {
     width: '100%',
@@ -236,7 +252,7 @@ const styles = StyleSheet.create({
     fontWeight: '200',
     color: '#fff',
     //fontFamily: 'Dosis-Regular',
-    fontFamily: 'Nunito-SemiBold'
+    fontFamily: 'Nunito-SemiBold',
   },
   slider: {
     //width: '100%',
@@ -252,4 +268,3 @@ const styles = StyleSheet.create({
 })
 
 export default HomeScreen
-

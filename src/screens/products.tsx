@@ -17,11 +17,10 @@ import { Category } from '@/models/models'
 import { Product } from '@/models/models'
 
 function ProductsScreen() {
-
   // States
   const [categoriesItems, setCategories] = useAtom(categoriesAtom)
   const [products, setProducts] = useAtom(productsAtom)
-  const [userState,] = useAtom(userStateAtom)
+  const [userState] = useAtom(userStateAtom)
 
   const [activeCategoryID, setActiveCategoryID] = useState<number>() // For active category style
 
@@ -32,31 +31,31 @@ function ProductsScreen() {
       key: category.categoriID,
       paramLabel: 'CategoryId',
       authToken: userState.data,
-      method: 'POST'
+      method: 'POST',
     })
-      .then((res) => {
+      .then(res => {
         setProducts(res)
         setActiveCategoryID(category.categoriID)
         console.log(res)
       })
-      .catch((err) => console.log(err))
+      .catch(err => console.log(err))
   }
 
-  useEffect(() => {  /* Fetch and set the categories initially when the main page loads */
+  useEffect(() => {
+    /* Fetch and set the categories initially when the main page loads */
 
     fetchData('Categories', {
       authToken: userState.data,
-      method: 'GET'
+      method: 'GET',
     })
       .then((res: any) => {
         setCategories(res)
         categoryPressHandler(res[0])
         //console.log(res)
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err)
       })
-
   }, [])
 
   const productPressHandler = (productID: number) => {
@@ -64,14 +63,13 @@ function ProductsScreen() {
       key: productID,
       paramLabel: 'ID',
       authToken: userState.data,
-      method: 'POST'
-    })
-      .then((res) => {
-        console.log(res)
-        navigation.navigate('Product', {
-          productResponse: res
-        })
+      method: 'POST',
+    }).then(res => {
+      console.log(res)
+      navigation.navigate('Product', {
+        productResponse: res,
       })
+    })
   }
 
   return (
@@ -82,40 +80,47 @@ function ProductsScreen() {
           {categoriesItems &&
             categoriesItems.map((categoryItem: Category) => (
               <Pressable
-                style={activeCategoryID === categoryItem.categoriID ?
-                  [styles.navItem, styles.navItemActive]
-                  : [styles.navItemActive, styles.navItem]}
+                style={
+                  activeCategoryID === categoryItem.categoriID
+                    ? [styles.navItem, styles.navItemActive]
+                    : [styles.navItemActive, styles.navItem]
+                }
                 onPress={() => categoryPressHandler(categoryItem)}
                 key={categoryItem.categoriID}
               >
                 <Text
-                  style={activeCategoryID === categoryItem.categoriID ?
-                    [styles.navItemTextActive]
-                    : [styles.navItemText]}
+                  style={
+                    activeCategoryID === categoryItem.categoriID
+                      ? [styles.navItemTextActive]
+                      : [styles.navItemText]
+                  }
                 >
                   {categoryItem.category}
                 </Text>
               </Pressable>
-            ))
-          }
+            ))}
         </ScrollView>
         <ScrollView contentContainerStyle={styles.productList}>
-          {
-            products &&
+          {products &&
             products.map((product: Product) => (
-              <View
-                style={styles.product}
-                key={product.productID}
-              >
+              <View style={styles.product} key={product.productID}>
                 <Image
                   style={styles.productImg}
-                  source={product.photo !== "https://panel.coffeco.com.tr/" ? { uri: product.photo } : require("@/assets/images/product.png")}
+                  source={
+                    product.photo !== 'https://panel.coffeco.com.tr/'
+                      ? { uri: product.photo }
+                      : require('@/assets/images/product.png')
+                  }
                 />
                 <View style={styles.productBottom}>
                   <Text style={styles.productTitle}>{product.productName}</Text>
-                  <Text style={styles.productText}>{product.shortDescription}</Text>
-                  <Text style={styles.productBonus}>{product.bonus.toFixed(2)} bonus kazan</Text>
-                  <Text style={styles.productPrice}>{product.price}₺</Text>
+                  <Text style={styles.productText}>
+                    {product.shortDescription}
+                  </Text>
+                  <Text style={styles.productBonus}>
+                    {product.bonus.toFixed(2)} bonus kazan
+                  </Text>
+                  <Text style={styles.productPrice}>{product.price}</Text>
                   <Pressable
                     style={styles.productPlus}
                     onPress={() => productPressHandler(product.productID)}
@@ -124,8 +129,7 @@ function ProductsScreen() {
                   </Pressable>
                 </View>
               </View>
-            ))
-          }
+            ))}
         </ScrollView>
       </View>
     </>
@@ -166,12 +170,12 @@ const styles = StyleSheet.create({
   navItemText: {
     color: '#6d6d6d',
     fontFamily: 'Nunito-ExtraBold',
-    fontSize: 12
+    fontSize: 12,
   },
   navItemTextActive: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 12
+    fontSize: 12,
   },
   productList: {
     display: 'flex',
@@ -225,13 +229,13 @@ const styles = StyleSheet.create({
     bottom: 10,
     fontSize: 15,
     color: '#1b854b',
-    fontFamily: 'Nunito-Regular',
+    fontFamily: 'Nunito-Bold',
   },
   productBonus: {
     fontFamily: 'Nunito-Regular',
     fontSize: 12,
     color: '#1b854b',
-    marginTop: 3
+    marginTop: 3,
   },
   productPlus: {
     position: 'absolute',
@@ -244,7 +248,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#1b854b',
     borderRadius: 15,
-    paddingBottom: 2
+    paddingBottom: 2,
   },
   productPlusText: {
     color: '#fff',
@@ -253,44 +257,44 @@ const styles = StyleSheet.create({
 
   centeredView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 10
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
   button: {
     borderRadius: 20,
     padding: 10,
-    elevation: 2
+    elevation: 2,
   },
   buttonOpen: {
-    backgroundColor: "#F194FF",
+    backgroundColor: '#F194FF',
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: '#2196F3',
   },
   textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
-  }
+    textAlign: 'center',
+  },
 })
 export default ProductsScreen

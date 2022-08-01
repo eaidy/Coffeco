@@ -118,10 +118,10 @@ function ProductScreen({ route }: any) {
 
   const addBasketHandler = async () => {
     let productApiObject: ProductBasketModel = {
-      ProductID: 0,
-      Qty: 0,
-      Variants: '',
-    },
+        ProductID: 0,
+        Qty: 0,
+        Variants: '',
+      },
       variantsApiArray: Array<{ id: number; value: number }>
 
     productApiObject.ProductID = productResponse.product.productID
@@ -195,11 +195,16 @@ function ProductScreen({ route }: any) {
           <View style={styles.detailPage}>
             <Image
               style={styles.detailImage}
-              source={productResponse.product.photo !== "https://panel.coffeco.com.tr/" ?
-                { uri: productResponse.product.photo } : require("@/assets/images/product.png")
+              source={
+                productResponse.product.photo !==
+                'https://panel.coffeco.com.tr/'
+                  ? { uri: productResponse.product.photo }
+                  : require('@/assets/images/product.png')
               }
             />
-            <Text style={styles.detailTitle}>{productResponse.product.productName}</Text>
+            <Text style={styles.detailTitle}>
+              {productResponse.product.productName}
+            </Text>
             <Text style={styles.detailText}>Laktozsuz süt seçeneği ile</Text>
           </View>
         </ImageBackground>
@@ -290,7 +295,7 @@ function ProductScreen({ route }: any) {
                 onPress={() => addBasketHandler()}
               >
                 <Text style={styles.optionCartText}>SEPETE EKLE</Text>
-                <Text style={styles.optionCartPrice}>{totalPrice}₺</Text>
+                <Text style={styles.optionCartPrice}>{totalPrice}</Text>
               </Pressable>
             </View>
           </View>
@@ -321,7 +326,7 @@ const styles = StyleSheet.create({
   },
   detailImage: {
     height: '75%',
-    marginTop: 20
+    marginTop: 20,
   },
   detailTitle: {
     fontSize: 20,
@@ -461,7 +466,7 @@ const styles = StyleSheet.create({
   },
   optionCartPrice: {
     color: '#fff',
-    fontFamily: 'Nunito-Regular',
+    fontFamily: 'Nunito-Bold',
     fontSize: 16,
   },
   optionSelectText: {},
