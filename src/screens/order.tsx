@@ -326,31 +326,37 @@ function OrderScreen({ navigation }) {
                   </View>
                   <View style={styles.box}>
                     <View style={styles.boxTitle}>
-                      <Text style={styles.boxTitleText}>Teslim Alınacak Şube</Text>
+                      <Text style={styles.boxTitleText}>
+                        Teslim Alınacak Şube
+                      </Text>
                     </View>
                     <View style={[styles.boxContent, styles.boxContentAddress]}>
-                      {
-                        branches &&
-                        branches.map((branch: any, index) =>
-                        (
+                      {branches &&
+                        branches.map((branch: any, index) => (
                           <View
                             key={index}
-                            style={activeBranchId === branch.branchID ?
-                              [styles.address, styles.addressActive] : [styles.address]
+                            style={
+                              activeBranchId === branch.branchID
+                                ? [styles.address, styles.addressActive]
+                                : [styles.address]
                             }
                           >
                             <Pressable
-                              onPress={() => branchPressHandler(branch.branchID)}
+                              onPress={() =>
+                                branchPressHandler(branch.branchID)
+                              }
                             >
                               <View style={styles.addressTop}>
                                 <Text
-                                  style={[styles.addressTitle, styles.addressTitleActive]}
+                                  style={[
+                                    styles.addressTitle,
+                                    styles.addressTitleActive,
+                                  ]}
                                 >
                                   {branch.city}
                                 </Text>
                                 <View style={styles.addressIcons}>
-                                  {
-                                    activeBranchId === branch.branchID &&
+                                  {activeBranchId === branch.branchID && (
                                     <Pressable style={styles.addressIcon}>
                                       <SvgXml
                                         xml={Icons.iconCheck}
@@ -362,17 +368,20 @@ function OrderScreen({ navigation }) {
                                         ]}
                                       />
                                     </Pressable>
-                                  }
+                                  )}
                                 </View>
                               </View>
-                              <Text style={[styles.addressText, styles.addressTextActive]}>
+                              <Text
+                                style={[
+                                  styles.addressText,
+                                  styles.addressTextActive,
+                                ]}
+                              >
                                 {branch.name}
                               </Text>
                             </Pressable>
                           </View>
-                        )
-                        )
-                      }
+                        ))}
                     </View>
                   </View>
                   <View style={styles.box}>
@@ -380,10 +389,8 @@ function OrderScreen({ navigation }) {
                       <Text style={styles.boxTitleText}>Teslimat Saati</Text>
                     </View>
                     <View style={[styles.boxContent, styles.boxContentTimes]}>
-                      {
-                        deliveryTimes &&
-                        deliveryTimes.map((deliveryTime, index) =>
-                        (
+                      {deliveryTimes &&
+                        deliveryTimes.map((deliveryTime, index) => (
                           <Pressable
                             onPress={() => branchPressHandler(branch.branchID)}
                           >
@@ -421,8 +428,8 @@ function OrderScreen({ navigation }) {
                               {branch.name}
                             </Text>
                           </Pressable>
-                        </View>
-                      ))}
+                        ))}
+                    </View>
                   </View>
                 </View>
                 <View style={styles.box}>
@@ -503,17 +510,12 @@ function OrderScreen({ navigation }) {
               </>
             )}
           </View>
-          {
-            basketInfo.orderID && (
-              <Pressable
-                style={styles.order}
-                onPress={() => sendOrder()}
-              >
-                <Text style={styles.orderText}>SİPARİŞ VER</Text>
-                <Text style={styles.orderPrice}>{basketInfo.totalPrice}₺</Text>
-              </Pressable>
-            )
-          }
+          {basketInfo.orderID && (
+            <Pressable style={styles.order} onPress={() => sendOrder()}>
+              <Text style={styles.orderText}>SİPARİŞ VER</Text>
+              <Text style={styles.orderPrice}>{basketInfo.totalPrice}₺</Text>
+            </Pressable>
+          )}
         </View>
       </ScrollView>
     </>
