@@ -217,10 +217,14 @@ function SignupScreen({ navigation }) {
             <Box>
               <Text textAlign="center" color="mutedActionText" fontSize={14}>
                 Zaten hesabın var mı?
-                <Pressable onPress={() => navigation.navigate('Login')}>
-                  <Text color="actionText">Giriş Yap</Text>
-                </Pressable>
               </Text>
+              <Box>
+                <Pressable onPress={() => navigation.navigate('Login')}>
+                  <Text textAlign="center" color="actionText">
+                    Giriş Yap
+                  </Text>
+                </Pressable>
+              </Box>
             </Box>
           </ImageBackground>
         </TouchableWithoutFeedback>

@@ -77,9 +77,11 @@ const ForgetPassword = ({ navigation }) => {
                 />
               </Box>
 
-              <Pressable onPress={() => navigation.goBack()}>
-                <Text>Geri Dön</Text>
-              </Pressable>
+              <View style={styles.link}>
+                <Pressable onPress={() => navigation.goBack()}>
+                  <Text style={styles.linkText}>Geri Dön</Text>
+                </Pressable>
+              </View>
             </ImageBackground>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
