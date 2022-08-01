@@ -61,7 +61,9 @@ function FeedbackScreen() {
               <Box width="100%" marginBottom="xl">
                 <Button
                   label="GÖNDER"
-                  onPress={() => { console.log('Gönder') }}
+                  onPress={() => {
+                    console.log('Gönder')
+                  }}
                   backgroundColor="buttonBackground"
                   padding="md"
                   borderRadius="sm"
@@ -73,9 +75,11 @@ function FeedbackScreen() {
                 />
               </Box>
 
-              <Pressable onPress={() => navigation.goBack()}>
-                <Text>Geri Dön</Text>
-              </Pressable>
+              <View style={styles.link}>
+                <Pressable onPress={() => navigation.goBack()}>
+                  <Text style={styles.linkText}>Geri Dön</Text>
+                </Pressable>
+              </View>
             </ImageBackground>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
