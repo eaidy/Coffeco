@@ -2,51 +2,47 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useAtom } from 'jotai'
-import { StackActions } from '@react-navigation/native'
+import { StackActions } from '@react-navigation/native';
+
 
 // Component Imports
 import { Text } from '@/atoms'
 import Header from '@/components/header'
-import {
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-  TouchableHighlight,
-  Modal,
-} from 'react-native'
+import { Image, Pressable, ScrollView, StyleSheet, View, TouchableHighlight, Modal } from 'react-native'
 import { Icons } from '@/constants'
 import { SvgXml } from 'react-native-svg'
 import NumericInput from 'react-native-numeric-input'
-import { Checkbox, TextInput } from 'react-native-paper'
-import Toast from 'react-native-simple-toast'
+import { ActivityIndicator, Checkbox, TextInput } from 'react-native-paper';
+import Toast from 'react-native-simple-toast';
+
 
 // Service Imports
 import { fetchData } from '@/services/methods'
 import { userStateAtom, basketAtom } from '@/states/auth'
 
 type BasketModel = {
-  totalPrice: Number
-  orderID?: Number | null
-  products: Array<Object>
-  variants: Array<Object>
+  totalPrice: Number;
+  orderID?: Number | null;
+  products: Array<Object>;
+  variants: Array<Object>;
 }
 
 type ProductsQuantity = Array<{
-  lineID: Number
-  Qty: Number
+  lineID: Number;
+  Qty: Number;
 }>
 
 type SendOrder = {
-  OrderID?: Number
-  BranchID?: Number
-  DeliveryMinute?: Number
-  DeliveryNote?: String
-  Bonus?: Boolean
+  OrderID?: Number;
+  BranchID?: Number;
+  DeliveryMinute?: Number;
+  DeliveryNote?: String;
+  Bonus?: Boolean;
 }
 
 function OrderScreen({ navigation }) {
+
+  const [isLoading, setIsLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [basketInfo, setBasketInfo] = useState<BasketModel>({
     totalPrice: 0,
@@ -61,7 +57,7 @@ function OrderScreen({ navigation }) {
     BranchID: 0,
     DeliveryMinute: 20,
     DeliveryNote: '',
-    Bonus: false,
+    Bonus: false
   })
   const [activeBranchId, setActiveBranchId] = useState<Number>(0)
   const [deliveryTimes, setDeliveryTimes] = useState([
@@ -70,40 +66,41 @@ function OrderScreen({ navigation }) {
     { duration: '45dk', time: '17:00', isActive: false },
   ])
 
-  const [userState] = useAtom(userStateAtom)
+  const [userState,] = useAtom(userStateAtom)
   const [basketState, setBasketState] = useAtom(basketAtom)
 
   useEffect(() => {
+
     fetchData('Branches', {
       method: 'POST',
-      authToken: userState.data,
+      authToken: userState.data
     })
-      .then(data => {
+      .then((data) => {
         setBranches(data)
         console.log('Şubeler alındı', branches)
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Şubeler alınamadı')
       })
 
     setTimeout(() => {
       fetchData('Basket', {
         method: 'POST',
-        authToken: userState.data,
+        authToken: userState.data
       })
-        .then(response => {
+        .then((response) => {
           return response
         })
-        .then(data => {
+        .then((data) => {
           let basketBuffer: BasketModel = {
             totalPrice: data.order.total.toFixed(1),
             orderID: data.order.orderID,
             products: data.lines,
-            variants: data.variants,
+            variants: data.variants
           }
           setBasketInfo(basketBuffer)
           setBasketState(Number(basketInfo.totalPrice.toFixed(1)))
-          setSendOrderInfo(prev => {
+          setSendOrderInfo((prev) => {
             let bufferPrev = prev
             bufferPrev.OrderID = data.order.orderID
             bufferPrev.BranchID = 0
@@ -114,13 +111,14 @@ function OrderScreen({ navigation }) {
           buffer = data.lines.map((item: any) => {
             return {
               lineID: item.lineID,
-              Qty: item.qty,
+              Qty: item.qty
             }
           })
           setProductsQuantity(buffer)
         })
         .catch(err => console.log(err))
     }, 1000)
+
   }, [basketState])
 
   const emptyTheBasket = () => {
@@ -128,9 +126,9 @@ function OrderScreen({ navigation }) {
       method: 'POST',
       authToken: userState.data,
       paramLabel: 'orderID',
-      key: basketInfo.orderID,
+      key: basketInfo.orderID
     })
-      .then(res => {
+      .then((res) => {
         setBasketInfo({
           totalPrice: 0,
           orderID: null,
@@ -139,7 +137,7 @@ function OrderScreen({ navigation }) {
         })
         setBasketState(0)
       })
-      .catch(err => console.log(err))
+      .catch((err) => console.log(err))
   }
 
   const removeProduct = (orderID: Number, lineID: Number) => {
@@ -147,7 +145,7 @@ function OrderScreen({ navigation }) {
   }
 
   const numericInputHandler = (lineID: Number, value: Number) => {
-    let buffer: any = productsQuantity?.map(item => {
+    let buffer: any = productsQuantity?.map((item) => {
       item.lineID === lineID ? { ...item, Qty: value } : item
     })
     setProductsQuantity(buffer)
@@ -160,33 +158,30 @@ function OrderScreen({ navigation }) {
       const buffer = prev
       buffer.BranchID = branchID
       return {
-        ...buffer,
+        ...buffer
       }
     })
   }
 
   const sendOrder = () => {
-    console.log(sendOrderInfo)
+    setIsLoading(true)
     fetchData('SendOrder', {
       method: 'POST',
       authToken: userState.data,
-      body: sendOrderInfo,
+      body: sendOrderInfo
     })
-      .then(res => {
-        Toast.showWithGravity(
-          'Siparişiniz alındı, Anasayfada durumunu görebilirsiniz.',
-          Toast.LONG,
-          Toast.TOP
-        )
-        emptyTheBasket()
-        navigation.navigate('Home')
+      .then((res) => {
+        setIsLoading(false)
+        if (res.status) {
+          setModalVisible(true)
+          emptyTheBasket()
+        } else {
+          Toast.showWithGravity('Hata, sipariş alınamadı : ' + res.message, Toast.LONG, Toast.TOP)
+        }
+
       })
-      .catch(err => {
-        Toast.showWithGravity(
-          'Hata, sipariş alınamadı : ' + err,
-          Toast.LONG,
-          Toast.TOP
-        )
+      .catch((err) => {
+        Toast.showWithGravity('Hata, sipariş alınamadı : ' + err, Toast.LONG, Toast.TOP)
         console.log(err)
       })
   }
@@ -207,22 +202,23 @@ function OrderScreen({ navigation }) {
         transparent={true}
         style={styles.modal}
         visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible)
-        }}
       >
         <View style={styles.modalContent}>
           <Image
             style={styles.modalIcon}
             source={require('@/assets/images/siparis-onay.png')}
           />
-          <Text>Burası Modal</Text>
+          <Text style={styles.modalText}>Siparişiniz'i aldık, Belirttiğin süre sonunda dükkanımızda hazır olacak!</Text>
           <Pressable
             style={styles.modalClose}
-            onPress={() => setModalVisible(false)}
+            onPress={() => {
+              setModalVisible(false)
+              navigation.navigate('Home')
+            }}
           >
-            <Text style={styles.modalCloseText}>Modal Kapa</Text>
+            <Text style={styles.modalCloseText}>Tamam</Text>
           </Pressable>
+
         </View>
       </Modal>
       <Header />
@@ -233,57 +229,58 @@ function OrderScreen({ navigation }) {
             <View style={styles.box}>
               <View style={styles.boxTitle}>
                 <Text style={styles.boxTitleText}>Ürünler</Text>
-                {basketInfo.orderID && (
-                  <TouchableHighlight {...touchProps}>
-                    <Text style={styles.boxTitleRemoveText}>
-                      Sepet'i Boşalt
-                    </Text>
-                  </TouchableHighlight>
-                )}
+                {
+                  basketInfo.orderID &&
+                  (<TouchableHighlight {...touchProps}>
+                    <Text style={styles.boxTitleRemoveText}>Sepet'i Boşalt</Text>
+                  </TouchableHighlight>)
+                }
               </View>
               <View style={styles.boxContent}>
-                {!basketInfo.orderID && (
-                  <Text
-                    style={{ textAlign: 'center', fontFamily: 'Nunito-Bold' }}
-                  >
-                    Sepetiniz boş
-                  </Text>
-                )}
-                {basketInfo.orderID &&
+                {
+                  !basketInfo.orderID && (
+                    <Text
+                      style={{ textAlign: 'center', fontFamily: 'Nunito-Bold' }}
+                    >
+                      Sepetiniz boş
+                    </Text>
+                  )
+                }
+                {
+                  basketInfo.orderID &&
                   basketInfo.products.map((product: any) => {
                     return (
-                      <View style={styles.product} key={product.lineID}>
-                        <View style={styles.productLeft}>
-                          <Image
-                            style={styles.productImage}
-                            source={require('@/assets/images/product.png')}
-                          />
-                          <View style={styles.productContet}>
-                            <Text style={styles.productTitle}>
-                              {product.description}
-                            </Text>
-                            {basketInfo.variants
-                              .filter(
-                                (variant: any) =>
-                                  variant.lineID === product.lineID
-                              )
-                              .map((variant: any, index) => {
-                                return (
-                                  <Text
-                                    style={styles.productTitleSmall}
-                                    key={index}
-                                  >
-                                    {variant.priceDescription}
-                                  </Text>
-                                )
-                              })}
-                            <Text style={styles.productPrice}>
-                              {(product.price * product.qty).toFixed(1)}₺
-                            </Text>
+                      <View
+                        style={styles.product}
+                        key={product.lineID}
+                      >
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                          <View style={styles.productLeft}>
+                            <Image
+                              style={styles.productImage}
+                              source={require('@/assets/images/product.png')}
+                            />
+                            <View style={styles.productContet}>
+                              <Text style={styles.productTitle}>
+                                {product.description}
+                              </Text>
+                              {
+                                basketInfo.variants.filter((variant: any) => variant.lineID === product.lineID).map((variant: any, index) => {
+                                  return (
+                                    <Text
+                                      style={styles.productTitleSmall}
+                                      key={index}
+                                    >
+                                      {variant.priceDescription}
+                                    </Text>
+                                  )
+                                })
+                              }
+                            </View>
+                            <Text style={styles.productPrice}>{(product.price * product.qty).toFixed(1)}₺</Text>
                           </View>
                         </View>
-
-                        <View style={styles.productRight}>
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
                           <NumericInput
                             onChange={value => console.log(value)}
                             value={product.qty}
@@ -292,37 +289,34 @@ function OrderScreen({ navigation }) {
                             iconSize={5}
                             totalWidth={80}
                             totalHeight={38}
-                            type="up-down"
+                            type='up-down'
                           />
                         </View>
                       </View>
                     )
-                  })}
+                  })
+                }
               </View>
             </View>
-            {basketInfo.orderID && (
-              <>
-                <View style={styles.boxTitle}>
-                  <Text style={{ fontFamily: 'Nunito-Bold' }}>
-                    150 Bonus Kullanılsın mı ?
-                  </Text>
-                  <Checkbox
-                    status={sendOrderInfo.Bonus ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                      setSendOrderInfo(prev => {
-                        const buffer = prev
-                        buffer.Bonus = !prev.Bonus
-                        return { ...buffer }
-                      })
-                    }}
-                    color="#1B854B"
-                  />
-                </View>
-                <View style={styles.box}>
+            {
+              basketInfo.orderID &&
+              (
+                <>
                   <View style={styles.boxTitle}>
-                    <Text style={styles.boxTitleText}>
-                      Teslim Alınacak Şube
+                    <Text style={{ fontFamily: 'Nunito-Bold' }}>
+                      150 Bonus Kullanılsın mı ?
                     </Text>
+                    <Checkbox
+                      status={sendOrderInfo.Bonus ? 'checked' : 'unchecked'}
+                      onPress={() => {
+                        setSendOrderInfo((prev) => {
+                          const buffer = prev
+                          buffer.Bonus = !prev.Bonus
+                          return { ...buffer }
+                        });
+                      }}
+                      color="#1B854B"
+                    />
                   </View>
                   <View style={styles.box}>
                     <View style={styles.boxTitle}>
@@ -385,124 +379,77 @@ function OrderScreen({ navigation }) {
                         deliveryTimes.map((deliveryTime, index) =>
                         (
                           <Pressable
-                            onPress={() => branchPressHandler(branch.branchID)}
-                          >
-                            <View style={styles.addressTop}>
-                              <Text
-                                style={[
-                                  styles.addressTitle,
-                                  styles.addressTitleActive,
-                                ]}
-                              >
-                                {branch.city}
-                              </Text>
-                              <View style={styles.addressIcons}>
-                                {activeBranchId === branch.branchID && (
-                                  <Pressable style={styles.addressIcon}>
-                                    <SvgXml
-                                      xml={Icons.iconCheck}
-                                      width="18"
-                                      height="18"
-                                      style={[
-                                        styles.addressIconSvg,
-                                        styles.addressIconSvgActive,
-                                      ]}
-                                    />
-                                  </Pressable>
-                                )}
-                              </View>
-                            </View>
-                            <Text
-                              style={[
-                                styles.addressText,
-                                styles.addressTextActive,
-                              ]}
-                            >
-                              {branch.name}
-                            </Text>
-                          </Pressable>
-                        </View>
-                      ))}
-                  </View>
-                </View>
-                <View style={styles.box}>
-                  <View style={styles.boxTitle}>
-                    <Text style={styles.boxTitleText}>Teslimat Saati</Text>
-                  </View>
-                  <View style={[styles.boxContent, styles.boxContentTimes]}>
-                    {deliveryTimes &&
-                      deliveryTimes.map((deliveryTime, index) => (
-                        <Pressable
-                          key={index}
-                          onPress={() =>
-                            setDeliveryTimes(prev => {
+                            key={index}
+                            onPress={() => setDeliveryTimes((prev) => {
                               const buffer = prev.map((item, i) => {
                                 return {
                                   ...item,
-                                  isActive: index === i ? true : false,
+                                  isActive: index === i ? true : false
                                 }
                               })
-                              return [...buffer]
-                            })
-                          }
-                          style={
-                            deliveryTime.isActive
-                              ? [styles.time, styles.timeActive]
-                              : [styles.time]
-                          }
-                        >
-                          <Text
-                            style={
-                              deliveryTime.isActive
-                                ? [styles.timeTitle, styles.timeTitleActive]
-                                : [styles.timeTitle]
+                              return [
+                                ...buffer
+                              ]
+                            }
+                            )}
+                            style={deliveryTime.isActive ?
+                              [styles.time, styles.timeActive] : [styles.time]
                             }
                           >
-                            {deliveryTime.duration}
+                            <Text
+                              style={deliveryTime.isActive ?
+                                [styles.timeTitle, styles.timeTitleActive] : [styles.timeTitle]
+                              }
+                            >
+                              {deliveryTime.duration}
+                            </Text>
+                            <Text style={{ color: 'gray' }}>{deliveryTime.time}</Text>
+                          </Pressable>
+                        )
+                        )
+                      }
+                    </View>
+                    <View style={styles.boxContent}>
+                      <View style={styles.custom}>
+                        <View style={styles.customText}>
+                          <Text style={styles.customTextTitle}>
+                            ya da istediğin saati gir
                           </Text>
-                          <Text style={{ color: 'gray' }}>
-                            {deliveryTime.time}
-                          </Text>
-                        </Pressable>
-                      ))}
-                  </View>
-                  <View style={styles.boxContent}>
-                    <View style={styles.custom}>
-                      <View style={styles.customText}>
-                        <Text style={styles.customTextTitle}>
-                          ya da istediğin saati gir
-                        </Text>
-                      </View>
-                      <View style={styles.customInputs}>
-                        <TextInput
-                          placeholder="16:55"
-                          activeOutlineColor="#1b854b"
-                          dense
-                          mode="outlined"
-                          style={{
-                            marginBottom: 5,
-                            marginRight: 5,
-                            backgroundColor: '#fff',
-                          }}
-                        />
-                        {/* <Pressable style={[styles.input, styles.inputBtn]}>
+                        </View>
+                        <View style={styles.customInputs}>
+                          <TextInput
+                            placeholder="16:55"
+                            activeOutlineColor='#1b854b'
+                            dense
+                            mode='outlined'
+                            style={{ marginBottom: 5, marginRight: 5, backgroundColor: '#fff' }}
+                          />
+                          {/* <Pressable style={[styles.input, styles.inputBtn]}>
                             <Text style={styles.inputBtnText}>Onayla</Text>
                           </Pressable> */}
+                        </View>
                       </View>
                     </View>
+                    <View style={{ padding: 20 }}>
+                      <TextInput
+                        placeholder='Sipariş notu'
+                        mode='outlined'
+                        activeOutlineColor='#1b854b'
+                        style={{ backgroundColor: '#fff' }}
+                      />
+                    </View>
                   </View>
-                  <View style={{ padding: 20 }}>
-                    <TextInput
-                      placeholder="Sipariş notu"
-                      mode="outlined"
-                      activeOutlineColor="#1b854b"
-                      style={{ backgroundColor: '#fff' }}
-                    />
-                  </View>
-                </View>
-              </>
-            )}
+                </>
+
+              )
+            }
           </View>
+          {
+            isLoading &&
+            (
+              <ActivityIndicator animating={true} color='#1B854B' style={{ marginBottom: 15 }} />
+            )
+          }
           {
             basketInfo.orderID && (
               <Pressable
@@ -590,33 +537,25 @@ const styles = StyleSheet.create({
     display: 'flex',
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    flexWrap: 'wrap',
-  },
-  productRight: {
-    display: 'flex',
-    width: 80,
   },
   productTitle: {
     fontSize: 12,
     fontFamily: 'Nunito-Bold',
     color: '#000',
-    paddingLeft: 8,
   },
   productTitleSmall: {
     fontFamily: 'Nunito-Regular',
     fontSize: 12,
-    paddingLeft: 8,
   },
   productPrice: {
     fontSize: 14,
     fontFamily: 'Nunito-SemiBold',
     color: '#1B854B',
-    marginTop: 4,
-    paddingLeft: 8,
-    alignSelf: 'center',
-    width: '100%',
+    marginRight: 10,
+    marginBottom: 2,
+    alignSelf: 'center'
   },
   address: {
     width: '48%',
@@ -643,7 +582,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderRadius: 8,
-    borderColor: '#',
+    borderColor: '#'
   },
   addressIcons: {
     display: 'flex',
@@ -668,7 +607,7 @@ const styles = StyleSheet.create({
   },
   addressActive: {
     borderWidth: 2,
-    borderColor: '#1B854B',
+    borderColor: '#1B854B'
   },
   addressTitleActive: {
     color: '#6d6d6d',
@@ -767,13 +706,18 @@ const styles = StyleSheet.create({
   },
   boxTitleRemove: {
     borderRadius: 14,
-    padding: 10,
+    padding: 10
   },
   boxTitleRemoveText: {
     fontFamily: 'Nunito-Bold',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   modal: {},
+  modalText: {
+    fontSize: 15,
+    fontFamily: 'Nunito-Regular',
+    marginTop: 14
+  },
   modalIcon: {},
   modalContent: {
     backgroundColor: '#fff',
@@ -784,10 +728,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: '5%',
+    marginTop: '30%',
     marginLeft: 'auto',
     marginRight: 'auto',
     borderRadius: 16,
+    borderColor: 'gray',
+    borderWidth: 2
   },
   modalClose: {},
   modalCloseText: {},
