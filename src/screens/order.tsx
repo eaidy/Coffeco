@@ -18,7 +18,7 @@ import Toast from 'react-native-simple-toast';
 
 // Service Imports
 import { fetchData } from '@/services/methods'
-import { userStateAtom, basketAtom } from '@/states/auth'
+import { userStateAtom, basketAtom, userInfoStateAtom } from '@/states/auth'
 
 type BasketModel = {
   totalPrice: Number;
@@ -42,6 +42,7 @@ type SendOrder = {
 
 function OrderScreen({ navigation }) {
 
+  const [arbitraryTime, setArbitraryTime] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [basketInfo, setBasketInfo] = useState<BasketModel>({
@@ -55,19 +56,20 @@ function OrderScreen({ navigation }) {
   const [sendOrderInfo, setSendOrderInfo] = useState<SendOrder>({
     OrderID: 0,
     BranchID: 0,
-    DeliveryMinute: 20,
+    DeliveryMinute: 0,
     DeliveryNote: '',
     Bonus: false
   })
   const [activeBranchId, setActiveBranchId] = useState<Number>(0)
   const [deliveryTimes, setDeliveryTimes] = useState([
-    { duration: '15dk', time: '16:30', isActive: false },
-    { duration: '30dk', time: '16:45', isActive: false },
-    { duration: '45dk', time: '17:00', isActive: false },
+    { duration: 15, time: '16:30', isActive: false },
+    { duration: 30, time: '16:45', isActive: false },
+    { duration: 45, time: '17:00', isActive: false },
   ])
 
   const [userState,] = useAtom(userStateAtom)
   const [basketState, setBasketState] = useAtom(basketAtom)
+  const [userInfoState,] = useAtom(userInfoStateAtom)
 
   useEffect(() => {
 
@@ -140,6 +142,15 @@ function OrderScreen({ navigation }) {
       .catch((err) => console.log(err))
   }
 
+  useEffect(() => {
+    setSendOrderInfo(prev => {
+      const buffer = prev
+      buffer.DeliveryMinute = deliveryTimes.some((time) => time.isActive) ? deliveryTimes.filter((time) => time.isActive)[0].duration : 0
+      return { ...buffer }
+    })
+
+  }, [deliveryTimes])
+
   const removeProduct = (orderID: Number, lineID: Number) => {
     console.log('test')
   }
@@ -150,6 +161,22 @@ function OrderScreen({ navigation }) {
     })
     setProductsQuantity(buffer)
     console.log(buffer)
+  }
+
+  const arbitraryTimeHandler = () => {
+    setArbitraryTime(!arbitraryTime)
+    setDeliveryTimes((prev) => {
+      const buffer = prev.map((item) => {
+        return {
+          ...item,
+          isActive: false
+        }
+      })
+      return [
+        ...buffer
+      ]
+    }
+    )
   }
 
   const branchPressHandler = (branchID: Number) => {
@@ -177,6 +204,7 @@ function OrderScreen({ navigation }) {
           emptyTheBasket()
         } else {
           Toast.showWithGravity('Hata, sipariş alınamadı : ' + res.message, Toast.LONG, Toast.TOP)
+
         }
 
       })
@@ -303,8 +331,8 @@ function OrderScreen({ navigation }) {
               (
                 <>
                   <View style={styles.boxTitle}>
-                    <Text style={{ fontFamily: 'Nunito-Bold' }}>
-                      150 Bonus Kullanılsın mı ?
+                    <Text style={{ fontFamily: 'Nunito-SemiBold' }}>
+                      {userInfoState.bonus} Bonus Kullanılsın mı ?
                     </Text>
                     <Checkbox
                       status={sendOrderInfo.Bonus ? 'checked' : 'unchecked'}
@@ -380,18 +408,20 @@ function OrderScreen({ navigation }) {
                         (
                           <Pressable
                             key={index}
-                            onPress={() => setDeliveryTimes((prev) => {
-                              const buffer = prev.map((item, i) => {
-                                return {
-                                  ...item,
-                                  isActive: index === i ? true : false
-                                }
-                              })
-                              return [
-                                ...buffer
-                              ]
-                            }
-                            )}
+                            onPress={() => {
+                              setDeliveryTimes((prev) => {
+                                const buffer = prev.map((item, i) => {
+                                  return {
+                                    ...item,
+                                    isActive: index === i ? true : false
+                                  }
+                                })
+                                return [
+                                  ...buffer
+                                ]
+                              }
+                              )
+                            }}
                             style={deliveryTime.isActive ?
                               [styles.time, styles.timeActive] : [styles.time]
                             }
@@ -401,9 +431,9 @@ function OrderScreen({ navigation }) {
                                 [styles.timeTitle, styles.timeTitleActive] : [styles.timeTitle]
                               }
                             >
-                              {deliveryTime.duration}
+                              {deliveryTime.duration + 'dk'}
                             </Text>
-                            <Text style={{ color: 'gray' }}>{deliveryTime.time}</Text>
+                            <Text style={deliveryTime.isActive ? { color: 'white' } : { color: 'gray' }}>{deliveryTime.time}</Text>
                           </Pressable>
                         )
                         )
@@ -411,29 +441,62 @@ function OrderScreen({ navigation }) {
                     </View>
                     <View style={styles.boxContent}>
                       <View style={styles.custom}>
-                        <View style={styles.customText}>
+                        <Pressable
+                          onPress={() => arbitraryTimeHandler()}
+                          style={styles.customText}
+                        >
                           <Text style={styles.customTextTitle}>
-                            ya da istediğin saati gir
+                            Keyfi bir dakika belirle
                           </Text>
-                        </View>
-                        <View style={styles.customInputs}>
-                          <TextInput
-                            placeholder="16:55"
-                            activeOutlineColor='#1b854b'
-                            dense
-                            mode='outlined'
-                            style={{ marginBottom: 5, marginRight: 5, backgroundColor: '#fff' }}
+                          <SvgXml
+                            xml={Icons.iconArrowDown}
+                            height="18"
+                            width="18"
+                            fill="gray"
+                            style={{ marginTop: 5 }}
                           />
-                          {/* <Pressable style={[styles.input, styles.inputBtn]}>
-                            <Text style={styles.inputBtnText}>Onayla</Text>
-                          </Pressable> */}
-                        </View>
+                        </Pressable>
+                        {
+                          arbitraryTime &&
+                          (<View style={styles.customInputs}>
+                            <TextInput
+                              placeholder="Dakika giriniz"
+                              activeOutlineColor='#1b854b'
+                              dense
+                              keyboardType="phone-pad"
+                              mode='outlined'
+                              value={() => String(sendOrderInfo.DeliveryMinute)}
+                              onChangeText={text => setSendOrderInfo((prev) => {
+                                const buffer = prev
+                                buffer.DeliveryMinute = Number(text)
+                                return { ...buffer }
+                              })
+                              }
+                              style={{ marginBottom: 5, marginRight: 5, backgroundColor: '#fff' }}
+                            />
+                            <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'Nunito-Regular', marginTop: 1 }}>{sendOrderInfo.DeliveryMinute + ' dakika sonra dükkandan al'}</Text>
+                            {/* <Pressable style={[styles.input, styles.inputBtn]}>
+                              <Text style={styles.inputBtnText}>Onayla</Text>
+                            </Pressable> */}
+                          </View>)
+                        }
                       </View>
                     </View>
-                    <View style={{ padding: 20 }}>
+                    <View style={styles.boxTitle}>
+                      <Text style={styles.boxTitleText}>Sipariş Notu</Text>
+                    </View>
+                    <View style={{ padding: 15 }}>
                       <TextInput
-                        placeholder='Sipariş notu'
+                        placeholder='Notunuz...'
                         mode='outlined'
+                        value={() => {
+                          return sendOrderInfo.DeliveryNote
+                        }}
+                        onChangeText={(note) => setSendOrderInfo((prev) => {
+                          const buffer = prev
+                          buffer.DeliveryNote = note
+                          return { ...buffer }
+                        })}
                         activeOutlineColor='#1b854b'
                         style={{ backgroundColor: '#fff' }}
                       />
@@ -454,7 +517,9 @@ function OrderScreen({ navigation }) {
             basketInfo.orderID && (
               <Pressable
                 style={styles.order}
-                onPress={() => sendOrder()}
+                onPress={() =>
+                  sendOrder()
+                }
               >
                 <Text style={styles.orderText}>SİPARİŞ VER</Text>
                 <Text style={styles.orderPrice}>{basketInfo.totalPrice}₺</Text>
@@ -654,13 +719,27 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: '#1B854B',
+    borderRadius: 10,
+    paddingTop: 5,
+    paddingBottom: 6,
+    backgroundColor: '#fff'
   },
-  customInputs: {
+  customText: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    height: 27
+  },
+  customInputs: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    height: 50,
     marginTop: 12,
+    marginBottom: 25
   },
   input: {
     margin: 5,
@@ -737,6 +816,11 @@ const styles = StyleSheet.create({
   },
   modalClose: {},
   modalCloseText: {},
+  customTextTitle: {
+    fontSize: 14,
+    fontFamily: 'Nunito-Regular',
+    color: 'gray'
+  }
 })
 
 export default OrderScreen

@@ -67,6 +67,8 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#fff',
+    borderBottomColor: '#1B854B',
+    borderBottomWidth: 2
   },
   headerBg: {
     backgroundColor: '#fff',
