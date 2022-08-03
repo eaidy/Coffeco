@@ -118,10 +118,10 @@ function ProductScreen({ route }: any) {
 
   const addBasketHandler = async () => {
     let productApiObject: ProductBasketModel = {
-        ProductID: 0,
-        Qty: 0,
-        Variants: '',
-      },
+      ProductID: 0,
+      Qty: 0,
+      Variants: '',
+    },
       variantsApiArray: Array<{ id: number; value: number }>
 
     productApiObject.ProductID = productResponse.product.productID
@@ -197,7 +197,7 @@ function ProductScreen({ route }: any) {
               style={styles.detailImage}
               source={
                 productResponse.product.photo !==
-                'https://panel.coffeco.com.tr/'
+                  'https://panel.coffeco.com.tr/'
                   ? { uri: productResponse.product.photo }
                   : require('@/assets/images/product.png')
               }
@@ -325,8 +325,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   detailImage: {
-    height: '75%',
-    marginTop: 20,
+    height: '55%',
+    marginTop: 50,
+    resizeMode: 'cover',
+    width: '100%',
+    aspectRatio: 1,
+    borderRadius: 14,
+    marginBottom: 20
   },
   detailTitle: {
     fontSize: 20,

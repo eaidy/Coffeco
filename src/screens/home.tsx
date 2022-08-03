@@ -55,7 +55,7 @@ function HomeScreen() {
             email,
             password,
             cinsiyet,
-            bonus,
+            bonus: homeContainer.bonus
           }
           return buffer
         })

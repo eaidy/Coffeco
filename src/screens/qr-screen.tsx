@@ -26,6 +26,9 @@ const QrScreen = () => {
                         value={userInfoState.email}
                         size={300}
                     />
+                    <View>
+                        <Text style={[styles.qrText]}>QR Kodu kasa görevlisine okutunuz...</Text>
+                    </View>
                 </View>
             </ImageBackground>
         </>
@@ -38,5 +41,9 @@ const styles = StyleSheet.create({
     qrCodeContainer: {
         alignItems: 'center',
         marginTop: 80,
+    },
+    qrText: {
+        fontSize: 16,
+        marginTop: 50
     }
 })

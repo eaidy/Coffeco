@@ -119,7 +119,7 @@ function OrderScreen({ navigation }) {
           setProductsQuantity(buffer)
         })
         .catch(err => console.log(err))
-    }, 1000)
+    }, 400)
 
   }, [basketState])
 
@@ -192,12 +192,15 @@ function OrderScreen({ navigation }) {
 
   const sendOrder = () => {
     setIsLoading(true)
-    fetchData('SendOrder', {
+    fetch('https://api.entegre.pro/ui/UIntegration/SendOrder', {
       method: 'POST',
-      authToken: userState.data,
-      body: sendOrderInfo
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${userState.data}`
+      },
+      body: JSON.stringify(sendOrderInfo)
     })
-      .then((res) => {
+      .then((res: any) => {
         setIsLoading(false)
         if (res.status) {
           setModalVisible(true)
@@ -288,7 +291,7 @@ function OrderScreen({ navigation }) {
                               style={styles.productImage}
                               source={require('@/assets/images/product.png')}
                             />
-                            <View style={styles.productContet}>
+                            <View style={styles.productContent}>
                               <Text style={styles.productTitle}>
                                 {product.description}
                               </Text>
@@ -310,7 +313,12 @@ function OrderScreen({ navigation }) {
                         </View>
                         <View style={{ flex: 1, flexDirection: 'row' }}>
                           <NumericInput
-                            onChange={value => console.log(value)}
+                            onChange={value => {
+                              const buffer: any = productsQuantity.map((item) => {
+                                item.lineID === product.lineID ? { ...item, Qty: value } : item
+                              })
+                              setProductsQuantity(buffer)
+                            }}
                             value={product.qty}
                             minValue={0}
                             rounded
@@ -453,7 +461,7 @@ function OrderScreen({ navigation }) {
                           style={styles.customText}
                         >
                           <Text style={styles.customTextTitle}>
-                            Keyfi bir dakika belirle
+                            Dakika belirle
                           </Text>
                           <SvgXml
                             xml={Icons.iconArrowDown}
@@ -613,16 +621,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   productTitle: {
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: 'Nunito-Bold',
     color: '#000',
   },
   productTitleSmall: {
     fontFamily: 'Nunito-Regular',
-    fontSize: 12,
+    fontSize: 10,
   },
   productPrice: {
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: 'Nunito-SemiBold',
     color: '#1B854B',
     marginRight: 10,
@@ -726,12 +734,19 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#1B854B',
-    borderRadius: 10,
     paddingTop: 5,
-    paddingBottom: 6,
-    backgroundColor: '#fff'
+    paddingBottom: 3,
+    backgroundColor: '#fff',
+
+    borderRadius: 16,
+    padding: 12,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   customText: {
     display: 'flex',
@@ -802,7 +817,7 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 15,
     fontFamily: 'Nunito-Regular',
-    marginTop: 14
+    marginTop: 16
   },
   modalIcon: {},
   modalContent: {
@@ -821,12 +836,26 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 2
   },
-  modalClose: {},
-  modalCloseText: {},
+  modalClose: {
+    marginTop: 20,
+    padding: 10,
+    fontFamily: 'Nunito-SemiBold',
+    backgroundColor: '#1B854B',
+    borderRadius: 10
+  },
+  modalCloseText: {
+    color: '#fff',
+    fontFamily: 'Nunito-SemiBold'
+  },
   customTextTitle: {
     fontSize: 14,
     fontFamily: 'Nunito-Regular',
     color: 'gray'
+  },
+  productContent: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    marginLeft: 0
   }
 })
 

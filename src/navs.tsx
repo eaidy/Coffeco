@@ -12,6 +12,7 @@ import ProductScreen from '@/screens/product'
 import FeedbackScreen from '@/screens/feedback'
 import { ForgetPassword } from './screens/forget-password'
 import { Branches } from './screens/branches'
+import SplashScreen from './screens/splash-screen'
 
 
 const Stack = createNativeStackNavigator()
@@ -19,7 +20,7 @@ const Stack = createNativeStackNavigator()
 export default function Navigations() {
 
   return (
-    <Stack.Navigator initialRouteName="Auth">
+    <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen
         name="Auth"
         component={AuthNavigation}
@@ -65,6 +66,13 @@ export default function Navigations() {
       <Stack.Screen
         name="Branches"
         component={Branches}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Splash"
+        component={SplashScreen}
         options={{
           headerShown: false,
         }}
