@@ -33,8 +33,8 @@ function ProfileScreen() {
 
   const navigation = useNavigation()
 
-  const [userState,] = useAtom(userStateAtom)
-  const [userInfoState,] = useAtom(userInfoStateAtom)
+  const [userState, setUserState] = useAtom(userStateAtom)
+  const [userInfoState, setUserInfoState] = useAtom(userInfoStateAtom)
 
   const [pastOrders, setPastOrders] = useState<PastOrders>({
     orders: [],
@@ -79,8 +79,33 @@ function ProfileScreen() {
     console.log('Handle Update')
   }
 
-  const handleExit = () => {
-    console.log('Exit')
+  const handleSignOut = () => {
+    setUserState((prev) => {
+      return {
+        ...prev,
+        data: '',
+        message: '',
+        status: false
+      }
+    })
+    setUserInfoState((prev) => {
+      return {
+        ...prev,
+        aciklama: '',
+        bonus: 0,
+        cinsiyet: 0,
+        email: '',
+        gsm: '',
+        adi: '',
+        soyadi: '',
+        password: ''
+      }
+    })
+    console.log(userState, userInfoState)
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Auth' }],
+    })
   }
 
   return (
@@ -96,7 +121,7 @@ function ProfileScreen() {
                 padding: 8,
                 borderRadius: 14
               }}
-              onPress={() => handleExit()}
+              onPress={() => handleSignOut()}
             >
               <Text style={{ color: '#fff' }}>
                 Çıkış Yap
@@ -146,7 +171,7 @@ function ProfileScreen() {
                               style={styles.productImage}
                               source={require('../assets/images/product.png')}
                             />
-                            <View style={styles.productContet}>
+                            <View style={styles.productContent}>
                               <Text style={styles.productTitle}>
                                 {orderLine.description}
                               </Text>
@@ -180,7 +205,7 @@ function ProfileScreen() {
                           orderLine.orderID === order.orderID)
                           .reduce(
                             (accm: Number, curr: any) => accm += curr.price
-                            , 0)
+                            , 0).toFixed(1)
                       }₺
                     </Text>
                   </View>
@@ -411,10 +436,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    width: 150
   },
   productTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 13,
+    fontFamily: 'Nunito-SemiBold',
     color: '#000',
     marginBottom: 2,
   },
@@ -424,7 +450,7 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#1B854B',
+    color: '#1B854B'
   },
   address: {
     width: '48%',

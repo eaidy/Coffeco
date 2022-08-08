@@ -72,6 +72,8 @@ function SignupScreen({ navigation }) {
       Toast.showWithGravity(response.message, Toast.SHORT, Toast.TOP)
       setIsLoading(false)
     }
+
+    return response.status
   }
 
   return (
@@ -112,7 +114,15 @@ function SignupScreen({ navigation }) {
             <Formik
               initialValues={initialFormValues}
               validationSchema={validationSchema}
-              onSubmit={values => submitRegister(values)}
+              onSubmit={(values, { resetForm }) => {
+                submitRegister(values)
+                  .then((status) => {
+                    if (status) {
+                      resetForm()
+                    }
+                  })
+                  .catch((err) => console.log(err))
+              }}
             >
               {({
                 handleChange,
@@ -248,7 +258,7 @@ export default SignupScreen
 
 const styles = StyleSheet.create({
   errorValidation: {
-    color: '#5FD068',
+    color: '#FF1E00',
     fontSize: 12,
     marginLeft: 8,
     marginTop: 5,

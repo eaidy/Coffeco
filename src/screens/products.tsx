@@ -15,6 +15,7 @@ import { categoriesAtom, productsAtom, userStateAtom } from '@/states/auth'
 // Model Imports
 import { Category } from '@/models/models'
 import { Product } from '@/models/models'
+import { ActivityIndicator } from 'react-native-paper'
 
 function ProductsScreen() {
   // States
@@ -23,10 +24,12 @@ function ProductsScreen() {
   const [userState] = useAtom(userStateAtom)
 
   const [activeCategoryID, setActiveCategoryID] = useState<number>() // For active category style
+  const [clickedCategory, setClickedCategory] = useState(-1)
 
   const navigation = useNavigation()
 
   const categoryPressHandler = (category: Category) => {
+    setClickedCategory(category.categoriID)
     fetchData('Products', {
       key: category.categoriID,
       paramLabel: 'CategoryId',
@@ -35,6 +38,7 @@ function ProductsScreen() {
     })
       .then(res => {
         setProducts(res)
+        setClickedCategory(-1)
         setActiveCategoryID(category.categoriID)
         console.log(res)
       })
@@ -78,8 +82,9 @@ function ProductsScreen() {
       <View style={styles.pageWrapper}>
         <ScrollView contentContainerStyle={styles.categories} horizontal={true}>
           {categoriesItems &&
-            categoriesItems.map((categoryItem: Category) => (
+            categoriesItems.map((categoryItem: Category, index) => (
               <Pressable
+                key={index}
                 style={
                   activeCategoryID === categoryItem.categoriID
                     ? [styles.navItem, styles.navItemActive]
@@ -88,15 +93,22 @@ function ProductsScreen() {
                 onPress={() => categoryPressHandler(categoryItem)}
                 key={categoryItem.categoriID}
               >
-                <Text
-                  style={
-                    activeCategoryID === categoryItem.categoriID
-                      ? [styles.navItemTextActive]
-                      : [styles.navItemText]
-                  }
-                >
-                  {categoryItem.category}
-                </Text>
+                {
+                  clickedCategory === categoryItem.categoriID &&
+                  (<ActivityIndicator animating={true} color='#1B854B' style={{}} />)
+                }
+                {
+                  clickedCategory !== categoryItem.categoriID &&
+                  (<Text
+                    style={
+                      activeCategoryID === categoryItem.categoriID
+                        ? [styles.navItemTextActive]
+                        : [styles.navItemText]
+                    }
+                  >
+                    {categoryItem.category}
+                  </Text>)
+                }
               </Pressable>
             ))}
         </ScrollView>

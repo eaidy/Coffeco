@@ -156,11 +156,19 @@ function OrderScreen({ navigation }) {
   }
 
   const numericInputHandler = (lineID: Number, value: Number) => {
-    let buffer: any = productsQuantity?.map((item) => {
-      item.lineID === lineID ? { ...item, Qty: value } : item
+    fetchData('UpdateBasketLine', {
+      method: 'POST',
+      authToken: userState.data,
+      body: {
+        OrderID: basketInfo.orderID,
+        LineID: lineID,
+        Qty: value
+      }
     })
-    setProductsQuantity(buffer)
-    console.log(buffer)
+      .then((data) => {
+        setBasketState((prev) => prev + 1)
+      })
+      .catch(err => console.log(err))
   }
 
   const arbitraryTimeHandler = () => {
@@ -191,7 +199,23 @@ function OrderScreen({ navigation }) {
   }
 
   const sendOrder = () => {
+    if (sendOrderInfo.BranchID === 0) {
+      Toast.showWithGravity('Lütfen şube seçiniz.', Toast.LONG, Toast.TOP)
+      return
+    }
+
+    if (sendOrderInfo.DeliveryMinute === 0) {
+      Toast.showWithGravity('Lütfen teslim sürenizi seçiniz.', Toast.LONG, Toast.TOP)
+      return
+    }
+
+    if (sendOrderInfo.DeliveryMinute < 15) {
+      Toast.showWithGravity('Teslim süresi minimum 15 dakika olmalıdır.', Toast.LONG, Toast.TOP)
+      return
+    }
+
     setIsLoading(true)
+
     fetch('https://api.entegre.pro/ui/UIntegration/SendOrder', {
       method: 'POST',
       headers: {
@@ -313,18 +337,13 @@ function OrderScreen({ navigation }) {
                         </View>
                         <View style={{ flex: 1, flexDirection: 'row' }}>
                           <NumericInput
-                            onChange={value => {
-                              const buffer: any = productsQuantity.map((item) => {
-                                item.lineID === product.lineID ? { ...item, Qty: value } : item
-                              })
-                              setProductsQuantity(buffer)
-                            }}
+                            onChange={value => numericInputHandler(product.lineID, value)}
                             value={product.qty}
                             minValue={0}
                             rounded
-                            iconSize={5}
-                            totalWidth={80}
-                            totalHeight={38}
+                            iconSize={8}
+                            totalWidth={78}
+                            totalHeight={37}
                             type='up-down'
                           />
                         </View>
