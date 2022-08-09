@@ -13,6 +13,7 @@ import { Box, Text, ImageBackground, TextInput, Button } from '@/atoms/'
 // Service/State Imports
 import { login } from '@/services/auth'
 import { categoriesAtom, productsAtom, userStateAtom } from '@/states/auth'
+import { MMKVLoader, useMMKVStorage } from "react-native-mmkv-storage";
 
 // Model Imports
 import { UserState } from '@/models/models'
@@ -24,7 +25,11 @@ type FormValues = {
   password: string;
 }
 
+const MMKV = new MMKVLoader().initialize();
+
 function LoginScreen() {
+
+  const [userLoginAsync, setUserLoginAsync] = useMMKVStorage("userLoginAsync", MMKV, { phoneNumber: "", password: "" })
 
   const [isLoading, setIsLoading] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
@@ -41,6 +46,13 @@ function LoginScreen() {
         console.log(buffer, 'Deneme')
         setUserState(buffer)
         console.log(userState)
+        if (rememberMe) {
+          setUserLoginAsync({
+            phoneNumber: values.phoneNumber,
+            password: values.password
+          })
+          console.log("MMKV ---> " + userLoginAsync.phoneNumber)
+        }
       })
       .catch((err) => {
         console.log(err)

@@ -11,7 +11,6 @@ import ProfileScreen from '@/screens/Profile'
 import ProductScreen from '@/screens/product'
 import FeedbackScreen from '@/screens/feedback'
 import { ForgetPassword } from './screens/forget-password'
-import { Branches } from './screens/branches'
 import SplashScreen from './screens/splash-screen'
 
 
@@ -59,13 +58,6 @@ export default function Navigations() {
       <Stack.Screen
         name="ForgetPassword"
         component={ForgetPassword}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Branches"
-        component={Branches}
         options={{
           headerShown: false,
         }}

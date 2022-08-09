@@ -4,17 +4,54 @@ import { useNavigation } from "@react-navigation/native"
 import { StackActions } from '@react-navigation/native'
 
 import { useEffect } from "react"
+import { MMKVLoader, useMMKVStorage } from "react-native-mmkv-storage"
+import { login } from '@/services/auth'
+import { useAtom } from 'jotai'
+import { userStateAtom } from '@/states/auth'
+import { UserState } from '@/models/models'
+
+const MMKV = new MMKVLoader().initialize();
 
 const SplashScreen = () => {
 
     const navigation = useNavigation()
+    const [userState, setUserState] = useAtom(userStateAtom)
+    const [userLoginAsync,] = useMMKVStorage("userLoginAsync", MMKV)
+
+    const submitLogin = async (values: any) => {
+        const response = await login(values.phoneNumber, values.password)
+            .then((res: any) => {
+                const buffer: UserState = res ? res : {}
+                console.log(buffer, 'Deneme')
+                setUserState(buffer)
+                console.log(userState)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
     useEffect(() => {
         setTimeout(() => {
-            navigation.dispatch(
-                StackActions.replace('Auth')
-            );
-        }, 2400)
+            if (userLoginAsync.phoneNumber && userLoginAsync.password) {
+                submitLogin(userLoginAsync)
+            } else {
+                navigation.dispatch(
+                    StackActions.replace('Auth')
+                );
+            }
+        }, 1000)
     }, [])
+
+    useEffect(() => {
+        if (userState.status) {
+            navigation.dispatch(
+                StackActions.replace('Main')
+            );
+        } else {
+            console.log(userState.message)
+        }
+    }, [userState])
 
     return (
         <ImageBackground

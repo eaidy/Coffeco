@@ -97,18 +97,15 @@ function ProductsScreen() {
                   clickedCategory === categoryItem.categoriID &&
                   (<ActivityIndicator animating={true} color='#1B854B' style={{}} />)
                 }
-                {
-                  clickedCategory !== categoryItem.categoriID &&
-                  (<Text
-                    style={
-                      activeCategoryID === categoryItem.categoriID
-                        ? [styles.navItemTextActive]
-                        : [styles.navItemText]
-                    }
-                  >
-                    {categoryItem.category}
-                  </Text>)
-                }
+                <Text
+                  style={
+                    activeCategoryID === categoryItem.categoriID
+                      ? [styles.navItemTextActive]
+                      : [styles.navItemText]
+                  }
+                >
+                  {categoryItem.category}
+                </Text>
               </Pressable>
             ))}
         </ScrollView>

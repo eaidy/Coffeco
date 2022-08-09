@@ -8,6 +8,7 @@ import Navigations from '@/navs'
 
 const App = () => {
   const [activeTheme] = useAtom(activeThemeAtom)
+
   return (
     <NavigationContainer>
       <ThemeProvider theme={activeTheme}>

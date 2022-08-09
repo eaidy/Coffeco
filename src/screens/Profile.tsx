@@ -22,6 +22,7 @@ import { fetchData } from '@/services/methods'
 
 // Service Imports
 import { userInfoStateAtom, userStateAtom } from '@/states/auth'
+import { MMKVLoader, useMMKVStorage } from "react-native-mmkv-storage";
 
 type PastOrders = {
   orders: Array<Object>;
@@ -29,9 +30,14 @@ type PastOrders = {
   variants: Array<Object>;
 }
 
+const MMKV = new MMKVLoader().initialize();
+
 function ProfileScreen() {
 
   const navigation = useNavigation()
+
+  const [, setUserLoginAsync] = useMMKVStorage("userLoginAsync", MMKV)
+
 
   const [userState, setUserState] = useAtom(userStateAtom)
   const [userInfoState, setUserInfoState] = useAtom(userInfoStateAtom)
@@ -43,19 +49,23 @@ function ProfileScreen() {
   })
 
   useEffect(() => {
-    fetchData('MyOrders', {
-      method: 'POST',
-      authToken: userState.data
-    })
-      .then((res) => {
-        const buffer = res
-        setPastOrders(buffer)
-        console.log(buffer)
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData('MyOrders', {
+        method: 'POST',
+        authToken: userState.data
       })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [])
+        .then((res) => {
+          const buffer = res
+          setPastOrders(buffer)
+          console.log(buffer)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const repeatOrder = (orderID: Number) => {
     Alert.alert(
@@ -101,7 +111,7 @@ function ProfileScreen() {
         password: ''
       }
     })
-    console.log(userState, userInfoState)
+    setUserLoginAsync({ phoneNumber: "", password: "" })
     navigation.reset({
       index: 0,
       routes: [{ name: 'Auth' }],
@@ -132,161 +142,165 @@ function ProfileScreen() {
             <View style={styles.boxTitle}>
               <Text style={styles.boxTitleText}>Geçmiş Siparişlerim</Text>
             </View>
-            {
-              pastOrders &&
-              pastOrders.orders.filter((order: any) =>
-                order.siparisDurumS === 'YeniSiparis'
-              ).reverse().map((order: any, index) =>
-              (
-                <View
-                  style={styles.box}
-                  key={index}
-                >
-                  <View style={styles.boxTitle}>
-                    <Text style={styles.boxTitleTextSmall}>
-                      {moment(order.deliveryDate).format("DD.MM.YYYY hh:mm")}
-                    </Text>
-                    <Pressable
-                      style={styles.boxTitleRemove}
-                      onPress={() => repeatOrder(order.orderID)}
-                    >
-                      <Text style={styles.boxTitleRemoveText}>
-                        Siparişi Tekrarla
+            <ScrollView
+              nestedScrollEnabled={true}
+              style={{ maxHeight: '40%' }}
+            >
+              {
+                pastOrders &&
+                pastOrders.orders.filter((order: any) =>
+                  order.siparisDurumS === 'YeniSiparis'
+                ).reverse().map((order: any, index) =>
+                (
+                  <View
+                    style={styles.box}
+                    key={index}
+                  >
+                    <View style={styles.boxTitle}>
+                      <Text style={styles.boxTitleTextSmall}>
+                        {moment(order.deliveryDate).format("DD.MM.YYYY hh:mm")}
                       </Text>
-                    </Pressable>
-                  </View>
-                  <View style={styles.boxContent}>
-                    {
-                      pastOrders.orderLines &&
-                      pastOrders.orderLines.filter((ordersLines: any) =>
-                        ordersLines.orderID === order.orderID
-                      ).map((orderLine: any, indexLine) =>
-                      (
-                        <View
-                          style={styles.product}
-                          key={indexLine}
-                        >
-                          <View style={styles.productLeft}>
-                            <Image
-                              style={styles.productImage}
-                              source={require('../assets/images/product.png')}
-                            />
-                            <View style={styles.productContent}>
-                              <Text style={styles.productTitle}>
-                                {orderLine.description}
-                              </Text>
-                              {
-                                pastOrders.variants &&
-                                pastOrders.variants.filter((variant: any) =>
-                                  variant.orderID === order.orderID &&
-                                  variant.lineID === orderLine.lineID
-                                ).map((variant: any, indexVariant) =>
-                                (
-                                  <Text
-                                    style={styles.productTitleSmall}
-                                    key={indexVariant}
-                                  >
-                                    {variant.priceDescription}
-                                  </Text>
-                                )
-                                )
-                              }
-                            </View>
-                          </View>
-                          <Text style={styles.productPrice}>{orderLine.price}₺</Text>
-                        </View>
-                      )
-                      )
-                    }
-
-                    <Text style={styles.productPrice}> Toplam: {' '}
+                      <Pressable
+                        style={styles.boxTitleRemove}
+                        onPress={() => repeatOrder(order.orderID)}
+                      >
+                        <Text style={styles.boxTitleRemoveText}>
+                          Siparişi Tekrarla
+                        </Text>
+                      </Pressable>
+                    </View>
+                    <View style={styles.boxContent}>
                       {
-                        pastOrders.orderLines.filter((orderLine: any) =>
-                          orderLine.orderID === order.orderID)
-                          .reduce(
-                            (accm: Number, curr: any) => accm += curr.price
-                            , 0).toFixed(1)
-                      }₺
-                    </Text>
-                  </View>
-                </View>
-              )
-              )
-            }
-
-            {
-              pastOrders &&
-              pastOrders.orders.filter((order: any) =>
-                order.siparisDurumS === 'TeslimEdildi'
-              ).reverse().map((order: any, index) =>
-              (
-                <View
-                  style={styles.box}
-                  key={index}
-                >
-                  <View style={styles.boxTitle}>
-                    <Text style={styles.boxTitleTextSmall}>
-                      {order.deliveryDate}
-                    </Text>
-                    <Pressable
-                      style={styles.boxTitleRemove}
-                      onPress={() => repeatOrder(order.orderID)}
-                    >
-                      <Text style={styles.boxTitleRemoveText}>
-                        Siparişi Tekrarla
-                      </Text>
-                    </Pressable>
-                  </View>
-                  <View style={styles.boxContent}>
-                    {
-                      pastOrders.orderLines &&
-                      pastOrders.orderLines.filter((ordersLines: any) =>
-                        ordersLines.orderID === order.orderID
-                      ).map((orderLine: any, indexLine) =>
-                      (
-                        <View
-                          style={styles.product}
-                          key={indexLine}
-                        >
-                          <View style={styles.productLeft}>
-                            <Image
-                              style={styles.productImage}
-                              source={require('../assets/images/product.png')}
-                            />
-                            <View style={styles.productContet}>
-                              <Text style={styles.productTitle}>
-                                {orderLine.description}
-                              </Text>
-                              {
-                                pastOrders.variants &&
-                                pastOrders.variants.filter((variant: any) =>
-                                  variant.orderID === order.orderID &&
-                                  variant.lineID === orderLine.lineID
-                                ).map((variant: any, indexVariant) =>
-                                (
-                                  <Text
-                                    style={styles.productTitleSmall}
-                                    key={indexVariant}
-                                  >
-                                    {variant.priceDescription}
-                                  </Text>
-                                )
-                                )
-                              }
+                        pastOrders.orderLines &&
+                        pastOrders.orderLines.filter((ordersLines: any) =>
+                          ordersLines.orderID === order.orderID
+                        ).map((orderLine: any, indexLine) =>
+                        (
+                          <View
+                            style={styles.product}
+                            key={indexLine}
+                          >
+                            <View style={styles.productLeft}>
+                              <Image
+                                style={styles.productImage}
+                                source={require('../assets/images/product.png')}
+                              />
+                              <View style={styles.productContent}>
+                                <Text style={styles.productTitle}>
+                                  {orderLine.description}
+                                </Text>
+                                {
+                                  pastOrders.variants &&
+                                  pastOrders.variants.filter((variant: any) =>
+                                    variant.orderID === order.orderID &&
+                                    variant.lineID === orderLine.lineID
+                                  ).map((variant: any, indexVariant) =>
+                                  (
+                                    <Text
+                                      style={styles.productTitleSmall}
+                                      key={indexVariant}
+                                    >
+                                      {variant.priceDescription}
+                                    </Text>
+                                  )
+                                  )
+                                }
+                              </View>
                             </View>
+                            <Text style={styles.productPrice}>{orderLine.price}₺</Text>
                           </View>
-                          <Text style={styles.productPrice}>{orderLine.price}₺</Text>
-                        </View>
-                      )
-                      )
-                    }
+                        )
+                        )
+                      }
 
-                    <Text style={styles.productPrice}>Toplam : 19 TL</Text>
+                      <Text style={styles.productPrice}> Toplam: {' '}
+                        {
+                          pastOrders.orderLines.filter((orderLine: any) =>
+                            orderLine.orderID === order.orderID)
+                            .reduce(
+                              (accm: Number, curr: any) => accm += curr.price
+                              , 0).toFixed(1)
+                        }₺
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              )
-              )
-            }
+                )
+                )
+              }
+              {
+                pastOrders &&
+                pastOrders.orders.filter((order: any) =>
+                  order.siparisDurumS === 'TeslimEdildi'
+                ).reverse().map((order: any, index) =>
+                (
+                  <View
+                    style={styles.box}
+                    key={index}
+                  >
+                    <View style={styles.boxTitle}>
+                      <Text style={styles.boxTitleTextSmall}>
+                        {order.deliveryDate}
+                      </Text>
+                      <Pressable
+                        style={styles.boxTitleRemove}
+                        onPress={() => repeatOrder(order.orderID)}
+                      >
+                        <Text style={styles.boxTitleRemoveText}>
+                          Siparişi Tekrarla
+                        </Text>
+                      </Pressable>
+                    </View>
+                    <View style={styles.boxContent}>
+                      {
+                        pastOrders.orderLines &&
+                        pastOrders.orderLines.filter((ordersLines: any) =>
+                          ordersLines.orderID === order.orderID
+                        ).map((orderLine: any, indexLine) =>
+                        (
+                          <View
+                            style={styles.product}
+                            key={indexLine}
+                          >
+                            <View style={styles.productLeft}>
+                              <Image
+                                style={styles.productImage}
+                                source={require('../assets/images/product.png')}
+                              />
+                              <View style={styles.productContet}>
+                                <Text style={styles.productTitle}>
+                                  {orderLine.description}
+                                </Text>
+                                {
+                                  pastOrders.variants &&
+                                  pastOrders.variants.filter((variant: any) =>
+                                    variant.orderID === order.orderID &&
+                                    variant.lineID === orderLine.lineID
+                                  ).map((variant: any, indexVariant) =>
+                                  (
+                                    <Text
+                                      style={styles.productTitleSmall}
+                                      key={indexVariant}
+                                    >
+                                      {variant.priceDescription}
+                                    </Text>
+                                  )
+                                  )
+                                }
+                              </View>
+                            </View>
+                            <Text style={styles.productPrice}>{orderLine.price}₺</Text>
+                          </View>
+                        )
+                        )
+                      }
+
+                      <Text style={styles.productPrice}>Toplam : 19 TL</Text>
+                    </View>
+                  </View>
+                )
+                )
+              }
+            </ScrollView>
             <View style={styles.box}>
               <View style={styles.boxTitle}>
                 <Text style={styles.boxTitleText}>Kişisel Bilgiler</Text>

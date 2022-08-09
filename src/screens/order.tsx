@@ -2,7 +2,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useAtom } from 'jotai'
-import { StackActions } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 
 
 // Component Imports
@@ -40,7 +40,9 @@ type SendOrder = {
   Bonus?: Boolean;
 }
 
-function OrderScreen({ navigation }) {
+function OrderScreen() {
+
+  const navigation = useNavigation()
 
   const [arbitraryTime, setArbitraryTime] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -294,11 +296,30 @@ function OrderScreen({ navigation }) {
               <View style={styles.boxContent}>
                 {
                   !basketInfo.orderID && (
-                    <Text
-                      style={{ textAlign: 'center', fontFamily: 'Nunito-Bold' }}
-                    >
-                      Sepetiniz boş
-                    </Text>
+                    <View>
+                      <Text
+                        style={{ textAlign: 'center', fontFamily: 'Nunito-SemiBold' }}
+                      >
+                        Sepetiniz boş...
+                      </Text>
+                      <View style={{ alignSelf: 'center', padding: 40 }}>
+                        <SvgXml
+                          xml={Icons.iconBasket}
+                          width="150"
+                          height="150"
+                          fill={'gray'}
+                        />
+                      </View>
+                      <Pressable
+                        onPress={() => navigation.navigate('Products')}
+                        style={{ padding: 5 }}
+                      >
+                        <Text style={{ fontFamily: 'Nunito-Regular', color: '#1B854B', textAlign: 'center' }}>
+                          Ürünlere göz at!
+                        </Text>
+                      </Pressable>
+
+                    </View>
                   )
                 }
                 {
