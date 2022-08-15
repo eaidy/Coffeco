@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Header from '@/components/header'
-import { ScrollView, View } from 'react-native'
+import { Alert, ScrollView, View } from 'react-native'
 import { Image, StyleSheet } from 'react-native'
 import { Pressable, ImageBackground, Text } from '@/atoms'
 //import { NavigationContainer } from '@react-navigation/native'
@@ -10,16 +10,12 @@ import { userInfoStateAtom, userStateAtom } from '@/states/auth'
 import { useAtom } from 'jotai'
 import moment from 'moment'
 import { backgroundColor } from '@shopify/restyle'
+import { SvgXml } from 'react-native-svg'
+import { Icons } from '@/constants'
 
 type HomeContainer = {
   campaign: Array<Object>
   bonus: Number
-}
-
-type CurrentOrder = {
-  order?: number
-  orderLines?: Array<Object>
-  variants?: Array<Object>
 }
 
 function HomeScreen() {
@@ -27,16 +23,12 @@ function HomeScreen() {
 
   const [homeContainer, setHomeContainer] = useState<HomeContainer>({
     campaign: [],
-    bonus: 0,
+    bonus: 0
   })
 
   const [userState] = useAtom(userStateAtom)
   const [userInfoState, setUserInfoState] = useAtom(userInfoStateAtom)
-  const [currentOrder, setCurrentOrder] = useState<Object>({
-    order: null,
-    orderLines: null,
-    variants: null
-  })
+  const [currentOrder, setCurrentOrder] = useState(null)
 
 
   useEffect(() => {
@@ -47,6 +39,8 @@ function HomeScreen() {
       })
         .then(res => {
           setHomeContainer(res)
+          setCurrentOrder(res.order)
+          console.log(res.order, currentOrder)
           setUserInfoState(() => {
             const {
               aciklama,
@@ -74,25 +68,6 @@ function HomeScreen() {
         .catch(err => {
           console.log(err)
         })
-      fetchData('MyOrders', {
-        method: 'POST',
-        authToken: userState.data
-      })
-        .then((res) => {
-          let buffer: CurrentOrder = {}
-          buffer.order = res.orders.some((order: any) => order.siparisDurumS === "YeniSiparis") ?
-            res.orders.find((order: any) => order.siparisDurumS === "YeniSiparis") : null
-          console.log(buffer.order)
-          if (buffer.order) {
-            buffer.orderLines = res.orderLines.filter((line: any) => line.orderID === buffer.order.orderID)
-            buffer.variants = res.variants.filter((variant: any) => variant.orderID === buffer.order.orderID)
-          }
-          setCurrentOrder(buffer)
-          console.log(buffer)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
     });
 
     return unsubscribe;
@@ -110,87 +85,58 @@ function HomeScreen() {
         >
           <View style={styles.wrapper}>
             {
-              currentOrder.order &&
+              !currentOrder &&
+              (<Pressable
+                style={{
+                  backgroundColor: '#1B854B',
+                  borderRadius: 14,
+                  width: '100%',
+                  alignItems: 'center',
+                  marginBottom: 10
+                }}
+                onPress={() => navigation.navigate('Products')}
+              >
+                <View
+                  style={{ flex: 1, flexDirection: 'row', padding: 10 }}
+                >
+                  <SvgXml
+                    xml={Icons.iconCoffee}
+                    width="21"
+                    height="21"
+                    fill='#fff'
+                    style={{ marginRight: 8 }}
+                  />
+                  <Text style={{ color: '#fff' }}>Hemen Siparişini Oluştur</Text>
+                </View>
+              </Pressable>)
+            }
+            {
+              currentOrder &&
               (
                 <View style={styles.currentOrder}>
                   <View style={styles.orderStatus}>
                     {
-                      currentOrder.order.siparisDurum === 0 ?
+                      currentOrder.siparisDurum === 20 ?
                         (<Text style={{
                           textAlign: 'center',
-                          fontFamily: 'Nunito-Regular',
-                          color: '#1B854B'
+                          fontFamily: 'Nunito-SemiBold',
+                          color: '#1B854B',
+                          fontSize: 15
                         }}
                         >
-                          Siparişiniz Hazırlanıyor
+                          Siparişiniz Hazır, {currentOrder.branch}nden Teslim Alabilirsiniz
                         </Text>) : (<Text style={{
                           textAlign: 'center',
-                          fontFamily: 'Nunito-Regular',
-                          color: '#1B854B'
+                          fontFamily: 'Nunito-SemiBold',
+                          color: '#1B854B',
+                          fontSize: 15,
+
                         }}
                         >
-                          Siparişiniz Hazır
+                          Siparişiniz Hazırlanıyor...
                         </Text>)
 
                     }
-                  </View>
-                  <View
-                    style={styles.box}
-                  >
-                    <View style={styles.boxTitle}>
-                      <Text style={styles.boxTitleTextSmall}>
-                        {moment(currentOrder.order.deliveryDate).format("DD.MM.YYYY hh:mm")}
-                      </Text>
-                    </View>
-                    <View style={styles.boxContent}>
-                      {
-                        currentOrder.orderLines &&
-                        currentOrder.orderLines.map((orderLine: any, indexLine: any) =>
-                        (
-                          <View
-                            style={styles.product}
-                            key={indexLine}
-                          >
-                            <View style={styles.productLeft}>
-                              <Image
-                                style={styles.productImage}
-                                source={require('../assets/images/product.png')}
-                              />
-                              <View style={styles.productContent}>
-                                <Text style={styles.productTitle}>
-                                  {orderLine.description}
-                                </Text>
-                                {
-                                  currentOrder.variants &&
-                                  currentOrder.variants.filter((variant: any) =>
-                                    variant.lineID === orderLine.lineID
-                                  ).map((variant: any, indexVariant) =>
-                                  (
-                                    <Text
-                                      style={styles.productTitleSmall}
-                                      key={indexVariant}
-                                    >
-                                      {variant.priceDescription}
-                                    </Text>
-                                  )
-                                  )
-                                }
-                              </View>
-                            </View>
-                            <Text style={styles.productPrice}>{orderLine.price}₺</Text>
-                          </View>
-                        )
-                        )
-                      }
-
-                      <Text style={styles.productPrice}> Toplam: {' '}
-                        {
-                          currentOrder.orderLines.reduce(
-                            (accm: Number, curr: any) => accm += curr.price
-                            , 0).toFixed(1)
-                        }₺
-                      </Text>
-                    </View>
                   </View>
                 </View>
               )
@@ -214,14 +160,42 @@ function HomeScreen() {
             <View style={styles.slider}>
               {homeContainer.campaign &&
                 homeContainer.campaign.map((camp: any, index) => (
-                  <Pressable style={styles.sliderItem} key={index}>
-                    <Image
-                      style={styles.sliderImg}
-                      source={{
-                        uri: camp.image,
+                  <View
+                    key={index}
+                  >
+                    <Pressable
+                      style={styles.sliderItem}
+                      onPress={() => {
+                        Alert.alert(
+                          "Uyarı",
+                          "Henüz geliştirme aşamasındadır.",
+                          [
+                            {
+                              text: "Çıkış",
+                              onPress: () => console.log("Cancel Pressed"),
+                              style: "cancel"
+                            },
+                            {
+                              text: "Tamam",
+                              onPress: () => console.log("OK Pressed")
+                            }
+                          ]
+                        )
                       }}
-                    />
-                  </Pressable>
+                    >
+                      <Image
+                        style={styles.sliderImg}
+                        source={{
+                          uri: camp.image,
+                        }}
+                      />
+                    </Pressable>
+                    <View>
+                      <Text style={{ fontSize: 14, fontFamily: 'Nunito-Regular', textAlign: 'center' }}>
+                        {camp.shortDescription}
+                      </Text>
+                    </View>
+                  </View>
                 ))}
               {/* <Pressable style={styles.sliderItem}>
                 <Image
@@ -337,7 +311,6 @@ const styles = StyleSheet.create({
     width: 'auto',
   },
   sliderImg: {
-    borderRadius: 14,
     margin: 'auto',
     marginBottom: 14,
     height: 280,
@@ -353,11 +326,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
     borderRadius: 14,
     marginBottom: 14,
-    padding: 6,
+    padding: 10,
     elevation: 1
   },
   orderStatus: {
-    paddingBottom: 8
+
   },
 
   boxTitle: {
@@ -380,6 +353,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Nunito-Regular',
     color: '#0b0b0b',
+    textAlign: 'center'
   },
   product: {
     display: 'flex',

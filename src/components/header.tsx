@@ -40,6 +40,7 @@ export default function Header() {
           userState.status &&
           (<Pressable
             style={styles.profile}
+            onPress={() => navigation.navigate('Profile')}
           >
             <Image
               style={styles.profileImg}

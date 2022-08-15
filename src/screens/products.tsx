@@ -95,7 +95,7 @@ function ProductsScreen() {
               >
                 {
                   clickedCategory === categoryItem.categoriID &&
-                  (<ActivityIndicator animating={true} color='#1B854B' style={{}} />)
+                  (<ActivityIndicator size={19} animating={true} color='#1B854B' style={{}} />)
                 }
                 <Text
                   style={
@@ -112,32 +112,38 @@ function ProductsScreen() {
         <ScrollView contentContainerStyle={styles.productList}>
           {products &&
             products.map((product: Product) => (
-              <View style={styles.product} key={product.productID}>
-                <Image
-                  style={styles.productImg}
-                  source={
-                    product.photo !== 'https://panel.coffeco.com.tr/'
-                      ? { uri: product.photo }
-                      : require('@/assets/images/product.png')
-                  }
-                />
-                <View style={styles.productBottom}>
-                  <Text style={styles.productTitle}>{product.productName}</Text>
-                  <Text style={styles.productText}>
-                    {product.shortDescription}
-                  </Text>
-                  <Text style={styles.productBonus}>
-                    {product.bonus.toFixed(2)} bonus kazan
-                  </Text>
-                  <Text style={styles.productPrice}>{product.price}</Text>
-                  <Pressable
-                    style={styles.productPlus}
-                    onPress={() => productPressHandler(product.productID)}
-                  >
-                    <Text style={styles.productPlusText}>+</Text>
-                  </Pressable>
+              <Pressable
+                style={styles.product}
+                key={product.productID}
+                onPress={() => productPressHandler(product.productID)}
+              >
+                <View>
+                  <Image
+                    style={styles.productImg}
+                    source={
+                      product.photo !== 'https://panel.coffeco.com.tr/'
+                        ? { uri: product.photo }
+                        : require('@/assets/images/product.png')
+                    }
+                  />
+                  <View style={styles.productBottom}>
+                    <Text style={styles.productTitle}>{product.productName}</Text>
+                    <Text style={styles.productText}>
+                      {product.shortDescription}
+                    </Text>
+                    <Text style={styles.productBonus}>
+                      {product.bonus.toFixed(2)} bonus kazan
+                    </Text>
+                    <Text style={styles.productPrice}>{product.price}</Text>
+                    <View
+                      style={styles.productPlus}
+                    >
+                      <Text style={styles.productPlusText}>+</Text>
+                    </View>
+                  </View>
                 </View>
-              </View>
+              </Pressable>
+
             ))}
         </ScrollView>
       </View>

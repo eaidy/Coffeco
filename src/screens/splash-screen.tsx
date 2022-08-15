@@ -33,7 +33,7 @@ const SplashScreen = () => {
 
     useEffect(() => {
         setTimeout(() => {
-            if (userLoginAsync.phoneNumber && userLoginAsync.password) {
+            if (userLoginAsync && userLoginAsync.phoneNumber && userLoginAsync.password) {
                 submitLogin(userLoginAsync)
             } else {
                 navigation.dispatch(

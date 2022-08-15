@@ -207,7 +207,7 @@ function SignupScreen({ navigation }) {
                     <Box marginBottom="sm">
                       <TextInput
                         secureTextEntry={true}
-                        placeholder="Şifre Onay"
+                        placeholder="Şifreyi Tekrarla"
                         value={values.RePassword}
                         onChangeText={handleChange('RePassword')}
                         onBlur={handleBlur('RePassword')}
