@@ -4,15 +4,16 @@ import { useNavigation } from '@react-navigation/native'
 import { Alert } from 'react-native'
 import { useAtom } from 'jotai'
 import moment from 'moment';
+import { useTheme } from '@shopify/restyle'
+import * as Yup from 'yup'
 
 // Component Imports
-import { Button, Text } from '@/atoms'
+import { Box, Button, Text, TextInput } from '@/atoms'
 import {
   Image,
   Pressable,
   ScrollView,
   StyleSheet,
-  TextInput,
   View,
 } from 'react-native'
 import Header from '@/components/header'
@@ -23,6 +24,30 @@ import { fetchData } from '@/services/methods'
 // Service Imports
 import { userInfoStateAtom, userStateAtom } from '@/states/auth'
 import { MMKVLoader, useMMKVStorage } from "react-native-mmkv-storage";
+import { Formik } from 'formik';
+import { RegisterFormModel } from '@/models/models';
+import { ActivityIndicator } from 'react-native-paper';
+
+const validationSchema = Yup.object({
+  Adi: Yup.string().trim().required('İsminizi giriniz'),
+  Soyadi: Yup.string().trim().required('Soyadınızı giriniz'),
+  Cep: Yup.string()
+    .trim()
+    .max(10, 'Numaranızı başında 0 olmadan giriniz.')
+    .min(10, 'Numaranızı başında 0 olmadan giriniz.')
+    .required('Telefon numarası gereklidir'),
+  Email: Yup.string()
+    .email('Geçersiz E-Posta adresi')
+    .required('E-Postanızı giriniz'),
+  Password: Yup.string()
+    .trim()
+    .min(8, 'Şifre çok kısa')
+    .required('Şifre girmediniz'),
+  RePassword: Yup.string().equals(
+    [Yup.ref('Password'), null],
+    'Şifreler uyuşmuyor'
+  ),
+})
 
 type PastOrders = {
   orders: Array<Object>;
@@ -34,6 +59,7 @@ const MMKV = new MMKVLoader().initialize();
 
 function ProfileScreen() {
 
+  const { colors, spacing } = useTheme()
   const navigation = useNavigation()
 
   const [, setUserLoginAsync] = useMMKVStorage("userLoginAsync", MMKV)
@@ -42,11 +68,21 @@ function ProfileScreen() {
   const [userState, setUserState] = useAtom(userStateAtom)
   const [userInfoState, setUserInfoState] = useAtom(userInfoStateAtom)
 
+  const [isLoading, setIsLoading] = useState(false)
   const [pastOrders, setPastOrders] = useState<PastOrders>({
     orders: [],
     orderLines: [],
     variants: []
   })
+
+  const initialFormValues: RegisterFormModel = {
+    Adi: userInfoState.adi,
+    Soyadi: userInfoState.soyadi,
+    Cep: userInfoState.gsm,
+    Email: userInfoState.email,
+    Password: userInfoState.password,
+    RePassword: '',
+  }
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -67,6 +103,36 @@ function ProfileScreen() {
     return unsubscribe;
   }, [navigation]);
 
+  const submitUpdate = (values: Object) => {
+    setIsLoading(true)
+    fetch('https://api.entegre.pro/ui/UIntegration/UpdateUser', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${userState.data}`
+      },
+      body: JSON.stringify(values)
+    })
+      .then((res) => {
+        return res.json()
+      })
+      .then(res => {
+        console.log(res)
+        setIsLoading(false)
+        Alert.alert(
+          res.status ? "Güncelleme Başarılı" : "Hata",
+          res.message,
+          [
+            {
+              text: "Tamam",
+              onPress: () => navigation.navigate("Home")
+            }
+          ]
+        )
+      })
+      .catch(err => console.log(err))
+  }
+
   const repeatOrder = (orderID: Number) => {
     Alert.alert(
       "Uyarı",
@@ -83,10 +149,6 @@ function ProfileScreen() {
         }
       ]
     )
-  }
-
-  const handleUpdate = () => {
-    console.log('Handle Update')
   }
 
   const handleSignOut = () => {
@@ -223,44 +285,127 @@ function ProfileScreen() {
                 <Text style={styles.boxTitleText}>Kişisel Bilgiler</Text>
               </View>
               <View style={[styles.boxContent]}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ad Soyad"
-                  value={userInfoState.adi + ' ' + userInfoState.soyadi}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Telefon"
-                  value={userInfoState.gsm}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="E-Posta"
-                  value={userInfoState.email}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Şifre"
-                  secureTextEntry={true}
-                  value={userInfoState.password}
-                />
-                <TextInput style={styles.input} placeholder="Şifre Tekrar" secureTextEntry={true} />
+                <Formik
+                  initialValues={initialFormValues}
+                  validationSchema={validationSchema}
+                  onSubmit={(values) => submitUpdate(values)}
+                >
+                  {
+
+                    ({ handleChange,
+                      handleBlur,
+                      handleSubmit,
+                      values,
+                      errors,
+                      touched,
+                      isSubmitting }) => {
+                      return (
+                        <>
+                          <Box marginBottom="sm">
+                            <TextInput
+                              placeholder="Ad"
+                              placeholderTextColor={colors.neutral500}
+                              value={values.Adi}
+                              onChangeText={handleChange('Adi')}
+                              onBlur={handleBlur('Adi')}
+                            />
+                            <Text style={[styles.errorValidation]}>
+                              {touched.Adi && errors.Adi}
+                            </Text>
+                          </Box>
+                          <Box marginBottom="sm">
+                            <TextInput
+                              placeholder="Soyad"
+                              value={values.Soyadi}
+                              onChangeText={handleChange('Soyadi')}
+                              onBlur={handleBlur('Soyadi')}
+                              placeholderTextColor={colors.neutral500}
+                            />
+                            <Text style={[styles.errorValidation]}>
+                              {touched.Soyadi && errors.Soyadi}
+                            </Text>
+                          </Box>
+                          <Box marginBottom="sm">
+                            <TextInput
+                              placeholder="E-Posta"
+                              value={values.Email}
+                              onChangeText={handleChange('Email')}
+                              onBlur={handleBlur('Email')}
+                              placeholderTextColor={colors.neutral500}
+                            />
+                            <Text style={[styles.errorValidation]}>
+                              {touched.Email && errors.Email}
+                            </Text>
+                          </Box>
+                          <Box marginBottom="sm">
+                            <TextInput
+                              keyboardType="phone-pad"
+                              placeholder="Cep"
+                              value={values.Cep}
+                              onChangeText={handleChange('Cep')}
+                              onBlur={handleBlur('Cep')}
+                              placeholderTextColor={colors.neutral500}
+                            />
+                            <Text style={[styles.errorValidation]}>
+                              {touched.Cep && errors.Cep}
+                            </Text>
+                          </Box>
+                          <Box marginBottom="sm">
+                            <TextInput
+                              secureTextEntry={true}
+                              placeholder="Şifre"
+                              value={values.Password}
+                              onChangeText={handleChange('Password')}
+                              onBlur={handleBlur('Password')}
+                              placeholderTextColor={colors.neutral500}
+                            />
+                            <Text style={[styles.errorValidation]}>
+                              {touched.Password && errors.Password}
+                            </Text>
+                          </Box>
+                          <Box marginBottom="sm">
+                            <TextInput
+                              secureTextEntry={true}
+                              placeholder="Şifreyi Tekrarla"
+                              value={values.RePassword}
+                              onChangeText={handleChange('RePassword')}
+                              onBlur={handleBlur('RePassword')}
+                              placeholderTextColor={colors.neutral500}
+                            />
+                            <Text style={[styles.errorValidation]}>
+                              {touched.RePassword && errors.RePassword}
+                            </Text>
+                          </Box>
+                          {
+                            isLoading && (
+                              <ActivityIndicator
+                                color="#1B854B"
+                                style={{ marginBottom: 5 }}
+                              />
+                            )
+                          }
+                          <Button
+                            label="GÜNCELLE"
+                            onPress={handleSubmit}
+                            backgroundColor="buttonBackground"
+                            marginTop="sm"
+                            padding="md"
+                            borderRadius="sm"
+                            shadowColor="black"
+                            shadowOpacity={0.4}
+                            shadowRadius={8.3}
+                            elevation={20}
+                            shadowOffset={{ width: 0, height: 6 }}
+                          />
+                        </>
+                      )
+                    }
+                  }
+                </Formik>
               </View>
             </View>
           </View>
-          <Button
-            label="GÜNCELLE"
-            onPress={handleUpdate}
-            backgroundColor="buttonBackground"
-            marginTop="sm"
-            padding="md"
-            borderRadius="sm"
-            shadowColor="black"
-            shadowOpacity={0.4}
-            shadowRadius={8.3}
-            elevation={20}
-            shadowOffset={{ width: 0, height: 6 }}
-          />
+
         </View>
       </ScrollView>
     </>
@@ -529,6 +674,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 15
+  },
+  errorValidation: {
+    color: '#FF1E00',
+    fontSize: 12,
+    marginLeft: 8,
+    marginTop: 5,
+    fontFamily: 'Nunito-SemiBold',
   }
 })
 
