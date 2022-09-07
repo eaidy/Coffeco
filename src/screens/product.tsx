@@ -85,7 +85,7 @@ function ProductScreen({ route }: any) {
 
   useEffect(() => {
     let total = 0
-    total = (Qty * productResponse.product.price).toFixed(1) // varyant fiyatları eklenecek
+    total = Number((Qty * productResponse.product.price).toFixed(1)) // varyant fiyatları eklenecek
     setTotalPrice(total)
   }, [variantChilds, Qty])
 

@@ -40,7 +40,7 @@ function HomeScreen() {
         .then(res => {
           setHomeContainer(res)
           setCurrentOrder(res.order)
-          console.log(res.order, currentOrder)
+          console.log(res.cariID)
           setUserInfoState(() => {
             const {
               aciklama,

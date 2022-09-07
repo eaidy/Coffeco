@@ -162,11 +162,9 @@ const styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     justifyContent: 'space-between',
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
     alignItems: 'center',
     flexDirection: 'row',
-    height: 80,
+    height: 70,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
