@@ -520,7 +520,7 @@ function OrderScreen() {
                               dense
                               keyboardType="phone-pad"
                               mode='outlined'
-                              value={() => String(sendOrderInfo.DeliveryMinute)}
+                              value={String(sendOrderInfo.DeliveryMinute)}
                               onChangeText={text => setSendOrderInfo((prev) => {
                                 const buffer = prev
                                 buffer.DeliveryMinute = Number(text)

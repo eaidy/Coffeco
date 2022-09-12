@@ -10,6 +10,7 @@ type UserInfo = {
     adi: string;
     soyadi: string;
     password: string;
+    cariID: number;
 }
 
 // User States
@@ -27,7 +28,8 @@ export const userInfoStateAtom = atom<UserInfo>({
     gsm: '',
     adi: '',
     soyadi: '',
-    password: ''
+    password: '',
+    cariID: -1  // -1 means empty cariID
 })
 
 // Pages State

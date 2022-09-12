@@ -23,7 +23,7 @@ const QrScreen = () => {
                     style={[styles.qrCodeContainer]}
                 >
                     <QRCode
-                        value={userInfoState.email}
+                        value={String(userInfoState.cariID)}
                         size={300}
                     />
                     <View>

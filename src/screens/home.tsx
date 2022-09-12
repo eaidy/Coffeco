@@ -40,7 +40,6 @@ function HomeScreen() {
         .then(res => {
           setHomeContainer(res)
           setCurrentOrder(res.order)
-          console.log(res.order, currentOrder)
           setUserInfoState(() => {
             const {
               aciklama,
@@ -50,8 +49,11 @@ function HomeScreen() {
               email,
               password,
               cinsiyet,
-              bonus,
+              bonus
             } = res.user
+
+            const cariID = res.cariID
+
             let buffer = {
               aciklama,
               adi,
@@ -60,8 +62,10 @@ function HomeScreen() {
               email,
               password,
               cinsiyet,
-              bonus: homeContainer.bonus
+              bonus, //homeContainer.bonus
+              cariID
             }
+            console.log(buffer)
             return buffer
           })
         })
