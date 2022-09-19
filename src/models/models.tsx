@@ -18,7 +18,7 @@ export type Product = {
 export type ResponseModel = {
     status: boolean;
     message: string;
-    data: Object;
+    data: any;
 }
 
 export type Variant = {

@@ -19,9 +19,7 @@ target 'coffeeco' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  pod 'RNCCheckbox', :path => '../node_modules/@react-native-community/checkbox'
 
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   target 'coffeecoTests' do
     inherit! :complete

@@ -8,7 +8,7 @@ import { StackActions, useNavigation } from '@react-navigation/native';
 // Component Imports
 import { Text } from '@/atoms'
 import Header from '@/components/header'
-import { Image, Pressable, ScrollView, StyleSheet, View, TouchableHighlight, Modal } from 'react-native'
+import { Image, Pressable, ScrollView, StyleSheet, View, TouchableHighlight, Modal, Alert } from 'react-native'
 import { Icons } from '@/constants'
 import { SvgXml } from 'react-native-svg'
 import NumericInput from 'react-native-numeric-input'
@@ -154,7 +154,37 @@ function OrderScreen() {
   }, [deliveryTimes])
 
   const removeProduct = (orderID: Number, lineID: Number) => {
-    console.log('test')
+    Alert.alert(
+      "",
+      "Ürünü silmek istediğinizden emin misiniz ?",
+      [
+        {
+          text: "Ürünü Sil",
+          onPress: () => {
+            fetchData('RemoveBasketLine', {
+              method: 'POST',
+              authToken: userState.data,
+              body: { OrderID: orderID, LineID: lineID },
+            })
+              .then((res) => {
+                setBasketState(0)
+                Toast.showWithGravity('Ürün silindi.', Toast.LONG, Toast.TOP)
+                console.log(res)
+              })
+              .catch((err) => {
+                Toast.showWithGravity('Ürün silinemedi.', Toast.LONG, Toast.TOP)
+                console.log(err)
+              })
+            console.log("Ürün silindi.")
+          },
+          style: "cancel"
+        },
+        {
+          text: "Vazgeç",
+          onPress: () => console.log("Vazgeçildi.")
+        }
+      ]
+    )
   }
 
   const numericInputHandler = (lineID: Number, value: Number) => {
@@ -360,7 +390,7 @@ function OrderScreen() {
                           <NumericInput
                             onChange={value => numericInputHandler(product.lineID, value)}
                             value={product.qty}
-                            minValue={0}
+                            minValue={1}
                             rounded
                             iconSize={8}
                             totalWidth={78}
@@ -368,6 +398,17 @@ function OrderScreen() {
                             type='up-down'
                           />
                         </View>
+                        <Pressable
+                          onPress={() => removeProduct(basketInfo.orderID, product.lineID)}
+                          style={{ marginLeft: 10 }}
+                        >
+                          <SvgXml
+                            xml={Icons.iconDelete}
+                            width="24"
+                            height="24"
+                            fill="gray"
+                          />
+                        </Pressable>
                       </View>
                     )
                   })

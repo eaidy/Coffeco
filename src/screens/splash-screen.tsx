@@ -22,11 +22,11 @@ const SplashScreen = () => {
         const response = await login(values.phoneNumber, values.password)
             .then((res: any) => {
                 const buffer: UserState = res ? res : {}
-                console.log(buffer, 'Deneme')
                 setUserState(buffer)
-                console.log(userState)
             })
             .catch((err) => {
+                const buffer: UserState = { status: false, data: '', message: 'Hata' }
+                setUserState(buffer)
                 console.log(err)
             })
     }
