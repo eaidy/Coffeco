@@ -155,26 +155,30 @@ function OrderScreen() {
 
   const removeProduct = (orderID: Number, lineID: Number) => {
     Alert.alert(
-      "",
+      "Ürün Silinecek",
       "Ürünü silmek istediğinizden emin misiniz ?",
       [
         {
           text: "Ürünü Sil",
           onPress: () => {
-            fetchData('RemoveBasketLine', {
-              method: 'POST',
-              authToken: userState.data,
-              body: { OrderID: orderID, LineID: lineID },
-            })
-              .then((res) => {
-                setBasketState(0)
-                Toast.showWithGravity('Ürün silindi.', Toast.LONG, Toast.TOP)
-                console.log(res)
+            if (basketInfo.products.length !== 1) {
+              fetchData('RemoveBasketLine', {
+                method: 'POST',
+                authToken: userState.data,
+                body: { OrderID: orderID, LineID: lineID },
               })
-              .catch((err) => {
-                Toast.showWithGravity('Ürün silinemedi.', Toast.LONG, Toast.TOP)
-                console.log(err)
-              })
+                .then((res) => {
+                  setBasketState((prev) => { return prev + 1 })
+                  Toast.showWithGravity('Ürün silindi.', Toast.LONG, Toast.TOP)
+                  console.log(res)
+                })
+                .catch((err) => {
+                  Toast.showWithGravity('Ürün silinemedi.', Toast.LONG, Toast.TOP)
+                  console.log(err)
+                })
+            } else {
+              emptyTheBasket()
+            }
             console.log("Ürün silindi.")
           },
           style: "cancel"
@@ -279,7 +283,23 @@ function OrderScreen() {
     style: styles.boxTitleRemove,
     // onHideUnderlay: () => setIsPress(false),
     // onShowUnderlay: () => setIsPress(true),
-    onPress: () => emptyTheBasket(),
+    onPress: () => Alert.alert(
+      "Sepet'i Boşalt",
+      "Sepet'i boşaltmak istediğinizden emin misiniz ?",
+      [
+        {
+          text: "Sepet'i Boşalt",
+          onPress: () => {
+            emptyTheBasket()
+          },
+          style: "cancel"
+        },
+        {
+          text: "Vazgeç",
+          onPress: () => console.log("Vazgeçildi.")
+        }
+      ]
+    ),
   }
 
   return (

@@ -35,5 +35,5 @@ export const userInfoStateAtom = atom<UserInfo>({
 // Pages State
 export const categoriesAtom = atom([])
 export const productsAtom = atom([])
-export const basketAtom = atom<Number>(0)
+export const basketAtom = atom<number>(0)
 

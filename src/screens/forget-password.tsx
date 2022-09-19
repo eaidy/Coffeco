@@ -61,7 +61,7 @@ const ForgetPassword = ({ navigation }) => {
 
   const submitRequest = (values: any) => {
     setEmail(values.Email)
-    console.log(email)
+    console.log(values)
     setIsLoading(true)
     fetch('https://api.entegre.pro/ui/UIntegration/ForgotPassword', {
       method: 'POST',
@@ -153,9 +153,9 @@ const ForgetPassword = ({ navigation }) => {
                 !firstResponse.status &&
                 (
                   <Formik
-                    initialValues={{ Cep: '', Email: '' }}
+                    initialValues={{ Cep: '', Email: '', Password: '', RePassword: '', Soyadi: '' }}
                     validationSchema={validationSchemaOne}
-                    onSubmit={(values: { Cep: string; Email: string; }) => submitRequest(values)}
+                    onSubmit={(values: any) => submitRequest(values)}
                   >
                     {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
                       <>
