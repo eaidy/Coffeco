@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     },
     qrText: {
         fontSize: 16,
-        marginTop: 50
+        marginTop: 50,
+        color: "gray"
     }
 })

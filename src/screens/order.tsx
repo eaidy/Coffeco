@@ -544,9 +544,7 @@ function OrderScreen() {
                       <TextInput
                         placeholder='Notunuz...'
                         mode='outlined'
-                        value={() => {
-                          return sendOrderInfo.DeliveryNote
-                        }}
+                        value={sendOrderInfo.DeliveryNote}
                         onChangeText={(note) => setSendOrderInfo((prev) => {
                           const buffer = prev
                           buffer.DeliveryNote = note
