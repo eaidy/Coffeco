@@ -275,7 +275,7 @@ function ProductScreen({ route }: any) {
             <View style={styles.optionListFooter}>
               <NumericInput
                 onChange={value => setQty(value)}
-                minValue={0}
+                minValue={1}
                 rounded
                 iconSize={5}
                 totalWidth={100}

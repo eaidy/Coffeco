@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useTheme } from '@shopify/restyle'
 import { register } from '@/services/register'
 import * as Yup from 'yup'
-import { ActivityIndicator, MD2Colors } from 'react-native-paper'
+import { ActivityIndicator } from 'react-native-paper'
 // Component Imports
 import {
   KeyboardAvoidingView,
