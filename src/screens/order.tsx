@@ -44,6 +44,7 @@ function OrderScreen() {
 
   const navigation = useNavigation()
 
+  const [currentTime, setCurrentTime] = useState()
   const [arbitraryTime, setArbitraryTime] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
@@ -276,6 +277,18 @@ function OrderScreen() {
         console.log(err)
       })
   }
+
+  const getCurrentTime = () => {
+    let today = new Date();
+    let hours = (today.getHours() < 10 ? '0' : '') + today.getHours();
+    let minutes = (today.getMinutes() < 10 ? '0' : '') + today.getMinutes();
+    return hours + ':' + minutes;
+  }
+
+  const timeInterval = setInterval(() => {
+    let curTime = getCurrentTime()
+    setCurrentTime(curTime)
+  }, 10000)
 
   const touchProps = {
     activeOpacity: 1,
@@ -549,7 +562,7 @@ function OrderScreen() {
                             >
                               {deliveryTime.duration + 'dk'}
                             </Text>
-                            <Text style={deliveryTime.isActive ? { color: 'white' } : { color: 'gray' }}>{deliveryTime.time}</Text>
+                            <Text style={deliveryTime.isActive ? { color: 'white' } : { color: 'gray' }}>{currentTime}</Text>
                           </Pressable>
                         )
                         )

@@ -136,51 +136,67 @@ function ProfileScreen() {
       .catch(err => console.log(err))
   }
 
-  const repeatOrder = (orderID: Number) => {
+  // const repeatOrder = (orderID: Number) => {
+  //   Alert.alert(
+  //     "Uyarı",
+  //     "Siparişi tekrarla henüz geliştirme aşamasındadır.",
+  //     [
+  //       {
+  //         text: "Cancel",
+  //         onPress: () => console.log("Cancel Pressed"),
+  //         style: "cancel"
+  //       },
+  //       {
+  //         text: "OK",
+  //         onPress: () => console.log("OK Pressed")
+  //       }
+  //     ]
+  //   )
+  // }
+
+  const handleSignOut = () => {
     Alert.alert(
-      "Uyarı",
-      "Siparişi tekrarla henüz geliştirme aşamasındadır.",
+      "Çıkış",
+      "Çıkış yapmak istediğinizden emin misiniz ?",
       [
         {
-          text: "Cancel",
+          text: "İptal",
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel"
         },
         {
-          text: "OK",
-          onPress: () => console.log("OK Pressed")
+          text: "Çıkış Yap",
+          onPress: () => {
+            setUserState((prev) => {
+              return {
+                ...prev,
+                data: '',
+                message: '',
+                status: false
+              }
+            })
+            setUserInfoState((prev) => {
+              return {
+                ...prev,
+                aciklama: '',
+                bonus: 0,
+                cinsiyet: 0,
+                email: '',
+                gsm: '',
+                adi: '',
+                soyadi: '',
+                password: ''
+              }
+            })
+            setUserLoginAsync({ phoneNumber: "", password: "" })
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Auth' }],
+            })
+          }
         }
       ]
     )
-  }
-
-  const handleSignOut = () => {
-    setUserState((prev) => {
-      return {
-        ...prev,
-        data: '',
-        message: '',
-        status: false
-      }
-    })
-    setUserInfoState((prev) => {
-      return {
-        ...prev,
-        aciklama: '',
-        bonus: 0,
-        cinsiyet: 0,
-        email: '',
-        gsm: '',
-        adi: '',
-        soyadi: '',
-        password: ''
-      }
-    })
-    setUserLoginAsync({ phoneNumber: "", password: "" })
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Auth' }],
-    })
   }
 
   return (
@@ -234,14 +250,14 @@ function ProfileScreen() {
                           <Text style={styles.boxTitleTextSmall}>
                             {moment(order.deliveryDate).format("DD.MM.YYYY  hh:mm")}
                           </Text>
-                          <Pressable
+                          {/* <Pressable
                             style={styles.boxTitleRemove}
                             onPress={() => repeatOrder(order.orderID)}
                           >
                             <Text style={styles.boxTitleRemoveText}>
                               Siparişi Tekrarla
                             </Text>
-                          </Pressable>
+                          </Pressable> */}
                         </View>
                         <View style={styles.boxContent}>
                           {

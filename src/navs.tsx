@@ -19,7 +19,7 @@ const Stack = createNativeStackNavigator()
 export default function Navigations() {
 
   return (
-    <Stack.Navigator initialRouteName="Splash">
+    <Stack.Navigator initialRouteName="Auth">
       <Stack.Screen
         name="Auth"
         component={AuthNavigation}

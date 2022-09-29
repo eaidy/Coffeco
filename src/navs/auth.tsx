@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { useTheme } from '@shopify/restyle'
 import { Theme } from '@/themes'
@@ -7,6 +7,7 @@ import LoginScreen from '@/screens/login'
 import SignupScreen from '@/screens/signup'
 import HomeScreen from '@/screens/home'
 import Header from '@/components/header'
+import SplashScreen from 'react-native-splash-screen'
 
 export type AuthNavigation = {
   Login: undefined
