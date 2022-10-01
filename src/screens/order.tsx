@@ -44,7 +44,6 @@ function OrderScreen() {
 
   const navigation = useNavigation()
 
-  const [currentTime, setCurrentTime] = useState()
   const [arbitraryTime, setArbitraryTime] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
@@ -65,9 +64,9 @@ function OrderScreen() {
   })
   const [activeBranchId, setActiveBranchId] = useState<Number>(0)
   const [deliveryTimes, setDeliveryTimes] = useState([
-    { duration: 15, time: '16:30', isActive: false },
-    { duration: 30, time: '16:45', isActive: false },
-    { duration: 45, time: '17:00', isActive: false },
+    { duration: 15, time: '', isActive: false },
+    { duration: 30, time: '', isActive: false },
+    { duration: 45, time: '', isActive: false },
   ])
 
   const [userState,] = useAtom(userStateAtom)
@@ -278,17 +277,35 @@ function OrderScreen() {
       })
   }
 
-  const getCurrentTime = () => {
+  const calculateDeliveryTime = (duration: number) => {
     let today = new Date();
-    let hours = (today.getHours() < 10 ? '0' : '') + today.getHours();
-    let minutes = (today.getMinutes() < 10 ? '0' : '') + today.getMinutes();
+    let hours = '';
+    let minutes = '';
+    if ((today.getMinutes() + duration) < 60) {
+      minutes = `${today.getMinutes() + duration}`
+      hours = `${today.getHours()}`
+    }
+    else {
+      minutes = `${today.getMinutes() + duration - 60}`
+      hours = `${today.getHours() + 1}`
+    }
     return hours + ':' + minutes;
   }
 
   const timeInterval = setInterval(() => {
-    let curTime = getCurrentTime()
-    setCurrentTime(curTime)
-  }, 10000)
+    setDeliveryTimes((prev) => {
+      const buffer = prev.map((timeObj) => {
+        return {
+          ...timeObj,
+          time: calculateDeliveryTime(timeObj.duration)
+        }
+      })
+
+      return [
+        ...buffer
+      ]
+    })
+  }, 12000)
 
   const touchProps = {
     activeOpacity: 1,
@@ -562,7 +579,7 @@ function OrderScreen() {
                             >
                               {deliveryTime.duration + 'dk'}
                             </Text>
-                            <Text style={deliveryTime.isActive ? { color: 'white' } : { color: 'gray' }}>{currentTime}</Text>
+                            <Text style={deliveryTime.isActive ? { color: 'white' } : { color: 'gray' }}>{deliveryTime.time}</Text>
                           </Pressable>
                         )
                         )
