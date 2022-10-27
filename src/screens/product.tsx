@@ -322,10 +322,11 @@ const styles = StyleSheet.create({
     height: '45%',
     display: 'flex',
     alignItems: 'center',
+    marginTop: 50,
     justifyContent: 'center',
   },
   detailImage: {
-    height: '55%',
+    height: '80%',
     marginTop: 50,
     resizeMode: 'cover',
     width: '100%',
