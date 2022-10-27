@@ -66,6 +66,7 @@ function ProductScreen({ route }: any) {
   const buffer = productResponse.variants
 
   useEffect(() => {
+    console.log("PRODUCT RESPONSE --->>", productResponse)
     // Parent Variants Filter
     tempParents = buffer.filter((variant: Variant) => variant.parentID === 0) // 0 means the variant is a parent
     setVariantParents(tempParents)
@@ -205,7 +206,7 @@ function ProductScreen({ route }: any) {
             <Text style={styles.detailTitle}>
               {productResponse.product.productName}
             </Text>
-            <Text style={styles.detailText}>Laktozsuz süt seçeneği ile</Text>
+            <Text style={styles.detailText}>{productResponse.product.shortDescription}</Text>
           </View>
         </ImageBackground>
         {variantParents !== [] && (
@@ -357,6 +358,7 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     maxHeight: '75%',
+    minHeight: 300,
     elevation: 15,
     paddingTop: 15,
     paddingBottom: 70,
