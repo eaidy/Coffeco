@@ -91,7 +91,6 @@ function ProductsScreen() {
                     : [styles.navItemActive, styles.navItem]
                 }
                 onPress={() => categoryPressHandler(categoryItem)}
-                key={categoryItem.categoriID}
               >
                 {
                   clickedCategory === categoryItem.categoriID &&
@@ -134,7 +133,7 @@ function ProductsScreen() {
                     <Text style={styles.productBonus}>
                       {product.bonus.toFixed(2)} bonus kazan
                     </Text>
-                    <Text style={styles.productPrice}>{product.price}</Text>
+                    <Text style={styles.productPrice}>{product.price} ₺</Text>
                     <View
                       style={styles.productPlus}
                     >
@@ -225,7 +224,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     paddingBottom: 70,
-    marginTop: -15,
+    marginTop: 10,
   },
   productTitle: {
     color: '#000',

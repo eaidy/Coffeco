@@ -75,6 +75,8 @@ function OrderScreen() {
 
   useEffect(() => {
 
+    console.log("USER INFO STATE --->>", userInfoState)
+
     setDeliveryTimes((prev) => {
       const buffer = prev.map((timeObj) => {
         return {
@@ -489,7 +491,7 @@ function OrderScreen() {
                 <>
                   <View style={styles.boxTitle}>
                     <Text style={{ fontFamily: 'Nunito-SemiBold' }}>
-                      {userInfoState.bonus} Bonus Kullanılsın mı ?
+                      {userInfoState.puan} Bonus Kullanılsın mı ?
                     </Text>
                     <Checkbox
                       status={sendOrderInfo.Bonus ? 'checked' : 'unchecked'}
@@ -684,7 +686,7 @@ function OrderScreen() {
                 }
               >
                 <Text style={styles.orderText}>SİPARİŞ VER</Text>
-                <Text style={styles.orderPrice}>{basketInfo.totalPrice}₺</Text>
+                <Text style={styles.orderPrice}>{basketInfo.totalPrice} ₺</Text>
               </Pressable>
             )
           }

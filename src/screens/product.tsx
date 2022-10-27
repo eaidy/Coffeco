@@ -295,7 +295,7 @@ function ProductScreen({ route }: any) {
                 onPress={() => addBasketHandler()}
               >
                 <Text style={styles.optionCartText}>SEPETE EKLE</Text>
-                <Text style={styles.optionCartPrice}>{totalPrice}</Text>
+                <Text style={styles.optionCartPrice}>{totalPrice} ₺</Text>
               </Pressable>
             </View>
           </View>

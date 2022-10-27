@@ -3,7 +3,7 @@ import { UserState } from '@/models/models'
 
 type UserInfo = {
     aciklama: string;
-    bonus: number;
+    puan: number;
     cinsiyet: number;
     email: string;
     gsm: string;
@@ -22,7 +22,7 @@ export const userStateAtom = atom<UserState>({
 
 export const userInfoStateAtom = atom<UserInfo>({
     aciklama: '',
-    bonus: 0,
+    puan: 0,
     cinsiyet: 0,
     email: '',
     gsm: '',

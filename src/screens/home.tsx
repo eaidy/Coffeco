@@ -36,6 +36,7 @@ function HomeScreen() {
         authToken: userState.data,
       })
         .then(res => {
+          console.log(res)
           setHomeContainer(res)
           setCurrentOrder(res.order)
           setUserInfoState(() => {
@@ -47,7 +48,7 @@ function HomeScreen() {
               email,
               password,
               cinsiyet,
-              bonus
+              puan
             } = res.user
 
             const cariID = res.cariID
@@ -60,7 +61,7 @@ function HomeScreen() {
               email,
               password,
               cinsiyet,
-              bonus, //homeContainer.bonus
+              puan, //homeContainer.bonus
               cariID
             }
             console.log(buffer)
@@ -90,7 +91,7 @@ function HomeScreen() {
               !currentOrder &&
               (<Pressable
                 style={{
-                  backgroundColor: '#1B854B',
+                  backgroundColor: 'orange',
                   borderRadius: 14,
                   width: '100%',
                   alignItems: 'center',
