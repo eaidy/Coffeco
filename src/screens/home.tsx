@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Header from '@/components/header'
-import { Alert, ScrollView, View } from 'react-native'
+import { ScrollView, View } from 'react-native'
 import { Image, StyleSheet } from 'react-native'
 import { Pressable, ImageBackground, Text } from '@/atoms'
 //import { NavigationContainer } from '@react-navigation/native'
@@ -8,8 +8,6 @@ import { useNavigation } from '@react-navigation/native'
 import { fetchData } from '@/services/methods'
 import { userInfoStateAtom, userStateAtom } from '@/states/auth'
 import { useAtom } from 'jotai'
-import moment from 'moment'
-import { backgroundColor } from '@shopify/restyle'
 import { SvgXml } from 'react-native-svg'
 import { Icons } from '@/constants'
 
@@ -169,23 +167,6 @@ function HomeScreen() {
                   >
                     <Pressable
                       style={styles.sliderItem}
-                      onPress={() => {
-                        Alert.alert(
-                          "Uyarı",
-                          "Henüz geliştirme aşamasındadır.",
-                          [
-                            {
-                              text: "Çıkış",
-                              onPress: () => console.log("Cancel Pressed"),
-                              style: "cancel"
-                            },
-                            {
-                              text: "Tamam",
-                              onPress: () => console.log("OK Pressed")
-                            }
-                          ]
-                        )
-                      }}
                     >
                       <Image
                         style={styles.sliderImg}

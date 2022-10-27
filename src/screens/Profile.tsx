@@ -96,7 +96,6 @@ function ProfileScreen() {
           const buffer = res
           setPastOrdersLoading(false)
           setPastOrders(buffer)
-          console.log(buffer)
         })
         .catch((err) => {
           console.log(err)
@@ -303,7 +302,7 @@ function ProfileScreen() {
                             )
                           }
 
-                          <Text style={styles.productPrice}>Toplam : 19 TL</Text>
+                          <Text style={styles.productPrice}>Toplam : {order.total}</Text>
                         </View>
                       </View>
                     )

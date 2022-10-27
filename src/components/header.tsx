@@ -96,11 +96,12 @@ const styles = StyleSheet.create({
   profileText: {
     position: 'absolute',
     bottom: -5,
-    left: -80,
-    fontFamily: 'Nunito-SemiBold',
+    left: -120,
+    fontFamily: 'Nunito-Bold',
     textAlign: 'left',
     fontSize: 14,
     width: 160,
     color: '#000',
+    opacity: 0.85
   },
 })

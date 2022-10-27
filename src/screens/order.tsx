@@ -75,6 +75,19 @@ function OrderScreen() {
 
   useEffect(() => {
 
+    setDeliveryTimes((prev) => {
+      const buffer = prev.map((timeObj) => {
+        return {
+          ...timeObj,
+          time: calculateDeliveryTime(timeObj.duration)
+        }
+      })
+
+      return [
+        ...buffer
+      ]
+    })
+
     fetchData('Branches', {
       method: 'POST',
       authToken: userState.data
@@ -279,15 +292,17 @@ function OrderScreen() {
 
   const calculateDeliveryTime = (duration: number) => {
     let today = new Date();
+    let hoursNmbr = today.getHours();
+    let minsNmbr = today.getMinutes();
     let hours = '';
     let minutes = '';
-    if ((today.getMinutes() + duration) < 60) {
-      minutes = `${today.getMinutes() + duration}`
-      hours = `${today.getHours()}`
+    if ((minsNmbr + duration) < 60) {
+      minutes = (minsNmbr + duration) < 10 ? `0${minsNmbr + duration}` : `${minsNmbr + duration}`
+      hours = hoursNmbr < 10 ? `0${hoursNmbr}` : `${hoursNmbr}`
     }
     else {
-      minutes = `${today.getMinutes() + duration - 60}`
-      hours = `${today.getHours() + 1}`
+      minutes = (minsNmbr + duration - 60) < 10 ? `0${minsNmbr + duration - 60}` : `${minsNmbr + duration - 60}`
+      hours = (hoursNmbr + 1) < 10 ? `0${hoursNmbr}` : `${hoursNmbr + 1}`
     }
     return hours + ':' + minutes;
   }
@@ -364,15 +379,18 @@ function OrderScreen() {
           <Text style={styles.title}>Sepetim</Text>
           <View style={styles.sectionContainer}>
             <View style={styles.box}>
-              <View style={styles.boxTitle}>
-                <Text style={styles.boxTitleText}>Ürünler</Text>
-                {
-                  basketInfo.orderID &&
-                  (<TouchableHighlight {...touchProps}>
-                    <Text style={styles.boxTitleRemoveText}>Sepet'i Boşalt</Text>
-                  </TouchableHighlight>)
-                }
-              </View>
+              {
+                basketInfo.orderID &&
+                (<View style={styles.boxTitle}>
+                  <Text style={styles.boxTitleText}>Ürünler</Text>
+                  {
+                    basketInfo.orderID &&
+                    (<TouchableHighlight {...touchProps}>
+                      <Text style={styles.boxTitleRemoveText}>Sepet'i Boşalt</Text>
+                    </TouchableHighlight>)
+                  }
+                </View>)
+              }
               <View style={styles.boxContent}>
                 {
                   !basketInfo.orderID && (
@@ -611,7 +629,7 @@ function OrderScreen() {
                               dense
                               keyboardType="phone-pad"
                               mode='outlined'
-                              value={String(sendOrderInfo.DeliveryMinute)}
+                              value={() => String(sendOrderInfo.DeliveryMinute)}
                               onChangeText={text => setSendOrderInfo((prev) => {
                                 const buffer = prev
                                 buffer.DeliveryMinute = Number(text)
@@ -622,8 +640,8 @@ function OrderScreen() {
                             />
                             <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'Nunito-Regular', marginTop: 1 }}>{sendOrderInfo.DeliveryMinute + ' dakika sonra dükkandan al'}</Text>
                             {/* <Pressable style={[styles.input, styles.inputBtn]}>
-                              <Text style={styles.inputBtnText}>Onayla</Text>
-                            </Pressable> */}
+                          <Text style={styles.inputBtnText}>Onayla</Text>
+                        </Pressable> */}
                           </View>)
                         }
                       </View>
