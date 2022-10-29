@@ -440,18 +440,15 @@ function OrderScreen() {
                               <Text style={styles.productTitle}>
                                 {product.description}
                               </Text>
-                              {
-                                basketInfo.variants.filter((variant: any) => variant.lineID === product.lineID).map((variant: any, index) => {
-                                  return (
-                                    <Text
-                                      style={styles.productTitleSmall}
-                                      key={index}
-                                    >
-                                      {variant.priceDescription}
-                                    </Text>
-                                  )
-                                })
-                              }
+                              <Text
+                                style={styles.productTitleSmall}
+                              >
+                                {
+                                  basketInfo.variants.filter((variant: any) => variant.lineID === product.lineID).map((variant: any, index) => {
+                                    return variant.priceDescription + "\n"
+                                  })
+                                }
+                              </Text>
                             </View>
                             <Text style={styles.productPrice}>{(product.price * product.qty).toFixed(1)}₺</Text>
                           </View>
@@ -489,22 +486,25 @@ function OrderScreen() {
               basketInfo.orderID &&
               (
                 <>
-                  <View style={styles.boxTitle}>
-                    <Text style={{ fontFamily: 'Nunito-SemiBold' }}>
-                      {userInfoState.puan} Bonus Kullanılsın mı ?
-                    </Text>
-                    <Checkbox
-                      status={sendOrderInfo.Bonus ? 'checked' : 'unchecked'}
-                      onPress={() => {
-                        setSendOrderInfo((prev) => {
-                          const buffer = prev
-                          buffer.Bonus = !prev.Bonus
-                          return { ...buffer }
-                        });
-                      }}
-                      color="#1B854B"
-                    />
-                  </View>
+                  {
+                    sendOrderInfo.Bonus &&
+                    (<View style={styles.boxTitle}>
+                      <Text style={{ fontFamily: 'Nunito-SemiBold' }}>
+                        {userInfoState.puan} Bonus Kullanılsın mı ?
+                      </Text>
+                      <Checkbox
+                        status={sendOrderInfo.Bonus ? 'checked' : 'unchecked'}
+                        onPress={() => {
+                          setSendOrderInfo((prev) => {
+                            const buffer = prev
+                            buffer.Bonus = !prev.Bonus
+                            return { ...buffer }
+                          });
+                        }}
+                        color="#1B854B"
+                      />
+                    </View>)
+                  }
                   <View style={styles.box}>
                     <View style={styles.boxTitle}>
                       <Text style={styles.boxTitleText}>
@@ -776,7 +776,7 @@ const styles = StyleSheet.create({
   },
   productTitleSmall: {
     fontFamily: 'Nunito-Regular',
-    fontSize: 10,
+    fontSize: 10
   },
   productPrice: {
     fontSize: 13,
