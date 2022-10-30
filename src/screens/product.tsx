@@ -52,6 +52,7 @@ function ProductScreen({ route }: any) {
   const [userState] = useAtom(userStateAtom)
   const [basketState, setBasketState] = useAtom(basketAtom)
 
+  const [haveVariants, setHaveVariants] = useState(false)
   const [selectedVariants, setSelectedVariants] = useState<any>([])
   const [variantsExpand, setVariantsExpand] = useState<VariantsExpand>([])
   const [Qty, setQty] = useState<number>(1)
@@ -63,6 +64,10 @@ function ProductScreen({ route }: any) {
 
   useEffect(() => {
     console.log("PRODUCT RESPONSE --->>", productResponse)
+
+    setHaveVariants(() => {
+      return productResponse.variants.length !== 0 ? true : false
+    })
     let variantsExpandBuffer = productResponse.variants.filter((variant: 0) => variant.parentID === 0).map((expand: any) => false)
     setVariantsExpand(variantsExpandBuffer)
   }, [])
@@ -189,113 +194,140 @@ function ProductScreen({ route }: any) {
               <Text style={styles.detailText}>{productResponse.product.shortDescription}</Text>
             </View>
           </View>
-          <View style={{ flex: 3, backgroundColor: '#fff', marginVertical: 5, width: '95%', borderRadius: 10, alignSelf: 'center' }}>
-            <ScrollView style={{ flex: 1, padding: 5 }}>
+          <View style={{
+            flex: 3,
+            backgroundColor: 'transparent',
+            width: '100%',
+            alignSelf: 'center',
+            justifyContent: 'flex-end'
+          }}
+          >
+            <View
+              style={{
+                flex: 1,
+                maxHeight: (haveVariants ? '100%' : '25%'),
+                justifyContent: 'center',
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+                alignItems: 'center',
+                backgroundColor: '#fff'
+              }}
+            >
               {
-                productResponse.variants.filter((isParent: any) => isParent.parentID === 0).map((variantParent: Variant, parentIndex: any) => (
-                  <Pressable
-                    style={styles.option}
-                    key={parentIndex}
-                    onPress={() => {
-                      setVariantsExpand(
-                        variantsExpand.map((item, index) =>
-                          index === parentIndex ? !item : item
-                        )
-                      )
-                      console.log(variantsExpand)
-                    }
-                    }
-                  >
-                    <Text style={styles.optionTitle}>
-                      {variantParent.description}
-                    </Text>
-                    <View style={styles.optionSelect}>
-                      <Text style={styles.optionSelectText}>Seçiniz</Text>
-                      <SvgXml
-                        xml={Icons.iconArrow}
-                        width="24"
-                        height="24"
-                        style={styles.navIcon}
-                      />
-                    </View>
-                    <View style={styles.sizeSelect}>
-                      {
+                haveVariants &&
+                (<ScrollView style={{
+                  flex: 1,
+                  width: '100%',
+                  padding: 5
+                }}
+                >
+                  {
+                    productResponse.variants.filter((isParent: any) => isParent.parentID === 0).map((variantParent: Variant, parentIndex: any) => (
+                      <Pressable
+                        style={styles.option}
+                        key={parentIndex}
+                        onPress={() => {
+                          setVariantsExpand(
+                            variantsExpand.map((item, index) =>
+                              index === parentIndex ? !item : item
+                            )
+                          )
+                          console.log(variantsExpand)
+                        }
+                        }
+                      >
+                        <Text style={styles.optionTitle}>
+                          {variantParent.description}
+                        </Text>
+                        <View style={styles.optionSelect}>
+                          <Text style={styles.optionSelectText}>Seçiniz</Text>
+                          <SvgXml
+                            xml={Icons.iconArrow}
+                            width="24"
+                            height="24"
+                            style={styles.navIcon}
+                          />
+                        </View>
+                        <View style={styles.sizeSelect}>
+                          {
 
-                        variantsExpand[parentIndex] &&
-                        (
-                          <View style={{ marginTop: 20 }}>
-                            {productResponse.variants
-                              .filter(
-                                (isParentsChild: any) =>
-                                  isParentsChild.parentID === variantParent.priceID
-                              )
-                              .map((variantChild: any, childIndex: any) => (
-                                <Pressable
-                                  key={childIndex}
-                                  style={{
-                                    flex: 1,
-                                    flexDirection: 'row',
-                                    padding: 2,
-                                    marginEnd: 15,
-                                    marginStart: 15,
-                                    borderColor: 'gray',
-                                    borderBottomWidth: 0.5,
-                                    marginBottom: 10
-                                  }}
-                                  onPress={() => {
-                                    variantChildPressHandler(variantChild)
-                                  }}
-                                >
-                                  <Text style={{ flex: 5, fontSize: 15 }}>
-                                    {variantChild.description}
-                                  </Text>
-                                  <View style={{
-                                    flex: 1,
-                                    position: 'absolute',
-                                    right: 15
-                                  }}>
-                                    <Checkbox
-                                      status={selectedVariants.includes(variantChild) ? 'checked' : 'unchecked'}
+                            variantsExpand[parentIndex] &&
+                            (
+                              <View style={{ marginTop: 20 }}>
+                                {productResponse.variants
+                                  .filter(
+                                    (isParentsChild: any) =>
+                                      isParentsChild.parentID === variantParent.priceID
+                                  )
+                                  .map((variantChild: any, childIndex: any) => (
+                                    <Pressable
+                                      key={childIndex}
+                                      style={{
+                                        flex: 1,
+                                        flexDirection: 'row',
+                                        padding: 2,
+                                        marginEnd: 15,
+                                        marginStart: 15,
+                                        borderColor: 'gray',
+                                        borderBottomWidth: 0.5,
+                                        marginBottom: 10
+                                      }}
                                       onPress={() => {
                                         variantChildPressHandler(variantChild)
                                       }}
-                                      color="#1B854B"
-                                    />
-                                  </View>
-                                </Pressable>
-                              ))}
-                          </View>
-                        )
-                      }
-                    </View>
-                  </Pressable>
-                ))}
-            </ScrollView>
-            <View style={styles.optionListFooter}>
-              <NumericInput
-                onChange={value => setQty(value)}
-                minValue={1}
-                iconSize={5}
-                totalWidth={100}
-                totalHeight={50}
-                rounded
-                type="up-down"
-                value={Qty}
-              />
-              {/* <TextInput
+                                    >
+                                      <Text style={{ flex: 5, fontSize: 15 }}>
+                                        {variantChild.description}
+                                      </Text>
+                                      <View style={{
+                                        flex: 1,
+                                        position: 'absolute',
+                                        right: 15
+                                      }}>
+                                        <Checkbox
+                                          status={selectedVariants.includes(variantChild) ? 'checked' : 'unchecked'}
+                                          onPress={() => {
+                                            variantChildPressHandler(variantChild)
+                                          }}
+                                          color="#1B854B"
+                                        />
+                                      </View>
+                                    </Pressable>
+                                  ))}
+                              </View>
+                            )
+                          }
+                        </View>
+                      </Pressable>
+                    ))}
+                </ScrollView>)
+              }
+              <View style={styles.optionListFooter}>
+                <NumericInput
+                  onChange={value => setQty(value)}
+                  minValue={1}
+                  iconSize={5}
+                  totalWidth={100}
+                  totalHeight={50}
+                  rounded
+                  type="up-down"
+                  value={Qty}
+                />
+                {/* <TextInput
                   style={styles.optionNumber}
                   placeholder="Adet"
                   keyboardType="numeric"
                   onChangeText={setQty}
                   value={Qty}
                 /> */}
-              <Pressable
-                style={styles.optionCart}
-                onPress={() => addBasketHandler()}
-              >
-                <Text style={styles.optionCartText}>SEPETE EKLE</Text>
-                <Text style={styles.optionCartPrice}>{totalPrice} ₺</Text>
-              </Pressable>
+                <Pressable
+                  style={styles.optionCart}
+                  onPress={() => addBasketHandler()}
+                >
+                  <Text style={styles.optionCartText}>SEPETE EKLE</Text>
+                  <Text style={styles.optionCartPrice}>{totalPrice} ₺</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
         </ImageBackground>
