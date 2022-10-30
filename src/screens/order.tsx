@@ -490,7 +490,7 @@ function OrderScreen() {
                     sendOrderInfo.Bonus &&
                     (<View style={styles.boxTitle}>
                       <Text style={{ fontFamily: 'Nunito-SemiBold' }}>
-                        {userInfoState.puan} Bonus Kullanılsın mı ?
+                        {userInfoState.puan} CoffeeCo Puan Kullanılsın mı ?
                       </Text>
                       <Checkbox
                         status={sendOrderInfo.Bonus ? 'checked' : 'unchecked'}
@@ -640,7 +640,7 @@ function OrderScreen() {
                               }
                               style={{ marginBottom: 5, marginRight: 5, backgroundColor: '#fff' }}
                             />
-                            <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'Nunito-Regular', marginTop: 1 }}>{sendOrderInfo.DeliveryMinute + ' dakika sonra dükkandan al'}</Text>
+                            <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'Nunito-Regular', marginTop: 1 }}>{sendOrderInfo.DeliveryMinute + ' dakika sonra şubeden al'}</Text>
                             {/* <Pressable style={[styles.input, styles.inputBtn]}>
                           <Text style={styles.inputBtnText}>Onayla</Text>
                         </Pressable> */}

@@ -131,7 +131,7 @@ function ProductsScreen() {
                       {product.shortDescription}
                     </Text>
                     <Text style={styles.productBonus}>
-                      {product.bonus.toFixed(2)} bonus kazan
+                      {product.bonus.toFixed(2)} CoffeeCo Puan kazan
                     </Text>
                     <Text style={styles.productPrice}>{product.price} ₺</Text>
                     <View

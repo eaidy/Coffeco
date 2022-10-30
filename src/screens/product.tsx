@@ -166,7 +166,7 @@ function ProductScreen({ route }: any) {
           source={require('@/assets/images/product-bg.jpg')}
           style={styles.detailBg}
         >
-          <View style={{ flex: 3, backgroundColor: '#abc' }}>
+          <View style={{ flex: 3, backgroundColor: 'transparent' }}>
             <Pressable
               onPress={() => navigation.goBack()}
               style={styles.backButton}
@@ -189,7 +189,7 @@ function ProductScreen({ route }: any) {
               <Text style={styles.detailText}>{productResponse.product.shortDescription}</Text>
             </View>
           </View>
-          <View style={{ flex: 3, backgroundColor: '#abf' }}>
+          <View style={{ flex: 3, backgroundColor: '#fff', marginVertical: 5, width: '95%', borderRadius: 10, alignSelf: 'center' }}>
             <ScrollView style={{ flex: 1, padding: 5 }}>
               {
                 productResponse.variants.filter((isParent: any) => isParent.parentID === 0).map((variantParent: Variant, parentIndex: any) => (
@@ -275,10 +275,10 @@ function ProductScreen({ route }: any) {
               <NumericInput
                 onChange={value => setQty(value)}
                 minValue={1}
-                rounded
                 iconSize={5}
                 totalWidth={100}
                 totalHeight={50}
+                rounded
                 type="up-down"
                 value={Qty}
               />
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     backgroundColor: '#fff',
     marginBottom: 5,
-    marginTop: 5,
+    marginTop: 15,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
     paddingRight: '4%',
     paddingTop: 10,
     width: '90%',
-    backgroundColor: '#3cf',
+    backgroundColor: 'transparent',
     paddingBottom: 10,
     left: '5%',
     right: '5%'

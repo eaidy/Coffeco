@@ -156,7 +156,7 @@ function HomeScreen() {
                 <Text style={styles.cardText}>
                   {userInfoState.adi + ' ' + userInfoState.soyadi}
                 </Text>
-                <Text style={styles.cardTitle}>Bonus</Text>
+                <Text style={styles.cardTitle}>CoffeeCo Puan : </Text>
                 <Text style={styles.cardPrice}>{homeContainer.bonus}</Text>
               </ImageBackground>
             </Pressable>
