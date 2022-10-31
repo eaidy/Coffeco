@@ -63,12 +63,14 @@ function ProductScreen({ route }: any) {
   const [totalPrice, setTotalPrice] = useState<number>(0)
 
   useEffect(() => {
-    console.log("PRODUCT RESPONSE --->>", productResponse)
+    console.log('PRODUCT RESPONSE --->>', productResponse)
 
     setHaveVariants(() => {
       return productResponse.variants.length !== 0 ? true : false
     })
-    let variantsExpandBuffer = productResponse.variants.filter((variant: 0) => variant.parentID === 0).map((expand: any) => false)
+    let variantsExpandBuffer = productResponse.variants
+      .filter((variant: 0) => variant.parentID === 0)
+      .map((expand: any) => false)
     setVariantsExpand(variantsExpandBuffer)
   }, [])
 
@@ -84,39 +86,34 @@ function ProductScreen({ route }: any) {
       setSelectedVariants((prev: any) => {
         const updated = prev.filter((variant: any) => variant !== variantChild)
         console.log(updated)
-        return [
-          ...updated
-        ]
+        return [...updated]
       })
-      console.log("SELECTD VARIANTS ==> ", selectedVariants)
+      console.log('SELECTD VARIANTS ==> ', selectedVariants)
     } else {
       setSelectedVariants((prev: any) => {
         const updated = prev
         updated.push(variantChild)
         console.log(updated)
-        return [
-          ...updated
-        ]
+        return [...updated]
       })
-      console.log("SELECTD VARIANTS ==> ", selectedVariants)
+      console.log('SELECTD VARIANTS ==> ', selectedVariants)
     }
   }
 
   const addBasketHandler = async () => {
     let productApiObject: ProductBasketModel = {
-      ProductID: 0,
-      Qty: 0,
-      Variants: '',
-    },
+        ProductID: 0,
+        Qty: 0,
+        Variants: '',
+      },
       variantsApiArray: Array<{ id: number; value: number }>
 
     productApiObject.ProductID = productResponse.product.productID
     productApiObject.Qty = Qty
 
-    variantsApiArray = selectedVariants
-      .map((variant: any) => {
-        return { id: variant.priceID, value: 1 }
-      })
+    variantsApiArray = selectedVariants.map((variant: any) => {
+      return { id: variant.priceID, value: 1 }
+    })
 
     productApiObject.Variants = JSON.stringify(variantsApiArray)
     console.log(productApiObject)
@@ -183,7 +180,7 @@ function ProductScreen({ route }: any) {
                 style={styles.detailImage}
                 source={
                   productResponse.product.photo !==
-                    'https://panel.coffeco.com.tr/'
+                  'https://panel.coffeco.com.tr/'
                     ? { uri: productResponse.product.photo }
                     : require('@/assets/images/product.png')
                 }
@@ -191,38 +188,42 @@ function ProductScreen({ route }: any) {
               <Text style={styles.detailTitle}>
                 {productResponse.product.productName}
               </Text>
-              <Text style={styles.detailText}>{productResponse.product.shortDescription}</Text>
+              <Text style={styles.detailText}>
+                {productResponse.product.shortDescription}
+              </Text>
             </View>
           </View>
-          <View style={{
-            flex: 3,
-            backgroundColor: 'transparent',
-            width: '100%',
-            alignSelf: 'center',
-            justifyContent: 'flex-end'
-          }}
+          <View
+            style={{
+              flex: 3,
+              backgroundColor: 'transparent',
+              width: '100%',
+              alignSelf: 'center',
+              justifyContent: 'flex-end',
+            }}
           >
             <View
               style={{
                 flex: 1,
-                maxHeight: (haveVariants ? '100%' : '25%'),
+                maxHeight: haveVariants ? '100%' : '25%',
                 justifyContent: 'center',
                 borderTopLeftRadius: 10,
                 borderTopRightRadius: 10,
                 alignItems: 'center',
-                backgroundColor: '#fff'
+                backgroundColor: '#fff',
               }}
             >
-              {
-                haveVariants &&
-                (<ScrollView style={{
-                  flex: 1,
-                  width: '100%',
-                  padding: 5
-                }}
+              {haveVariants && (
+                <ScrollView
+                  style={{
+                    flex: 1,
+                    width: '100%',
+                    padding: 5,
+                  }}
                 >
-                  {
-                    productResponse.variants.filter((isParent: any) => isParent.parentID === 0).map((variantParent: Variant, parentIndex: any) => (
+                  {productResponse.variants
+                    .filter((isParent: any) => isParent.parentID === 0)
+                    .map((variantParent: Variant, parentIndex: any) => (
                       <Pressable
                         style={styles.option}
                         key={parentIndex}
@@ -233,8 +234,7 @@ function ProductScreen({ route }: any) {
                             )
                           )
                           console.log(variantsExpand)
-                        }
-                        }
+                        }}
                       >
                         <Text style={styles.optionTitle}>
                           {variantParent.description}
@@ -249,59 +249,64 @@ function ProductScreen({ route }: any) {
                           />
                         </View>
                         <View style={styles.sizeSelect}>
-                          {
-
-                            variantsExpand[parentIndex] &&
-                            (
-                              <View style={{ marginTop: 20 }}>
-                                {productResponse.variants
-                                  .filter(
-                                    (isParentsChild: any) =>
-                                      isParentsChild.parentID === variantParent.priceID
-                                  )
-                                  .map((variantChild: any, childIndex: any) => (
-                                    <Pressable
-                                      key={childIndex}
+                          {variantsExpand[parentIndex] && (
+                            <View style={{ marginTop: 20 }}>
+                              {productResponse.variants
+                                .filter(
+                                  (isParentsChild: any) =>
+                                    isParentsChild.parentID ===
+                                    variantParent.priceID
+                                )
+                                .map((variantChild: any, childIndex: any) => (
+                                  <Pressable
+                                    key={childIndex}
+                                    style={{
+                                      flex: 1,
+                                      flexDirection: 'row',
+                                      padding: 2,
+                                      marginEnd: 15,
+                                      marginStart: 15,
+                                      borderColor: 'gray',
+                                      borderBottomWidth: 0.5,
+                                      marginBottom: 10,
+                                    }}
+                                    onPress={() => {
+                                      variantChildPressHandler(variantChild)
+                                    }}
+                                  >
+                                    <Text style={{ flex: 5, fontSize: 15 }}>
+                                      {variantChild.description}
+                                    </Text>
+                                    <View
                                       style={{
                                         flex: 1,
-                                        flexDirection: 'row',
-                                        padding: 2,
-                                        marginEnd: 15,
-                                        marginStart: 15,
-                                        borderColor: 'gray',
-                                        borderBottomWidth: 0.5,
-                                        marginBottom: 10
-                                      }}
-                                      onPress={() => {
-                                        variantChildPressHandler(variantChild)
+                                        position: 'absolute',
+                                        right: 15,
                                       }}
                                     >
-                                      <Text style={{ flex: 5, fontSize: 15 }}>
-                                        {variantChild.description}
-                                      </Text>
-                                      <View style={{
-                                        flex: 1,
-                                        position: 'absolute',
-                                        right: 15
-                                      }}>
-                                        <Checkbox
-                                          status={selectedVariants.includes(variantChild) ? 'checked' : 'unchecked'}
-                                          onPress={() => {
-                                            variantChildPressHandler(variantChild)
-                                          }}
-                                          color="#1B854B"
-                                        />
-                                      </View>
-                                    </Pressable>
-                                  ))}
-                              </View>
-                            )
-                          }
+                                      <Checkbox
+                                        status={
+                                          selectedVariants.includes(
+                                            variantChild
+                                          )
+                                            ? 'checked'
+                                            : 'unchecked'
+                                        }
+                                        onPress={() => {
+                                          variantChildPressHandler(variantChild)
+                                        }}
+                                        color="#1B854B"
+                                      />
+                                    </View>
+                                  </Pressable>
+                                ))}
+                            </View>
+                          )}
                         </View>
                       </Pressable>
                     ))}
-                </ScrollView>)
-              }
+                </ScrollView>
+              )}
               <View style={styles.optionListFooter}>
                 <NumericInput
                   onChange={value => setQty(value)}
@@ -339,12 +344,12 @@ function ProductScreen({ route }: any) {
 const styles = StyleSheet.create({
   pageWrapper: {
     flex: 1,
-    height: '100%'
+    height: '100%',
   },
   sizeSelect: {
     width: '100%',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   detailBg: {
     height: '100%',
@@ -364,7 +369,7 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: 1,
     borderRadius: 8,
-    marginBottom: 20
+    marginBottom: 20,
   },
   detailTitle: {
     fontSize: 20,
@@ -461,7 +466,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     paddingBottom: 10,
     left: '5%',
-    right: '5%'
+    right: '5%',
   },
   optionNumber: {
     width: '30%',

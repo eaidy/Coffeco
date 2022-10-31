@@ -21,13 +21,12 @@ function HomeScreen() {
 
   const [homeContainer, setHomeContainer] = useState<HomeContainer>({
     campaign: [],
-    bonus: 0
+    bonus: 0,
   })
 
   const [userState] = useAtom(userStateAtom)
   const [userInfoState, setUserInfoState] = useAtom(userInfoStateAtom)
   const [currentOrder, setCurrentOrder] = useState(null)
-
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
@@ -48,7 +47,7 @@ function HomeScreen() {
               email,
               password,
               cinsiyet,
-              puan
+              puan,
             } = res.user
 
             const cariID = res.cariID
@@ -62,7 +61,7 @@ function HomeScreen() {
               password,
               cinsiyet,
               puan, //homeContainer.bonus
-              cariID
+              cariID,
             }
             console.log(buffer)
             return buffer
@@ -71,10 +70,10 @@ function HomeScreen() {
         .catch(err => {
           console.log(err)
         })
-    });
+    })
 
-    return unsubscribe;
-  }, [navigation]);
+    return unsubscribe
+  }, [navigation])
 
   return (
     <>
@@ -87,63 +86,61 @@ function HomeScreen() {
           flex={1}
         >
           <View style={styles.wrapper}>
-            {
-              !currentOrder &&
-              (<Pressable
+            {!currentOrder && (
+              <Pressable
                 style={{
                   backgroundColor: 'orange',
                   borderRadius: 14,
                   width: '100%',
                   alignItems: 'center',
-                  marginBottom: 10
+                  marginBottom: 10,
                 }}
                 onPress={() => navigation.navigate('Products')}
               >
-                <View
-                  style={{ flex: 1, flexDirection: 'row', padding: 10 }}
-                >
+                <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
                   <SvgXml
                     xml={Icons.iconCoffee}
                     width="21"
                     height="21"
-                    fill='#fff'
+                    fill="#fff"
                     style={{ marginRight: 8 }}
                   />
-                  <Text style={{ color: '#fff' }}>Hemen Siparişini Oluştur</Text>
+                  <Text style={{ color: '#fff', fontFamily: 'Nunito-Bold' }}>
+                    Hemen Siparişini Oluştur
+                  </Text>
                 </View>
-              </Pressable>)
-            }
-            {
-              currentOrder &&
-              (
-                <View style={styles.currentOrder}>
-                  <View style={styles.orderStatus}>
-                    {
-                      currentOrder.siparisDurum === 20 ?
-                        (<Text style={{
-                          textAlign: 'center',
-                          fontFamily: 'Nunito-SemiBold',
-                          color: '#1B854B',
-                          fontSize: 15
-                        }}
-                        >
-                          Siparişiniz Hazır, {currentOrder.branch}nden Teslim Alabilirsiniz
-                        </Text>) : (<Text style={{
-                          textAlign: 'center',
-                          fontFamily: 'Nunito-SemiBold',
-                          color: '#1B854B',
-                          fontSize: 15,
-
-                        }}
-                        >
-                          Siparişiniz Hazırlanıyor...
-                        </Text>)
-
-                    }
-                  </View>
+              </Pressable>
+            )}
+            {currentOrder && (
+              <View style={styles.currentOrder}>
+                <View style={styles.orderStatus}>
+                  {currentOrder.siparisDurum === 20 ? (
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontFamily: 'Nunito-Bold',
+                        color: '#1B854B',
+                        fontSize: 15,
+                      }}
+                    >
+                      Siparişiniz Hazır, {currentOrder.branch}nden Teslim
+                      Alabilirsiniz
+                    </Text>
+                  ) : (
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontFamily: 'Nunito-Bold',
+                        color: '#1B854B',
+                        fontSize: 15,
+                      }}
+                    >
+                      Siparişiniz Hazırlanıyor...
+                    </Text>
+                  )}
                 </View>
-              )
-            }
+              </View>
+            )}
             <Pressable style={styles.card}>
               <ImageBackground
                 source={require('@/assets/images/card-bg.png')}
@@ -163,12 +160,8 @@ function HomeScreen() {
             <View style={styles.slider}>
               {homeContainer.campaign &&
                 homeContainer.campaign.map((camp: any, index) => (
-                  <View
-                    key={index}
-                  >
-                    <Pressable
-                      style={styles.sliderItem}
-                    >
+                  <View key={index}>
+                    <Pressable style={styles.sliderItem}>
                       <Image
                         style={styles.sliderImg}
                         source={{
@@ -176,8 +169,8 @@ function HomeScreen() {
                         }}
                       />
                     </Pressable>
-                    <View>
-                      <Text style={{ fontSize: 14, fontFamily: 'Nunito-Regular', textAlign: 'center' }}>
+                    <View style={styles.sliderTitle}>
+                      <Text style={styles.sliderTitleText}>
                         {camp.shortDescription}
                       </Text>
                     </View>
@@ -300,7 +293,41 @@ const styles = StyleSheet.create({
     margin: 'auto',
     marginBottom: 14,
     height: 280,
-    width: '100%'
+    width: '100%',
+    borderRadius: 14,
+    overflow: 'hidden',
+    backgroundColor: '#fff',
+  },
+  sliderTitle: {
+    marginTop: -30,
+  },
+  sliderTitleText: {
+    fontFamily: 'Nunito-Bold',
+    textAlign: 'center',
+    fontSize: 14,
+    borderRadius: 32,
+    color: '#000',
+    backgroundColor: '#fff',
+    marginBottom: 20,
+    shadowColor: '#000',
+    paddingTop: 14,
+    paddingBottom: 0,
+    paddingLeft: 10,
+    paddingRight: 10,
+    lineHeight: 20,
+    justifyContent: 'center', //Centered horizontally
+    alignItems: 'center', //Centered vertically
+    flex: 1,
+    alignSelf: 'center',
+    textAlignVertical: 'center',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
   },
   currentOrder: {
     display: 'flex',
@@ -313,11 +340,9 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginBottom: 14,
     padding: 10,
-    elevation: 1
+    elevation: 1,
   },
-  orderStatus: {
-
-  },
+  orderStatus: {},
 
   boxTitle: {
     display: 'flex',
@@ -339,7 +364,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Nunito-Regular',
     color: '#0b0b0b',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   product: {
     display: 'flex',
@@ -347,7 +372,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
-    marginTop: 12
+    marginTop: 12,
   },
   productImage: {
     width: 50,
@@ -373,14 +398,13 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#1B854B'
+    color: '#1B854B',
   },
   productContent: {
     flex: 1,
     justifyContent: 'flex-start',
-    marginLeft: 0
-  }
-
+    marginLeft: 0,
+  },
 })
 
 export default HomeScreen

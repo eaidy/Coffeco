@@ -92,10 +92,14 @@ function ProductsScreen() {
                 }
                 onPress={() => categoryPressHandler(categoryItem)}
               >
-                {
-                  clickedCategory === categoryItem.categoriID &&
-                  (<ActivityIndicator size={19} animating={true} color='#1B854B' style={{}} />)
-                }
+                {clickedCategory === categoryItem.categoriID && (
+                  <ActivityIndicator
+                    size={16}
+                    animating={true}
+                    color="#1B854B"
+                    style={{ marginRight: 8 }}
+                  />
+                )}
                 <Text
                   style={
                     activeCategoryID === categoryItem.categoriID
@@ -126,7 +130,9 @@ function ProductsScreen() {
                     }
                   />
                   <View style={styles.productBottom}>
-                    <Text style={styles.productTitle}>{product.productName}</Text>
+                    <Text style={styles.productTitle}>
+                      {product.productName}
+                    </Text>
                     <Text style={styles.productText}>
                       {product.shortDescription}
                     </Text>
@@ -134,15 +140,12 @@ function ProductsScreen() {
                       {product.bonus.toFixed(2)} CoffeeCo Puan kazan
                     </Text>
                     <Text style={styles.productPrice}>{product.price} ₺</Text>
-                    <View
-                      style={styles.productPlus}
-                    >
+                    <View style={styles.productPlus}>
                       <Text style={styles.productPlusText}>+</Text>
                     </View>
                   </View>
                 </View>
               </Pressable>
-
             ))}
         </ScrollView>
       </View>
@@ -167,6 +170,9 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingBottom: 12,
     lineHeight: 1,
     shadowColor: '#999',
@@ -230,6 +236,7 @@ const styles = StyleSheet.create({
     color: '#000',
     fontFamily: 'Nunito-SemiBold',
     fontSize: 12,
+    minHeight: 30,
   },
   productText: {
     color: '#969696',
