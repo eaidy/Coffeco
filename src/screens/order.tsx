@@ -450,7 +450,7 @@ function OrderScreen() {
                                 }
                               </Text>
                             </View>
-                            <Text style={styles.productPrice}>{(product.price * product.qty).toFixed(1)}₺</Text>
+                            <Text style={styles.productPrice}>{((product.price + basketInfo.variants.filter((variant) => variant.lineID === product.lineID).reduce((total, curr) => total += curr.price, 0)) * product.qty).toFixed(1)}₺</Text>
                           </View>
                         </View>
                         <View style={{ flex: 1, flexDirection: 'row' }}>
