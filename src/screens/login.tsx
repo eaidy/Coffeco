@@ -6,30 +6,42 @@ import { useNavigation } from '@react-navigation/native'
 import { StackActions } from '@react-navigation/native'
 
 // Component Imports
-import { StyleSheet, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ScrollView, View, Image, Pressable, } from 'react-native'
+import {
+  StyleSheet,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
+  ScrollView,
+  View,
+  Image,
+  Pressable,
+} from 'react-native'
 import { Formik } from 'formik'
 import { Box, Text, ImageBackground, TextInput, Button } from '@/atoms/'
 
 // Service/State Imports
 import { login } from '@/services/auth'
 import { categoriesAtom, productsAtom, userStateAtom } from '@/states/auth'
-import { MMKVLoader, useMMKVStorage } from "react-native-mmkv-storage";
+import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage'
 
 // Model Imports
 import { UserState } from '@/models/models'
-import CheckBox from '@react-native-community/checkbox';
-import { ActivityIndicator, Checkbox } from 'react-native-paper';
+import CheckBox from '@react-native-community/checkbox'
+import { ActivityIndicator, Checkbox } from 'react-native-paper'
 
 type FormValues = {
-  phoneNumber: string;
-  password: string;
+  phoneNumber: string
+  password: string
 }
 
-const MMKV = new MMKVLoader().initialize();
+const MMKV = new MMKVLoader().initialize()
 
 function LoginScreen() {
-
-  const [userLoginAsync, setUserLoginAsync] = useMMKVStorage("userLoginAsync", MMKV, { phoneNumber: "", password: "" })
+  const [userLoginAsync, setUserLoginAsync] = useMMKVStorage(
+    'userLoginAsync',
+    MMKV,
+    { phoneNumber: '', password: '' }
+  )
 
   const [isLoading, setIsLoading] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
@@ -49,12 +61,12 @@ function LoginScreen() {
         if (rememberMe) {
           setUserLoginAsync({
             phoneNumber: values.phoneNumber,
-            password: values.password
+            password: values.password,
           })
-          console.log("MMKV ---> " + userLoginAsync.phoneNumber)
+          console.log('MMKV ---> ' + userLoginAsync.phoneNumber)
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err)
       })
   }
@@ -62,9 +74,7 @@ function LoginScreen() {
   useEffect(() => {
     if (userState.status) {
       setIsLoading(false)
-      navigation.dispatch(
-        StackActions.replace('Main')
-      );
+      navigation.dispatch(StackActions.replace('Main'))
     } else {
       setIsLoading(false)
       console.log(userState.message)
@@ -78,6 +88,7 @@ function LoginScreen() {
         flexGrow: 1,
         padding: spacing.xl,
       }}
+      keyboardShouldPersistTaps={'always'}
     >
       <KeyboardAvoidingView style={{ flex: 1 }}>
         <TouchableWithoutFeedback
@@ -91,12 +102,13 @@ function LoginScreen() {
             flex={1}
           >
             <Box flex={1}>
-              {
-                isLoading &&
-                (
-                  <ActivityIndicator animating={true} color='#1B854B' style={{ marginBottom: 15 }} />
-                )
-              }
+              {isLoading && (
+                <ActivityIndicator
+                  animating={true}
+                  color="#1B854B"
+                  style={{ marginBottom: 15 }}
+                />
+              )}
               {/* <Text color="loginHeader" fontSize={36} marginBottom="xl">
                 Giriş Yap
               </Text> */}
@@ -138,19 +150,20 @@ function LoginScreen() {
                       elevation={20}
                       shadowOffset={{ width: 0, height: 6 }}
                     />
-                    {
-                      !userState.status && userState.data !== '' &&
-                      (
-                        <Text style={styles.errorValidation}>Telefon numarası ya da şifre hatalı</Text>
-                      )
-                    }
+                    {!userState.status && userState.data !== '' && (
+                      <Text style={styles.errorValidation}>
+                        Telefon numarası ya da şifre hatalı
+                      </Text>
+                    )}
                     <View style={styles.altBox}>
                       <View>
                         <View style={styles.rememberMe}>
-                          <Text style={styles.rememberMeText}>Beni Hatırla : </Text>
+                          <Text style={styles.rememberMeText}>
+                            Beni Hatırla :{' '}
+                          </Text>
                           <Checkbox
                             status={rememberMe ? 'checked' : 'unchecked'}
-                            onPress={() => setRememberMe((prev) => !prev)}
+                            onPress={() => setRememberMe(prev => !prev)}
                             color="#1B854B"
                           />
                         </View>
@@ -159,7 +172,18 @@ function LoginScreen() {
                         <Pressable
                           onPress={() => navigation.navigate('ForgetPassword')}
                         >
-                          <Text style={[styles.rememberMeText, { color: '#1B854B', marginLeft: 15, fontSize: 14 }]}>Şifremi unuttum?</Text>
+                          <Text
+                            style={[
+                              styles.rememberMeText,
+                              {
+                                color: '#1B854B',
+                                marginLeft: 15,
+                                fontSize: 14,
+                              },
+                            ]}
+                          >
+                            Şifremi unuttum?
+                          </Text>
                         </Pressable>
                       </View>
                     </View>
@@ -169,10 +193,10 @@ function LoginScreen() {
 
               <View style={styles.link}>
                 <Text style={styles.linkText}>Hesabın yok mu ?</Text>
-                <Pressable
-                  onPress={() => navigation.navigate('Signup')}
-                >
-                  <Text style={styles.linkBold}>Hemen Kaydol 25 Bonus kazan!</Text>
+                <Pressable onPress={() => navigation.navigate('Signup')}>
+                  <Text style={styles.linkBold}>
+                    Hemen Kaydol 25 Bonus kazan!
+                  </Text>
                 </Pressable>
               </View>
             </Box>
@@ -191,7 +215,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     alignSelf: 'center',
     fontFamily: 'Nunito-SemiBold',
-    marginTop: 20
+    marginTop: 20,
   },
   rememberMe: {
     display: 'flex',
@@ -202,38 +226,39 @@ const styles = StyleSheet.create({
   rememberMeText: {
     color: '#7F8487',
     fontFamily: 'Nunito-Regular',
-    fontSize: 14
+    fontSize: 14,
   },
   logoBottom: {
     alignSelf: 'center',
     height: 200,
     width: 200,
-    marginBottom: 60
+    marginBottom: 60,
   },
   altBox: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    marginTop: 15
+    marginTop: 15,
   },
   link: {
     marginTop: '4%',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   linkText: {
     color: '#7F8487',
     fontFamily: 'Nunito-Regular',
     textAlign: 'center',
-    fontSize: 14
+    fontSize: 14,
+    marginTop: 15,
   },
   linkBold: {
-    marginLeft: 6,
-    fontFamily: 'Nunito-Regular',
+    fontFamily: 'Nunito-Bold',
     color: '#1B854B',
     textAlign: 'center',
-    fontSize: 14
-  }
+    fontSize: 18,
+    marginTop: 5,
+  },
 })
