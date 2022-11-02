@@ -21,12 +21,11 @@ import { Box, Text, ImageBackground, TextInput, Button } from '@/atoms/'
 
 // Service/State Imports
 import { login } from '@/services/auth'
-import { categoriesAtom, productsAtom, userStateAtom } from '@/states/auth'
+import { userStateAtom } from '@/states/auth'
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage'
 
 // Model Imports
 import { UserState } from '@/models/models'
-import CheckBox from '@react-native-community/checkbox'
 import { ActivityIndicator, Checkbox } from 'react-native-paper'
 
 type FormValues = {
