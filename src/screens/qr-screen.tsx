@@ -5,6 +5,7 @@ import QRCode from 'react-native-qrcode-svg'
 import ImageBackground from '@/atoms/image-background'
 import { useAtom } from 'jotai'
 import { userInfoStateAtom } from '@/states/auth'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const QrScreen = () => {
 
@@ -12,25 +13,27 @@ const QrScreen = () => {
 
     return (
         <>
-            <Header />
-            <ImageBackground
-                source={require('@/assets/images/text-bg.png')}
-                resizeMode="cover"
-                minHeight="100%"
-                flex={1}
-            >
-                <View
-                    style={[styles.qrCodeContainer]}
+            <SafeAreaView>
+                <Header />
+                <ImageBackground
+                    source={require('@/assets/images/text-bg.png')}
+                    resizeMode="cover"
+                    minHeight="100%"
+                    flex={1}
                 >
-                    <QRCode
-                        value={String(userInfoState.cariID)}
-                        size={300}
-                    />
-                    <View>
-                        <Text style={[styles.qrText]}>QR Kodu kasa görevlisine okutunuz...</Text>
+                    <View
+                        style={[styles.qrCodeContainer]}
+                    >
+                        <QRCode
+                            value={String(userInfoState.cariID)}
+                            size={300}
+                        />
+                        <View>
+                            <Text style={[styles.qrText]}>QR Kodu kasa görevlisine okutunuz...</Text>
+                        </View>
                     </View>
-                </View>
-            </ImageBackground>
+                </ImageBackground>
+            </SafeAreaView>
         </>
     )
 }

@@ -10,6 +10,7 @@ import { userInfoStateAtom, userStateAtom } from '@/states/auth'
 import { useAtom } from 'jotai'
 import { SvgXml } from 'react-native-svg'
 import { Icons } from '@/constants'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 type HomeContainer = {
   campaign: Array<Object>
@@ -77,106 +78,107 @@ function HomeScreen() {
 
   return (
     <>
-      <Header />
-      <ScrollView>
-        <ImageBackground
-          source={require('@/assets/images/text-bg.png')}
-          resizeMode="cover"
-          minHeight="100%"
-          flex={1}
-        >
-          <View style={styles.wrapper}>
-            {!currentOrder && (
-              <Pressable
-                style={{
-                  backgroundColor: 'orange',
-                  borderRadius: 14,
-                  width: '100%',
-                  alignItems: 'center',
-                  marginBottom: 10,
-                }}
-                onPress={() => navigation.navigate('Products')}
-              >
-                <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
-                  <SvgXml
-                    xml={Icons.iconCoffee}
-                    width="21"
-                    height="21"
-                    fill="#fff"
-                    style={{ marginRight: 8 }}
-                  />
-                  <Text style={{ color: '#fff', fontFamily: 'Nunito-Bold' }}>
-                    Hemen Siparişini Oluştur
-                  </Text>
-                </View>
-              </Pressable>
-            )}
-            {currentOrder && (
-              <View style={styles.currentOrder}>
-                <View style={styles.orderStatus}>
-                  {currentOrder.siparisDurum === 20 ? (
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontFamily: 'Nunito-Bold',
-                        color: '#1B854B',
-                        fontSize: 15,
-                      }}
-                    >
-                      Siparişiniz Hazır, {currentOrder.branch}nden Teslim
-                      Alabilirsiniz
+      <SafeAreaView>
+        <Header />
+        <ScrollView>
+          <ImageBackground
+            source={require('@/assets/images/text-bg.png')}
+            resizeMode="cover"
+            minHeight="100%"
+            flex={1}
+          >
+            <View style={styles.wrapper}>
+              {!currentOrder && (
+                <Pressable
+                  style={{
+                    backgroundColor: 'orange',
+                    borderRadius: 14,
+                    width: '100%',
+                    alignItems: 'center',
+                    marginBottom: 10,
+                  }}
+                  onPress={() => navigation.navigate('Products')}
+                >
+                  <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
+                    <SvgXml
+                      xml={Icons.iconCoffee}
+                      width="21"
+                      height="21"
+                      fill="#fff"
+                      style={{ marginRight: 8 }}
+                    />
+                    <Text style={{ color: '#fff', fontFamily: 'Nunito-Bold' }}>
+                      Hemen Siparişini Oluştur
                     </Text>
-                  ) : (
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontFamily: 'Nunito-Bold',
-                        color: '#1B854B',
-                        fontSize: 15,
-                      }}
-                    >
-                      Siparişiniz Hazırlanıyor...
-                    </Text>
-                  )}
-                </View>
-              </View>
-            )}
-            <Pressable style={styles.card}>
-              <ImageBackground
-                source={require('@/assets/images/card-bg.png')}
-                style={styles.cardBg}
-              >
-                <ImageBackground
-                  source={require('@/assets/images/qr-code-scan.png')}
-                  style={styles.cardQr}
-                />
-                <Text style={styles.cardText}>
-                  {userInfoState.adi + ' ' + userInfoState.soyadi}
-                </Text>
-                <Text style={styles.cardTitle}>CoffeeCo Puan : </Text>
-                <Text style={styles.cardPrice}>{homeContainer.bonus}</Text>
-              </ImageBackground>
-            </Pressable>
-            <View style={styles.slider}>
-              {homeContainer.campaign &&
-                homeContainer.campaign.map((camp: any, index) => (
-                  <View key={index}>
-                    <Pressable style={styles.sliderItem}>
-                      <Image
-                        style={styles.sliderImg}
-                        source={{
-                          uri: camp.image,
-                        }}
-                      />
-                    </Pressable>
-                    <View style={styles.sliderTitle}>
-                      <Text style={styles.sliderTitleText}>
-                        {camp.shortDescription}
-                      </Text>
-                    </View>
                   </View>
-                ))}
-              {/* <Pressable style={styles.sliderItem}>
+                </Pressable>
+              )}
+              {currentOrder && (
+                <View style={styles.currentOrder}>
+                  <View style={styles.orderStatus}>
+                    {currentOrder.siparisDurum === 20 ? (
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          fontFamily: 'Nunito-Bold',
+                          color: '#1B854B',
+                          fontSize: 15,
+                        }}
+                      >
+                        Siparişiniz Hazır, {currentOrder.branch}nden Teslim
+                        Alabilirsiniz
+                      </Text>
+                    ) : (
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          fontFamily: 'Nunito-Bold',
+                          color: '#1B854B',
+                          fontSize: 15,
+                        }}
+                      >
+                        Siparişiniz Hazırlanıyor...
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              )}
+              <Pressable style={styles.card}>
+                <ImageBackground
+                  source={require('@/assets/images/card-bg.png')}
+                  style={styles.cardBg}
+                >
+                  <ImageBackground
+                    source={require('@/assets/images/qr-code-scan.png')}
+                    style={styles.cardQr}
+                  />
+                  <Text style={styles.cardText}>
+                    {userInfoState.adi + ' ' + userInfoState.soyadi}
+                  </Text>
+                  <Text style={styles.cardTitle}>CoffeeCo Puan : </Text>
+                  <Text style={styles.cardPrice}>{homeContainer.bonus}</Text>
+                </ImageBackground>
+              </Pressable>
+              <View style={styles.slider}>
+                {homeContainer.campaign &&
+                  homeContainer.campaign.map((camp: any, index) => (
+                    <View key={index}>
+                      <Pressable style={styles.sliderItem}>
+                        <Image
+                          style={styles.sliderImg}
+                          source={{
+                            uri: camp.image,
+                          }}
+                        />
+                      </Pressable>
+                      <View style={styles.sliderTitle}>
+                        <Text style={styles.sliderTitleText}>
+                          {camp.shortDescription}
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
+                {/* <Pressable style={styles.sliderItem}>
                 <Image
                   style={styles.sliderImg}
                   source={require('@/assets/images/kampanya-2.png')}
@@ -188,10 +190,11 @@ function HomeScreen() {
                   source={require('@/assets/images/kampanya-1.png')}
                 />
               </Pressable> */}
+              </View>
             </View>
-          </View>
-        </ImageBackground>
-      </ScrollView>
+          </ImageBackground>
+        </ScrollView>
+      </SafeAreaView>
     </>
   )
 }

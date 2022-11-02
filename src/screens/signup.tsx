@@ -19,10 +19,6 @@ import Toast from 'react-native-simple-toast'
 
 // Model Imports
 import { RegisterFormModel } from '@/models/models'
-import { NavigationContainer } from '@react-navigation/native'
-
-// State Imports
-import { userInfoStateAtom } from '@/states/auth'
 
 const validationSchema = Yup.object({
   Adi: Yup.string().trim().required('İsminizi giriniz'),

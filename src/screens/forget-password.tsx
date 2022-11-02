@@ -17,6 +17,7 @@ import { ResponseModel } from '@/models/models'
 import * as Yup from 'yup'
 import { ActivityIndicator } from 'react-native-paper'
 import { StackActions } from '@react-navigation/native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const validationSchemaOne = Yup.object({
   Cep: Yup.string()
@@ -120,185 +121,187 @@ const ForgetPassword = ({ navigation }) => {
 
   return (
     <>
-      <Header />
-      <ScrollView
-        contentContainerStyle={{
-          flex: 1,
-          flexGrow: 1,
-          padding: 15,
-        }}
-      >
-        <KeyboardAvoidingView style={{ flex: 1 }}>
-          <TouchableWithoutFeedback
-            onPress={Keyboard.dismiss}
-            style={{ flex: 1 }}
-          >
-            <ImageBackground
-              source={require('@/assets/images/text-bg.png')}
-              resizeMode="cover"
-              minHeight="100%"
-              flex={1}
+      <SafeAreaView>
+        <Header />
+        <ScrollView
+          contentContainerStyle={{
+            flex: 1,
+            flexGrow: 1,
+            padding: 15,
+          }}
+        >
+          <KeyboardAvoidingView style={{ flex: 1 }}>
+            <TouchableWithoutFeedback
+              onPress={Keyboard.dismiss}
+              style={{ flex: 1 }}
             >
-              <Text
-                color="loginHeader"
-                fontSize={26}
-                marginBottom="xl"
-                textAlign="center"
-                style={styles.pageTitle}
+              <ImageBackground
+                source={require('@/assets/images/text-bg.png')}
+                resizeMode="cover"
+                minHeight="100%"
+                flex={1}
               >
-                Şifremi Unuttum
-              </Text>
+                <Text
+                  color="loginHeader"
+                  fontSize={26}
+                  marginBottom="xl"
+                  textAlign="center"
+                  style={styles.pageTitle}
+                >
+                  Şifremi Unuttum
+                </Text>
 
-              {
-                !firstResponse.status &&
-                (
-                  <Formik
-                    initialValues={{ Cep: '', Email: '', Password: '', RePassword: '', Soyadi: '' }}
-                    validationSchema={validationSchemaOne}
-                    onSubmit={(values: any) => submitRequest(values)}
-                  >
-                    {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
-                      <>
-                        <Box width="100%" marginBottom="xl">
-                          <TextInput
-                            keyboardType="phone-pad"
-                            placeholder="Telefon Numarası"
-                            placeholderTextColor={colors.neutral500}
-                            value={values.Cep}
-                            onChangeText={handleChange('Cep')}
-                            onBlur={handleBlur('Cep')}
+                {
+                  !firstResponse.status &&
+                  (
+                    <Formik
+                      initialValues={{ Cep: '', Email: '', Password: '', RePassword: '', Soyadi: '' }}
+                      validationSchema={validationSchemaOne}
+                      onSubmit={(values: any) => submitRequest(values)}
+                    >
+                      {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
+                        <>
+                          <Box width="100%" marginBottom="xl">
+                            <TextInput
+                              keyboardType="phone-pad"
+                              placeholder="Telefon Numarası"
+                              placeholderTextColor={colors.neutral500}
+                              value={values.Cep}
+                              onChangeText={handleChange('Cep')}
+                              onBlur={handleBlur('Cep')}
+                            />
+                            <Text style={[styles.errorValidation]}>
+                              {touched.Cep && errors.Cep}
+                            </Text>
+                          </Box>
+                          <Box width="100%" marginBottom="xl">
+                            <TextInput
+                              placeholder="E-Mail"
+                              placeholderTextColor={colors.neutral500}
+                              value={values.Email}
+                              onChangeText={handleChange('Email')}
+                              onBlur={handleBlur('Email')}
+                            />
+                            <Text style={[styles.errorValidation]}>
+                              {touched.Email && errors.Email}
+                            </Text>
+                          </Box>
+                          {
+                            isLoading &&
+                            (
+                              <ActivityIndicator animating={true} color='#1B854B' style={{ marginBottom: 15 }} />
+                            )
+                          }
+                          <Button
+                            label="ŞİFREYİ DEĞİŞTİR"
+                            onPress={handleSubmit}
+                            backgroundColor="buttonBackground"
+                            padding="md"
+                            borderRadius="sm"
+                            shadowColor="black"
+                            shadowOpacity={0.4}
+                            shadowRadius={8.3}
+                            elevation={20}
+                            shadowOffset={{ width: 0, height: 6 }}
                           />
-                          <Text style={[styles.errorValidation]}>
-                            {touched.Cep && errors.Cep}
-                          </Text>
-                        </Box>
-                        <Box width="100%" marginBottom="xl">
-                          <TextInput
-                            placeholder="E-Mail"
-                            placeholderTextColor={colors.neutral500}
-                            value={values.Email}
-                            onChangeText={handleChange('Email')}
-                            onBlur={handleBlur('Email')}
+                          {
+                            !firstResponse.status &&
+                            (
+                              <Text style={styles.errorValidation}>{firstResponse.message}</Text>
+                            )
+                          }
+                        </>
+                      )}
+                    </Formik>
+                  )
+                }
+                {
+                  firstResponse.status &&
+                  (
+                    <Formik
+                      initialValues={{ Code: '', Email: email, Password: '', RePassword: '', sessionID: firstResponse.data }}
+                      validationSchema={validationSchemaTwo}
+                      onSubmit={(values: any) => submitRequestTwo(values)}
+                    >
+                      {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
+                        <>
+                          <Box width="100%" marginBottom="xl">
+                            <TextInput
+                              keyboardType="phone-pad"
+                              placeholder="Onay Kodu (Mailinize gelmiştir)"
+                              placeholderTextColor={colors.neutral500}
+                              value={values.Code}
+                              onChangeText={handleChange('Cep')}
+                              onBlur={handleBlur('Cep')}
+                            />
+                            <Text style={[styles.errorValidation]}>
+                              {touched.Code && errors.Code}
+                            </Text>
+                          </Box>
+                          <Box width="100%" marginBottom="xl">
+                            <TextInput
+                              placeholder="Yeni Şifre"
+                              placeholderTextColor={colors.neutral500}
+                              value={values.Password}
+                              onChangeText={handleChange('Password')}
+                              onBlur={handleBlur('Password')}
+                            />
+                            <Text style={[styles.errorValidation]}>
+                              {touched.Password && errors.Password}
+                            </Text>
+                          </Box>
+                          <Box width="100%" marginBottom="xl">
+                            <TextInput
+                              placeholder="Yeni Şifre Tekrar"
+                              placeholderTextColor={colors.neutral500}
+                              value={values.RePassword}
+                              onChangeText={handleChange('RePassword')}
+                              onBlur={handleBlur('RePassword')}
+                            />
+                            <Text style={[styles.errorValidation]}>
+                              {touched.RePassword && errors.RePassword}
+                            </Text>
+                          </Box>
+                          {
+                            isLoading &&
+                            (
+                              <ActivityIndicator animating={true} color='#1B854B' style={{ marginBottom: 15 }} />
+                            )
+                          }
+                          <Button
+                            label="GÖNDER"
+                            onPress={handleSubmit}
+                            backgroundColor="buttonBackground"
+                            padding="md"
+                            borderRadius="sm"
+                            shadowColor="black"
+                            shadowOpacity={0.4}
+                            shadowRadius={8.3}
+                            elevation={20}
+                            shadowOffset={{ width: 0, height: 6 }}
                           />
-                          <Text style={[styles.errorValidation]}>
-                            {touched.Email && errors.Email}
-                          </Text>
-                        </Box>
-                        {
-                          isLoading &&
-                          (
-                            <ActivityIndicator animating={true} color='#1B854B' style={{ marginBottom: 15 }} />
-                          )
-                        }
-                        <Button
-                          label="ŞİFREYİ DEĞİŞTİR"
-                          onPress={handleSubmit}
-                          backgroundColor="buttonBackground"
-                          padding="md"
-                          borderRadius="sm"
-                          shadowColor="black"
-                          shadowOpacity={0.4}
-                          shadowRadius={8.3}
-                          elevation={20}
-                          shadowOffset={{ width: 0, height: 6 }}
-                        />
-                        {
-                          !firstResponse.status &&
-                          (
-                            <Text style={styles.errorValidation}>{firstResponse.message}</Text>
-                          )
-                        }
-                      </>
-                    )}
-                  </Formik>
-                )
-              }
-              {
-                firstResponse.status &&
-                (
-                  <Formik
-                    initialValues={{ Code: '', Email: email, Password: '', RePassword: '', sessionID: firstResponse.data }}
-                    validationSchema={validationSchemaTwo}
-                    onSubmit={(values: any) => submitRequestTwo(values)}
-                  >
-                    {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
-                      <>
-                        <Box width="100%" marginBottom="xl">
-                          <TextInput
-                            keyboardType="phone-pad"
-                            placeholder="Onay Kodu (Mailinize gelmiştir)"
-                            placeholderTextColor={colors.neutral500}
-                            value={values.Code}
-                            onChangeText={handleChange('Cep')}
-                            onBlur={handleBlur('Cep')}
-                          />
-                          <Text style={[styles.errorValidation]}>
-                            {touched.Code && errors.Code}
-                          </Text>
-                        </Box>
-                        <Box width="100%" marginBottom="xl">
-                          <TextInput
-                            placeholder="Yeni Şifre"
-                            placeholderTextColor={colors.neutral500}
-                            value={values.Password}
-                            onChangeText={handleChange('Password')}
-                            onBlur={handleBlur('Password')}
-                          />
-                          <Text style={[styles.errorValidation]}>
-                            {touched.Password && errors.Password}
-                          </Text>
-                        </Box>
-                        <Box width="100%" marginBottom="xl">
-                          <TextInput
-                            placeholder="Yeni Şifre Tekrar"
-                            placeholderTextColor={colors.neutral500}
-                            value={values.RePassword}
-                            onChangeText={handleChange('RePassword')}
-                            onBlur={handleBlur('RePassword')}
-                          />
-                          <Text style={[styles.errorValidation]}>
-                            {touched.RePassword && errors.RePassword}
-                          </Text>
-                        </Box>
-                        {
-                          isLoading &&
-                          (
-                            <ActivityIndicator animating={true} color='#1B854B' style={{ marginBottom: 15 }} />
-                          )
-                        }
-                        <Button
-                          label="GÖNDER"
-                          onPress={handleSubmit}
-                          backgroundColor="buttonBackground"
-                          padding="md"
-                          borderRadius="sm"
-                          shadowColor="black"
-                          shadowOpacity={0.4}
-                          shadowRadius={8.3}
-                          elevation={20}
-                          shadowOffset={{ width: 0, height: 6 }}
-                        />
-                        {
-                          !firstResponse.status &&
-                          (
-                            <Text style={styles.errorValidation}>{firstResponse.message}</Text>
-                          )
-                        }
-                      </>
-                    )}
-                  </Formik>
-                )
-              }
+                          {
+                            !firstResponse.status &&
+                            (
+                              <Text style={styles.errorValidation}>{firstResponse.message}</Text>
+                            )
+                          }
+                        </>
+                      )}
+                    </Formik>
+                  )
+                }
 
-              <View style={styles.link}>
-                <Pressable onPress={() => navigation.goBack()}>
-                  <Text style={styles.linkText}>Geri Dön</Text>
-                </Pressable>
-              </View>
-            </ImageBackground>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-      </ScrollView>
+                <View style={styles.link}>
+                  <Pressable onPress={() => navigation.goBack()}>
+                    <Text style={styles.linkText}>Geri Dön</Text>
+                  </Pressable>
+                </View>
+              </ImageBackground>
+            </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
+        </ScrollView>
+      </SafeAreaView>
     </>
   )
 }

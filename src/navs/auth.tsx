@@ -7,7 +7,7 @@ import LoginScreen from '@/screens/login'
 import SignupScreen from '@/screens/signup'
 import HomeScreen from '@/screens/home'
 import Header from '@/components/header'
-import SplashScreen from 'react-native-splash-screen'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 export type AuthNavigation = {
   Login: undefined

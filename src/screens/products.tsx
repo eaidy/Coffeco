@@ -16,6 +16,7 @@ import { categoriesAtom, productsAtom, userStateAtom } from '@/states/auth'
 import { Category } from '@/models/models'
 import { Product } from '@/models/models'
 import { ActivityIndicator } from 'react-native-paper'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 function ProductsScreen() {
   // States
@@ -78,77 +79,79 @@ function ProductsScreen() {
 
   return (
     <>
-      <Header />
-      <View style={styles.pageWrapper}>
-        <ScrollView contentContainerStyle={styles.categories} horizontal={true}>
-          {categoriesItems &&
-            categoriesItems.map((categoryItem: Category, index) => (
-              <Pressable
-                key={index}
-                style={
-                  activeCategoryID === categoryItem.categoriID
-                    ? [styles.navItem, styles.navItemActive]
-                    : [styles.navItemActive, styles.navItem]
-                }
-                onPress={() => categoryPressHandler(categoryItem)}
-              >
-                {clickedCategory === categoryItem.categoriID && (
-                  <ActivityIndicator
-                    size={16}
-                    animating={true}
-                    color="#1B854B"
-                    style={{ marginRight: 8 }}
-                  />
-                )}
-                <Text
+      <SafeAreaView>
+        <Header />
+        <View style={styles.pageWrapper}>
+          <ScrollView contentContainerStyle={styles.categories} horizontal={true}>
+            {categoriesItems &&
+              categoriesItems.map((categoryItem: Category, index) => (
+                <Pressable
+                  key={index}
                   style={
                     activeCategoryID === categoryItem.categoriID
-                      ? [styles.navItemTextActive]
-                      : [styles.navItemText]
+                      ? [styles.navItem, styles.navItemActive]
+                      : [styles.navItemActive, styles.navItem]
                   }
+                  onPress={() => categoryPressHandler(categoryItem)}
                 >
-                  {categoryItem.category}
-                </Text>
-              </Pressable>
-            ))}
-        </ScrollView>
-        <ScrollView contentContainerStyle={styles.productList}>
-          {products &&
-            products.map((product: Product) => (
-              <Pressable
-                style={styles.product}
-                key={product.productID}
-                onPress={() => productPressHandler(product.productID)}
-              >
-                <View>
-                  <Image
-                    style={styles.productImg}
-                    source={
-                      product.photo !== 'https://panel.coffeco.com.tr/'
-                        ? { uri: product.photo }
-                        : require('@/assets/images/product.png')
+                  {clickedCategory === categoryItem.categoriID && (
+                    <ActivityIndicator
+                      size={16}
+                      animating={true}
+                      color="#1B854B"
+                      style={{ marginRight: 8 }}
+                    />
+                  )}
+                  <Text
+                    style={
+                      activeCategoryID === categoryItem.categoriID
+                        ? [styles.navItemTextActive]
+                        : [styles.navItemText]
                     }
-                  />
-                  <View style={styles.productBottom}>
-                    <Text style={styles.productTitle}>
-                      {product.productName}
-                    </Text>
-                    <Text style={styles.productText}>
-                      {product.shortDescription}
-                    </Text>
-                    <Text style={styles.productBonus}>
-                      {product.bonus.toFixed(2)} CoffeeCo Puan kazan
-                    </Text>
-                    <Text style={styles.productPrice}>{product.price} ₺</Text>
-                    <View style={styles.productPlus}>
-                      <Text style={styles.productPlusText}>+</Text>
+                  >
+                    {categoryItem.category}
+                  </Text>
+                </Pressable>
+              ))}
+          </ScrollView>
+          <ScrollView contentContainerStyle={styles.productList}>
+            {products &&
+              products.map((product: Product) => (
+                <Pressable
+                  style={styles.product}
+                  key={product.productID}
+                  onPress={() => productPressHandler(product.productID)}
+                >
+                  <View>
+                    <Image
+                      style={styles.productImg}
+                      source={
+                        product.photo !== 'https://panel.coffeco.com.tr/'
+                          ? { uri: product.photo }
+                          : require('@/assets/images/product.png')
+                      }
+                    />
+                    <View style={styles.productBottom}>
+                      <Text style={styles.productTitle}>
+                        {product.productName}
+                      </Text>
+                      <Text style={styles.productText}>
+                        {product.shortDescription}
+                      </Text>
+                      <Text style={styles.productBonus}>
+                        {product.bonus.toFixed(2)} CoffeeCo Puan kazan
+                      </Text>
+                      <Text style={styles.productPrice}>{product.price} ₺</Text>
+                      <View style={styles.productPlus}>
+                        <Text style={styles.productPlusText}>+</Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-              </Pressable>
-            ))}
-        </ScrollView>
-      </View>
+                </Pressable>
+              ))}
+          </ScrollView>
+        </View>
+      </SafeAreaView>
     </>
   )
 }

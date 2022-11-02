@@ -29,10 +29,10 @@ import {
   Variants,
   Variant,
   ProductBasketModel,
-  BasketModel,
 } from '@/models/models'
 import NumericInput from 'react-native-numeric-input'
 import { position } from '@shopify/restyle'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 type VariantsExpand = Array<Boolean>
 
@@ -102,10 +102,10 @@ function ProductScreen({ route }: any) {
 
   const addBasketHandler = async () => {
     let productApiObject: ProductBasketModel = {
-        ProductID: 0,
-        Qty: 0,
-        Variants: '',
-      },
+      ProductID: 0,
+      Qty: 0,
+      Variants: '',
+    },
       variantsApiArray: Array<{ id: number; value: number }>
 
     productApiObject.ProductID = productResponse.product.productID
@@ -162,181 +162,198 @@ function ProductScreen({ route }: any) {
 
   return (
     <>
-      <Header />
-      <View style={styles.pageWrapper}>
-        <ImageBackground
-          source={require('@/assets/images/product-bg.jpg')}
-          style={styles.detailBg}
-        >
-          <View style={{ flex: 3, backgroundColor: 'transparent' }}>
-            <Pressable
-              onPress={() => navigation.goBack()}
-              style={styles.backButton}
-            >
-              <Text style={styles.backButtonText}>Geri Dön</Text>
-            </Pressable>
-            <View style={styles.detailPage}>
-              <Image
-                style={styles.detailImage}
-                source={
-                  productResponse.product.photo !==
-                  'https://panel.coffeco.com.tr/'
-                    ? { uri: productResponse.product.photo }
-                    : require('@/assets/images/product.png')
-                }
-              />
-              <Text style={styles.detailTitle}>
-                {productResponse.product.productName}
-              </Text>
-              <Text style={styles.detailText}>
-                {productResponse.product.shortDescription}
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{
-              flex: 3,
-              backgroundColor: 'transparent',
-              width: '100%',
-              alignSelf: 'center',
-              justifyContent: 'flex-end',
-            }}
+      <SafeAreaView>
+        <Header />
+        <View style={styles.pageWrapper}>
+          <ImageBackground
+            source={require('@/assets/images/product-bg.jpg')}
+            style={styles.detailBg}
           >
+            <View style={{ flex: 3, backgroundColor: 'transparent' }}>
+              <Pressable
+                onPress={() => navigation.goBack()}
+                style={styles.backButton}
+              >
+                <Text style={styles.backButtonText}>Geri Dön</Text>
+              </Pressable>
+              <View style={styles.detailPage}>
+                <Image
+                  style={styles.detailImage}
+                  source={
+                    productResponse.product.photo !==
+                      'https://panel.coffeco.com.tr/'
+                      ? { uri: productResponse.product.photo }
+                      : require('@/assets/images/product.png')
+                  }
+                />
+                <Text style={styles.detailTitle}>
+                  {productResponse.product.productName}
+                </Text>
+                <Text style={styles.detailText}>
+                  {productResponse.product.shortDescription}
+                </Text>
+              </View>
+            </View>
             <View
               style={{
-                flex: 1,
-                maxHeight: haveVariants ? '100%' : '25%',
-                justifyContent: 'center',
-                borderTopLeftRadius: 10,
-                borderTopRightRadius: 10,
-                alignItems: 'center',
-                backgroundColor: '#fff',
+                flex: 3,
+                backgroundColor: 'transparent',
+                width: '100%',
+                alignSelf: 'center',
+                justifyContent: 'flex-end',
               }}
             >
-              {haveVariants && (
-                <ScrollView
-                  style={{
-                    flex: 1,
-                    width: '100%',
-                    padding: 5,
-                  }}
-                >
-                  {productResponse.variants
-                    .filter((isParent: any) => isParent.parentID === 0)
-                    .map((variantParent: Variant, parentIndex: any) => (
-                      <Pressable
-                        style={styles.option}
-                        key={parentIndex}
-                        onPress={() => {
-                          setVariantsExpand(
-                            variantsExpand.map((item, index) =>
-                              index === parentIndex ? !item : item
+              <View
+                style={{
+                  flex: 1,
+                  maxHeight: haveVariants ? '100%' : '25%',
+                  justifyContent: 'center',
+                  borderTopLeftRadius: 10,
+                  borderTopRightRadius: 10,
+                  alignItems: 'center',
+                  backgroundColor: '#fff',
+                }}
+              >
+                {haveVariants && (
+                  <ScrollView
+                    style={{
+                      flex: 1,
+                      width: '100%',
+                      padding: 5,
+                    }}
+                  >
+                    {productResponse.variants
+                      .filter((isParent: any) => isParent.parentID === 0)
+                      .map((variantParent: Variant, parentIndex: any) => (
+                        <Pressable
+                          style={styles.option}
+                          key={parentIndex}
+                          onPress={() => {
+                            setVariantsExpand(
+                              variantsExpand.map((item, index) =>
+                                index === parentIndex ? !item : item
+                              )
                             )
-                          )
-                          console.log(variantsExpand)
-                        }}
-                      >
-                        <Text style={styles.optionTitle}>
-                          {variantParent.description}
-                        </Text>
-                        <View style={styles.optionSelect}>
-                          <Text style={styles.optionSelectText}>Seçiniz</Text>
-                          <SvgXml
-                            xml={Icons.iconArrow}
-                            width="24"
-                            height="24"
-                            style={styles.navIcon}
-                          />
-                        </View>
-                        <View style={styles.sizeSelect}>
-                          {variantsExpand[parentIndex] && (
-                            <View style={{ marginTop: 20 }}>
-                              {productResponse.variants
-                                .filter(
-                                  (isParentsChild: any) =>
-                                    isParentsChild.parentID ===
-                                    variantParent.priceID
-                                )
-                                .map((variantChild: any, childIndex: any) => (
-                                  <Pressable
-                                    key={childIndex}
-                                    style={{
-                                      flex: 1,
-                                      flexDirection: 'row',
-                                      padding: 2,
-                                      marginEnd: 15,
-                                      marginStart: 15,
-                                      borderColor: 'gray',
-                                      borderBottomWidth: 0.5,
-                                      marginBottom: 10,
-                                    }}
-                                    onPress={() => {
-                                      variantChildPressHandler(variantChild)
-                                    }}
-                                  >
-                                    <Text style={{ flex: 5, fontSize: 15 }}>
-                                      {variantChild.description}
-                                    </Text>
-                                    <View
+                            console.log(variantsExpand)
+                          }}
+                        >
+                          <Text style={styles.optionTitle}>
+                            {variantParent.description}
+                          </Text>
+                          <View style={styles.optionSelect}>
+                            <Text style={styles.optionSelectText}>Seçiniz</Text>
+                            <SvgXml
+                              xml={Icons.iconArrow}
+                              width="24"
+                              height="24"
+                              style={styles.navIcon}
+                            />
+                          </View>
+                          <View style={styles.sizeSelect}>
+                            {variantsExpand[parentIndex] && (
+                              <View style={{ marginTop: 20 }}>
+                                {productResponse.variants
+                                  .filter(
+                                    (isParentsChild: any) =>
+                                      isParentsChild.parentID ===
+                                      variantParent.priceID
+                                  )
+                                  .map((variantChild: any, childIndex: any) => (
+                                    <Pressable
+                                      key={childIndex}
                                       style={{
                                         flex: 1,
-                                        position: 'absolute',
-                                        right: 15,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        padding: 2,
+                                        marginEnd: 15,
+                                        marginStart: 15,
+                                        borderColor: '#bbb',
+                                        borderBottomWidth: 0.5,
+                                        marginBottom: 10,
+                                      }}
+                                      onPress={() => {
+                                        variantChildPressHandler(variantChild)
                                       }}
                                     >
-                                      <Checkbox
-                                        status={
-                                          selectedVariants.includes(
-                                            variantChild
-                                          )
-                                            ? 'checked'
-                                            : 'unchecked'
+                                      <Text style={{
+                                        flex: 4,
+                                        fontSize: 15,
+                                      }}
+                                      >
+                                        {
+                                          variantChild.description.split(" ").map((word: string) => word[0].toUpperCase() + word.substring(0 + 1).toLowerCase() + " ")
                                         }
-                                        onPress={() => {
-                                          variantChildPressHandler(variantChild)
+                                      </Text>
+                                      <Text
+                                        style={{
+                                          flex: 1,
+                                          fontSize: 15,
+                                          color: '#1b854b',
                                         }}
-                                        color="#1B854B"
-                                      />
-                                    </View>
-                                  </Pressable>
-                                ))}
-                            </View>
-                          )}
-                        </View>
-                      </Pressable>
-                    ))}
-                </ScrollView>
-              )}
-              <View style={styles.optionListFooter}>
-                <NumericInput
-                  onChange={value => setQty(value)}
-                  minValue={1}
-                  iconSize={5}
-                  totalWidth={100}
-                  totalHeight={50}
-                  rounded
-                  type="up-down"
-                  value={Qty}
-                />
-                {/* <TextInput
+                                      >
+                                        + {variantChild.price} ₺
+                                      </Text>
+                                      <View
+                                        style={{
+                                          flex: 1,
+
+                                        }}
+                                      >
+                                        <Checkbox
+                                          status={
+                                            selectedVariants.includes(
+                                              variantChild
+                                            )
+                                              ? 'checked'
+                                              : 'unchecked'
+                                          }
+                                          onPress={() => {
+                                            variantChildPressHandler(variantChild)
+                                          }}
+                                          color="#1B854B"
+                                        />
+                                      </View>
+                                    </Pressable>
+                                  ))}
+                              </View>
+                            )}
+                          </View>
+                        </Pressable>
+                      ))}
+                  </ScrollView>
+                )}
+                <View style={styles.optionListFooter}>
+                  <NumericInput
+                    onChange={value => setQty(value)}
+                    minValue={1}
+                    iconSize={5}
+                    totalWidth={100}
+                    totalHeight={50}
+                    rounded
+                    type="up-down"
+                    value={Qty}
+                  />
+                  {/* <TextInput
                   style={styles.optionNumber}
                   placeholder="Adet"
                   keyboardType="numeric"
                   onChangeText={setQty}
                   value={Qty}
                 /> */}
-                <Pressable
-                  style={styles.optionCart}
-                  onPress={() => addBasketHandler()}
-                >
-                  <Text style={styles.optionCartText}>SEPETE EKLE</Text>
-                  <Text style={styles.optionCartPrice}>{totalPrice} ₺</Text>
-                </Pressable>
+                  <Pressable
+                    style={styles.optionCart}
+                    onPress={() => addBasketHandler()}
+                  >
+                    <Text style={styles.optionCartText}>SEPETE EKLE</Text>
+                    <Text style={styles.optionCartPrice}>{totalPrice} ₺</Text>
+                  </Pressable>
+                </View>
               </View>
             </View>
-          </View>
-        </ImageBackground>
-      </View>
+          </ImageBackground>
+        </View>
+      </SafeAreaView>
     </>
   )
 }
