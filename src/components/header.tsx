@@ -45,8 +45,8 @@ export default function Header() {
               }}
             />
             <Text style={styles.profileText}>
-              <View>
-                <Text style={styles.profileTextInside}>
+              <View style={styles.profileTextInside}>
+                <Text style={styles.profileTextInsideText}>
                   {userInfoState.adi + ' ' + userInfoState.soyadi}
                 </Text>
               </View>
@@ -124,5 +124,11 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
 
     elevation: 5,
+  },
+  profileTextInsideText: {
+    fontFamily: 'Nunito-Bold',
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#000',
   },
 })

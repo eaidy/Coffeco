@@ -172,9 +172,11 @@ function HomeScreen() {
                         />
                       </Pressable>
                       <View style={styles.sliderTitle}>
-                        <Text style={styles.sliderTitleText}>
-                          {camp.shortDescription}
-                        </Text>
+                        <View style={styles.sliderTitleText}>
+                          <Text style={styles.sliderTitleTextInside}>
+                            {camp.shortDescription}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                   ))}
@@ -208,7 +210,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: '4%',
-    paddingBottom: 90,
+    paddingBottom: 170,
     flexWrap: 'wrap',
   },
   sectionContainer: {
@@ -302,12 +304,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   sliderTitle: {
-    marginTop: -30,
+    marginTop: -38,
   },
   sliderTitleText: {
     fontFamily: 'Nunito-Bold',
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 12,
     borderRadius: 32,
     color: '#000',
     backgroundColor: '#fff',
@@ -317,7 +319,6 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingLeft: 10,
     paddingRight: 10,
-    lineHeight: 20,
     justifyContent: 'center', //Centered horizontally
     alignItems: 'center', //Centered vertically
     flex: 1,
@@ -331,6 +332,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
 
     elevation: 5,
+  },
+  sliderTitleTextInside: {
+    fontFamily: 'Nunito-Bold',
+    textAlign: 'center',
+    fontSize: 12,
+    color: '#000',
   },
   currentOrder: {
     display: 'flex',
