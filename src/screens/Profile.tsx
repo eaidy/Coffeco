@@ -291,6 +291,13 @@ function ProfileScreen() {
                                         ))}
                                   </View>
                                 </View>
+                                <View>
+                                  <Text style={{
+                                    color: '#444444'
+                                  }}>
+                                    {"x" + orderLine.qty}
+                                  </Text>
+                                </View>
                                 <Text style={styles.productPrice}>
                                   {orderLine.price.toFixed(2)} ₺
                                 </Text>

@@ -76,8 +76,9 @@ function OrderScreen() {
     { duration: 30, time: '', isActive: false },
     { duration: 45, time: '', isActive: false },
   ])
-
   const [pageLoad, setPageLoad] = useState(false)
+  const [deliveryMin, setDeliveryMin] = useState<string>("")
+
   const [userState] = useAtom(userStateAtom)
   const [basketState, setBasketState] = useAtom(basketAtom)
   const [userInfoState] = useAtom(userInfoStateAtom)
@@ -674,63 +675,6 @@ function OrderScreen() {
                                 </Text>
                               </Pressable>
                             ))}
-                        </View>
-                        <View style={styles.boxContent}>
-                          <View style={styles.custom}>
-                            <Pressable
-                              onPress={() => arbitraryTimeHandler()}
-                              style={styles.customText}
-                            >
-                              <Text style={styles.customTextTitle}>
-                                Dakika belirle
-                              </Text>
-                              <SvgXml
-                                xml={Icons.iconArrowDown}
-                                height="14"
-                                width="14"
-                                fill="gray"
-                                style={{ marginTop: 4, marginLeft: 4 }}
-                              />
-                            </Pressable>
-                            {arbitraryTime && (
-                              <View style={styles.customInputs}>
-                                <TextInput
-                                  placeholder="Dakika giriniz"
-                                  activeOutlineColor="#1b854b"
-                                  dense
-                                  keyboardType="phone-pad"
-                                  mode="outlined"
-                                  value={() => String(sendOrderInfo.DeliveryMinute)}
-                                  onChangeText={text =>
-                                    setSendOrderInfo(prev => {
-                                      const buffer = prev
-                                      buffer.DeliveryMinute = Number(text)
-                                      return { ...buffer }
-                                    })
-                                  }
-                                  style={{
-                                    marginBottom: 5,
-                                    marginRight: 5,
-                                    backgroundColor: '#fff',
-                                  }}
-                                />
-                                <Text
-                                  style={{
-                                    color: 'gray',
-                                    fontSize: 13,
-                                    fontFamily: 'Nunito-Regular',
-                                    marginTop: 1,
-                                  }}
-                                >
-                                  {sendOrderInfo.DeliveryMinute +
-                                    ' dakika sonra şubeden al'}
-                                </Text>
-                                {/* <Pressable style={[styles.input, styles.inputBtn]}>
-                            <Text style={styles.inputBtnText}>Onayla</Text>
-                          </Pressable> */}
-                              </View>
-                            )}
-                          </View>
                         </View>
                         <View style={styles.boxTitle}>
                           <Text style={styles.boxTitleText}>Sipariş Notu</Text>

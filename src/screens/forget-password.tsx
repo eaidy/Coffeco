@@ -72,6 +72,7 @@ const ForgetPassword = ({ navigation }) => {
       body: JSON.stringify(values)
     })
       .then((res) => {
+        console.log(res)
         return res.json()
       })
       .then((resp) => {
@@ -81,7 +82,7 @@ const ForgetPassword = ({ navigation }) => {
       })
       .catch((err) => {
         setIsLoading(false)
-        console.log(err, 'Error')
+        console.log(err, 'ATA')
       })
   }
 

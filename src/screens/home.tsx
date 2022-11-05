@@ -77,42 +77,87 @@ function HomeScreen() {
   }, [navigation])
 
   return (
-    <SafeAreaView style={{
-      flex: 1,
-      backgroundColor: '#fff'
-    }}>
-      <Header />
-      <ScrollView>
-        <ImageBackground
-          source={require('@/assets/images/text-bg.png')}
-          resizeMode="cover"
-          minHeight="100%"
-          flex={1}
-        >
-          <View style={styles.wrapper}>
-            {!currentOrder && (
-              <Pressable
-                style={{
-                  backgroundColor: 'orange',
-                  borderRadius: 14,
-                  width: '100%',
-                  alignItems: 'center',
-                  marginBottom: 10,
-                }}
-                onPress={() => navigation.navigate('Products')}
-              >
-                <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
-                  <SvgXml
-                    xml={Icons.iconCoffee}
-                    width="21"
-                    height="21"
-                    fill="#fff"
-                    style={{ marginRight: 8 }}
-                  />
-                  <Text style={{ color: '#fff', fontFamily: 'Nunito-Bold' }}>
-                    Hemen Siparişini Oluştur
-                  </Text>
+    <>
+      <SafeAreaView style={{ backgroundColor: '#fff', paddingBottom: 90 }}>
+        <Header />
+        <ScrollView>
+          <ImageBackground
+            source={require('@/assets/images/text-bg.png')}
+            resizeMode="cover"
+            minHeight="100%"
+            flex={1}
+          >
+            <View style={styles.wrapper}>
+              {!currentOrder && (
+                <Pressable
+                  style={{
+                    backgroundColor: 'orange',
+                    borderRadius: 14,
+                    width: '100%',
+                    alignItems: 'center',
+                    marginBottom: 10,
+                  }}
+                  onPress={() => navigation.navigate('Products')}
+                >
+                  <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
+                    <SvgXml
+                      xml={Icons.iconCoffee}
+                      width="21"
+                      height="21"
+                      fill="#fff"
+                      style={{ marginRight: 8 }}
+                    />
+                    <Text style={{ color: '#fff', fontFamily: 'Nunito-Bold' }}>
+                      Hemen Siparişini Oluştur
+                    </Text>
+                  </View>
+                </Pressable>
+              )}
+              {currentOrder && (
+                <View style={styles.currentOrder}>
+                  <View style={styles.orderStatus}>
+                    {currentOrder.siparisDurum === 20 ? (
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          fontFamily: 'Nunito-Bold',
+                          color: '#1B854B',
+                          fontSize: 15,
+                        }}
+                      >
+                        Siparişiniz Hazır, {currentOrder.branch}nden Teslim
+                        Alabilirsiniz
+                      </Text>
+                    ) : (
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                          fontFamily: 'Nunito-Bold',
+                          color: '#1B854B',
+                          fontSize: 15,
+                        }}
+                      >
+                        Siparişiniz Hazırlanıyor...
+                      </Text>
+                    )}
+                  </View>
                 </View>
+              )}
+              <Pressable style={styles.card}>
+                <ImageBackground
+                  source={require('@/assets/images/card-bg.png')}
+                  style={styles.cardBg}
+                >
+                  <ImageBackground
+                    source={require('@/assets/images/qr-code-scan.png')}
+                    style={styles.cardQr}
+                  />
+                  <Text style={styles.cardText}>
+                    {userInfoState.adi + ' ' + userInfoState.soyadi}
+                  </Text>
+                  <Text style={styles.cardTitle}>CoffeeCo Puan : </Text>
+                  <Text style={styles.cardPrice}>{homeContainer.bonus}</Text>
+                </ImageBackground>
               </Pressable>
               <View style={styles.slider}>
                 {homeContainer.campaign &&
@@ -127,16 +172,13 @@ function HomeScreen() {
                         />
                       </Pressable>
                       <View style={styles.sliderTitle}>
-                        <View style={styles.sliderTitleText}>
-                          <Text style={styles.sliderTitleTextInside}>
-                            {camp.shortDescription}
-                          </Text>
-                        </View>
+                        <Text style={styles.sliderTitleText}>
+                          {camp.shortDescription}
+                        </Text>
                       </View>
                     </View>
-                  </View>
-                ))}
-              {/* <Pressable style={styles.sliderItem}>
+                  ))}
+                {/* <Pressable style={styles.sliderItem}>
                 <Image
                   style={styles.sliderImg}
                   source={require('@/assets/images/kampanya-2.png')}
@@ -148,11 +190,12 @@ function HomeScreen() {
                   source={require('@/assets/images/kampanya-1.png')}
                 />
               </Pressable> */}
+              </View>
             </View>
-          </View>
-        </ImageBackground>
-      </ScrollView>
-    </SafeAreaView>
+          </ImageBackground>
+        </ScrollView>
+      </SafeAreaView>
+    </>
   )
 }
 
@@ -165,7 +208,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: '4%',
-    paddingBottom: 170,
+    paddingBottom: 90,
     flexWrap: 'wrap',
   },
   sectionContainer: {
@@ -245,7 +288,6 @@ const styles = StyleSheet.create({
   slider: {
     width: '100%',
     dislay: 'flex',
-    flexDirection: 'column'
   },
   sliderItem: {
     width: 'auto',
@@ -260,15 +302,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   sliderTitle: {
-    flex: 1,
-    borderRadius: 48,
-    marginTop: -30
+    marginTop: -35,
   },
   sliderTitleText: {
     fontFamily: 'Nunito-Bold',
     textAlign: 'center',
     fontSize: 14,
-    borderRadius: 48,
     color: '#444444',
     backgroundColor: '#fff',
     marginBottom: 20,
@@ -277,23 +316,20 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingLeft: 10,
     paddingRight: 10,
+    lineHeight: 20,
     justifyContent: 'center', //Centered horizontally
     alignItems: 'center', //Centered vertically
     flex: 1,
     alignSelf: 'center',
+    textAlignVertical: 'center',
     shadowOffset: {
-      width: 1,
-      height: 1,
+      width: 0,
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 4,
-  },
-  sliderTitleTextInside: {
-    fontFamily: 'Nunito-Bold',
-    textAlign: 'center',
-    fontSize: 12,
-    color: '#000',
+
+    elevation: 5,
   },
   currentOrder: {
     display: 'flex',
