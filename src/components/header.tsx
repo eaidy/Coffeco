@@ -130,4 +130,10 @@ const styles = StyleSheet.create({
 
     elevation: 5,
   },
+  profileTextInsideText: {
+    fontFamily: 'Nunito-Bold',
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#000',
+  },
 })

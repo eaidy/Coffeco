@@ -114,71 +114,25 @@ function HomeScreen() {
                   </Text>
                 </View>
               </Pressable>
-            )}
-            {currentOrder && (
-              <View style={styles.currentOrder}>
-                <View style={styles.orderStatus}>
-                  {currentOrder.siparisDurum === 20 ? (
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontFamily: 'Nunito-Bold',
-                        color: '#1B854B',
-                        fontSize: 15,
-                      }}
-                    >
-                      Siparişiniz Hazır, {currentOrder.branch}nden Teslim
-                      Alabilirsiniz
-                    </Text>
-                  ) : (
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontFamily: 'Nunito-Bold',
-                        color: '#1B854B',
-                        fontSize: 15,
-                      }}
-                    >
-                      Siparişiniz Hazırlanıyor...
-                    </Text>
-                  )}
-                </View>
-              </View>
-            )}
-            <Pressable style={styles.card}>
-              <ImageBackground
-                source={require('@/assets/images/card-bg.png')}
-                style={styles.cardBg}
-              >
-                <ImageBackground
-                  source={require('@/assets/images/qr-code-scan.png')}
-                  style={styles.cardQr}
-                />
-                <Text style={styles.cardText}>
-                  {userInfoState.adi + ' ' + userInfoState.soyadi}
-                </Text>
-                <Text style={styles.cardTitle}>CoffeeCo Puan : </Text>
-                <Text style={styles.cardPrice}>{homeContainer.bonus}</Text>
-              </ImageBackground>
-            </Pressable>
-            <View style={styles.slider}>
-              {homeContainer.campaign &&
-                homeContainer.campaign.map((camp: any, index) => (
-                  <View key={index} style={{
-                    flex: 1
-                  }}>
-                    <View style={styles.sliderItem}>
-                      <Image
-                        style={styles.sliderImg}
-                        source={{
-                          uri: camp.image,
-                        }}
-                      />
-                    </View>
-                    <View style={styles.sliderTitle}>
-                      <Text style={styles.sliderTitleText}>
-                        {camp.shortDescription}
-                      </Text>
+              <View style={styles.slider}>
+                {homeContainer.campaign &&
+                  homeContainer.campaign.map((camp: any, index) => (
+                    <View key={index}>
+                      <Pressable style={styles.sliderItem}>
+                        <Image
+                          style={styles.sliderImg}
+                          source={{
+                            uri: camp.image,
+                          }}
+                        />
+                      </Pressable>
+                      <View style={styles.sliderTitle}>
+                        <View style={styles.sliderTitleText}>
+                          <Text style={styles.sliderTitleTextInside}>
+                            {camp.shortDescription}
+                          </Text>
+                        </View>
+                      </View>
                     </View>
                   </View>
                 ))}
@@ -211,7 +165,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: '4%',
-    paddingBottom: 90,
+    paddingBottom: 170,
     flexWrap: 'wrap',
   },
   sectionContainer: {
@@ -323,7 +277,6 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingLeft: 10,
     paddingRight: 10,
-    lineHeight: 20,
     justifyContent: 'center', //Centered horizontally
     alignItems: 'center', //Centered vertically
     flex: 1,
@@ -335,6 +288,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 4,
+  },
+  sliderTitleTextInside: {
+    fontFamily: 'Nunito-Bold',
+    textAlign: 'center',
+    fontSize: 12,
+    color: '#000',
   },
   currentOrder: {
     display: 'flex',
