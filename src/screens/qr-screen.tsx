@@ -12,29 +12,30 @@ const QrScreen = () => {
     const [userInfoState,] = useAtom(userInfoStateAtom)
 
     return (
-        <>
-            <SafeAreaView>
-                <Header />
-                <ImageBackground
-                    source={require('@/assets/images/text-bg.png')}
-                    resizeMode="cover"
-                    minHeight="100%"
-                    flex={1}
+        <SafeAreaView style={{
+            flex: 1,
+            backgroundColor: '#fff'
+        }}>
+            <Header />
+            <ImageBackground
+                source={require('@/assets/images/text-bg.png')}
+                resizeMode="cover"
+                minHeight="100%"
+                flex={1}
+            >
+                <View
+                    style={[styles.qrCodeContainer]}
                 >
-                    <View
-                        style={[styles.qrCodeContainer]}
-                    >
-                        <QRCode
-                            value={String(userInfoState.cariID)}
-                            size={300}
-                        />
-                        <View>
-                            <Text style={[styles.qrText]}>QR Kodu kasa görevlisine okutunuz...</Text>
-                        </View>
+                    <QRCode
+                        value={String(userInfoState.cariID)}
+                        size={300}
+                    />
+                    <View>
+                        <Text style={[styles.qrText]}>QR Kodu kasa görevlisine okutunuz...</Text>
                     </View>
-                </ImageBackground>
-            </SafeAreaView>
-        </>
+                </View>
+            </ImageBackground>
+        </SafeAreaView>
     )
 }
 

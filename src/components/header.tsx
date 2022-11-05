@@ -6,9 +6,11 @@ import { useAtom } from 'jotai'
 // Component Imports
 import { StyleSheet, View, Image } from 'react-native'
 import { Text, Pressable, ImageBackground } from '@/atoms'
+import { Icons } from '@/constants'
 
 // State Imports
 import { userInfoStateAtom, userStateAtom } from '@/states/auth'
+import { SvgXml } from 'react-native-svg'
 
 export default function Header() {
   const [userState] = useAtom(userStateAtom)
@@ -30,7 +32,7 @@ export default function Header() {
         >
           <Image
             style={styles.logoImg}
-            source={require('@/assets/images/864.png')}
+            source={require('@/assets/images/logoHeader.jpeg')}
           />
         </Pressable>
         {userState.status && (
@@ -38,19 +40,25 @@ export default function Header() {
             style={styles.profile}
             onPress={() => navigation.navigate('Profile')}
           >
-            <Image
-              style={styles.profileImg}
-              source={{
-                uri: 'https://panel.coffeco.com.tr/polar/icerik/img/profil-small.jpg',
-              }}
-            />
-            <Text style={styles.profileText}>
-              <View>
-                <Text style={styles.profileTextInside}>
-                  {userInfoState.adi + ' ' + userInfoState.soyadi}
-                </Text>
-              </View>
-            </Text>
+            <View style={{ backgroundColor: '#fff', borderRadius: 100, marginRight: 8 }}>
+              <SvgXml
+                xml={Icons.iconProfilePic}
+                width="60"
+                height="60"
+                fill='#1B854B'
+              />
+            </View>
+            <View style={{
+              backgroundColor: 'transparent',
+              position: 'absolute',
+              bottom: -5,
+              right: -120
+            }}
+            >
+              <Text style={styles.profileTextInside}>
+                {userInfoState.adi + ' ' + userInfoState.soyadi}
+              </Text>
+            </View>
           </Pressable>
         )}
       </ImageBackground>
@@ -67,6 +75,7 @@ const styles = StyleSheet.create({
   logoImg: {
     width: 64,
     height: 64,
+    borderRadius: 64
   },
   header: {
     backgroundColor: '#fff',
@@ -94,10 +103,11 @@ const styles = StyleSheet.create({
   },
   profileImg: {
     width: 64,
+    backgroundColor: '#ededed',
     height: 64,
     borderRadius: 32,
     borderWidth: 2,
-    borderColor: '#1B854B',
+    borderColor: '#ededed',
     marginRight: 4,
   },
   profileText: {
@@ -108,13 +118,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito-Bold',
     textAlign: 'right',
     fontSize: 14,
-    paddingTop: 4,
-    paddingBottom: 4,
-    paddingLeft: 10,
-    paddingRight: 10,
-    borderRadius: 32,
     color: '#000',
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

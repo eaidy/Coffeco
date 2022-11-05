@@ -5,7 +5,7 @@ const login = async (phoneNumber: string, password: string) => {
     let body: UserState
 
     try {
-        const response = await fetch("https://api.entegre.pro/ui/UIntegration/Login", {
+        const response = await fetch("https://api.coffeco.com.tr/ui/UIntegration/Login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

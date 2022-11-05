@@ -9,7 +9,7 @@ type Params = {
 const fetchData = async (Api: string, params: Params) => {
 
     let apiQuery = '',
-        fetchUrl = 'https://api.entegre.pro/ui/UIntegration/'
+        fetchUrl = 'https://api.coffeco.com.tr/ui/UIntegration/'
 
     if (params.key) {
         apiQuery = `${Api}?${params.paramLabel}=${params.key}`
