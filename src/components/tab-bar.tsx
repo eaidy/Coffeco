@@ -5,7 +5,6 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native'
 
 import { SvgXml } from 'react-native-svg';
 import { Icons } from '../constants';
-import Header from '@/components/header'
 
 function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 

@@ -1,6 +1,6 @@
 // API Imports
 import React, { useEffect, useState } from 'react'
-import { color, useTheme } from '@shopify/restyle'
+import { useTheme } from '@shopify/restyle'
 import { useAtom } from 'jotai'
 import { useNavigation } from '@react-navigation/native'
 import { StackActions } from '@react-navigation/native'

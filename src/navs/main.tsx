@@ -3,15 +3,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import TabBar from '@/components/tab-bar'
 
-import ProductScreen from '@/screens/product'
 import QrScreen from '@/screens/qr-screen'
 import HomeScreen from '@/screens/home'
-import DiscountTagsScreen from '@/screens/discount-tags'
 import ProductsScreen from '@/screens/products'
 import OrderScreen from '@/screens/order'
-import { backgroundColor } from '@shopify/restyle'
 import ProfileScreen from '@/screens/Profile'
-import { basketAtom } from '@/states/auth'
 
 export type MainNavigation = {
   Home: undefined

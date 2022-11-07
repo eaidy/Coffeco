@@ -11,8 +11,6 @@ import * as Yup from 'yup'
 import { Box, Button, Text, TextInput } from '@/atoms'
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import Header from '@/components/header'
-import { SvgXml } from 'react-native-svg'
-import { Icons } from '@/constants'
 import { fetchData } from '@/services/methods'
 
 // Service Imports

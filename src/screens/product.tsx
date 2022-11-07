@@ -1,5 +1,5 @@
 // API Imports
-import React, { Component, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 import { useNavigation } from '@react-navigation/native'
 
@@ -10,7 +10,6 @@ import {
   View,
   ScrollView,
   ImageBackground,
-  TextInput,
   Image,
   Pressable,
 } from 'react-native'
@@ -25,13 +24,10 @@ import { basketAtom, userStateAtom } from '@/states/auth'
 
 // Model Imports
 import {
-  ResponseModel,
-  Variants,
   Variant,
   ProductBasketModel,
 } from '@/models/models'
 import NumericInput from 'react-native-numeric-input'
-import { position } from '@shopify/restyle'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type VariantsExpand = Array<Boolean>

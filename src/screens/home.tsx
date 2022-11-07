@@ -305,6 +305,7 @@ const styles = StyleSheet.create({
     marginTop: -35,
   },
   sliderTitleText: {
+    borderRadius: 28,
     fontFamily: 'Nunito-Bold',
     textAlign: 'center',
     fontSize: 14,

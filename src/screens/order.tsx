@@ -2,7 +2,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useAtom } from 'jotai'
-import { StackActions, useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 
 // Component Imports
 import { Text } from '@/atoms'
@@ -27,7 +27,6 @@ import Toast from 'react-native-simple-toast'
 import { fetchData } from '@/services/methods'
 import { userStateAtom, basketAtom, userInfoStateAtom } from '@/states/auth'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import MainNavigation from '@/navs/main'
 
 type BasketModel = {
   totalPrice: number

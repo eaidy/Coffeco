@@ -10,7 +10,6 @@ import MainNavigation from '@/navs/main'
 import ProfileScreen from '@/screens/Profile'
 import ProductScreen from '@/screens/product'
 import { ForgetPassword } from './screens/forget-password'
-import SplashScreen from './screens/splash-screen'
 import { MMKVLoader, useMMKVStorage } from "react-native-mmkv-storage"
 import { useAtom } from 'jotai'
 import { userStateAtom } from './states/auth'
@@ -91,13 +90,6 @@ export default function Navigations() {
       <Stack.Screen
         name="ForgetPassword"
         component={ForgetPassword}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Splash"
-        component={SplashScreen}
         options={{
           headerShown: false,
         }}

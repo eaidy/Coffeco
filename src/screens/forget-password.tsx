@@ -1,6 +1,6 @@
 import Header from '@/components/header'
 import React, { useState } from 'react'
-import { color, useTheme } from '@shopify/restyle'
+import { useTheme } from '@shopify/restyle'
 import {
   StyleSheet,
   KeyboardAvoidingView,
@@ -31,6 +31,7 @@ const validationSchemaOne = Yup.object({
 })
 
 const validationSchemaTwo = Yup.object({
+  Code: Yup.string(),
   Password: Yup.string()
     .trim()
     .min(8, 'Şifre çok kısa')
@@ -101,16 +102,21 @@ const ForgetPassword = ({ navigation }) => {
       .then((resp) => {
         setIsLoading(false)
         setSecondResponse(resp)
-        Alert.alert(
-          resp.status ? "Şifre başarıyla yenilendi." : resp.message,
-          resp.message,
-          [
-            {
-              text: "Giriş Yap",
-              onPress: () => navigation.dispatch(StackActions.replace('Auth'))
-            }
-          ]
-        )
+        if (resp.status) {
+          Alert.alert(
+            resp.status ? "Şifre başarıyla yenilendi." : resp.message,
+            resp.message,
+            [
+              {
+                text: "Giriş Yap",
+                onPress: () => navigation.dispatch(StackActions.replace('Auth'))
+              }
+            ]
+          )
+        } else {
+          return
+        }
+
         console.log(resp)
       })
       .catch((err) => {
@@ -184,6 +190,7 @@ const ForgetPassword = ({ navigation }) => {
                             placeholder="E-Mail"
                             placeholderTextColor={colors.neutral500}
                             value={values.Email}
+                            autoCapitalize='none'
                             onChangeText={handleChange('Email')}
                             onBlur={handleBlur('Email')}
                           />
@@ -236,8 +243,8 @@ const ForgetPassword = ({ navigation }) => {
                             placeholder="Onay Kodu (Mailinize gelmiştir)"
                             placeholderTextColor={colors.neutral500}
                             value={values.Code}
-                            onChangeText={handleChange('Cep')}
-                            onBlur={handleBlur('Cep')}
+                            onChangeText={handleChange('Code')}
+                            onBlur={handleBlur('Code')}
                           />
                           <Text style={[styles.errorValidation]}>
                             {touched.Code && errors.Code}
@@ -286,9 +293,9 @@ const ForgetPassword = ({ navigation }) => {
                           shadowOffset={{ width: 0, height: 6 }}
                         />
                         {
-                          !firstResponse.status &&
+                          !secondResponse.status &&
                           (
-                            <Text style={styles.errorValidation}>{firstResponse.message}</Text>
+                            <Text style={styles.errorValidation}>{secondResponse.message}</Text>
                           )
                         }
                       </>
@@ -368,12 +375,5 @@ const styles = StyleSheet.create({
   },
   btnFont: {
     fontFamily: 'Nunito-Bold',
-  },
-  errorValidation: {
-    color: '#FF1E00',
-    fontSize: 12,
-    marginLeft: 8,
-    marginTop: 5,
-    fontFamily: 'Nunito-SemiBold',
   }
 })

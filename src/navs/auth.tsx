@@ -1,13 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { useTheme } from '@shopify/restyle'
 import { Theme } from '@/themes'
 
 import LoginScreen from '@/screens/login'
 import SignupScreen from '@/screens/signup'
-import HomeScreen from '@/screens/home'
 import Header from '@/components/header'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 export type AuthNavigation = {
   Login: undefined
