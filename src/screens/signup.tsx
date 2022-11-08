@@ -4,6 +4,8 @@ import { useTheme } from '@shopify/restyle'
 import { register } from '@/services/register'
 import * as Yup from 'yup'
 import { ActivityIndicator } from 'react-native-paper'
+import DeviceInfo from 'react-native-device-info'
+
 // Component Imports
 import {
   KeyboardAvoidingView,
@@ -19,6 +21,8 @@ import Toast from 'react-native-simple-toast'
 
 // Model Imports
 import { RegisterFormModel } from '@/models/models'
+
+let UserDeviceId = DeviceInfo.getDeviceId();
 
 const validationSchema = Yup.object({
   Adi: Yup.string().trim().required('İsminizi giriniz'),
@@ -51,6 +55,7 @@ function SignupScreen({ navigation }) {
     Email: '',
     Password: '',
     RePassword: '',
+    DeviceID: ''
   }
 
   const [isLoading, setIsLoading] = useState(false)
@@ -113,8 +118,10 @@ function SignupScreen({ navigation }) {
             <Formik
               initialValues={initialFormValues}
               validationSchema={validationSchema}
-              onSubmit={(values, { resetForm }) => {
-                submitRegister(values)
+              onSubmit={async (values, { resetForm }) => {
+                const buffer = values
+                buffer.DeviceID = await UserDeviceId
+                submitRegister(buffer)
                   .then((status) => {
                     if (status) {
                       resetForm()

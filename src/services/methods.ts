@@ -31,11 +31,10 @@ const fetchData = async (Api: string, params: Params) => {
         body: JSON.stringify(params.body)
     })
         .then((res) => {
-            console.log(res)
             return res.json()
         })
         .then((body) => {
-            console.log('fetchDatadan message --> ' + body.message)
+            console.log("FETCH MESSAGE --> ", body.message)
             return body.data
         })
         .catch((err) => {

@@ -34,7 +34,7 @@ function HomeScreen() {
       authToken: userState.data,
     })
       .then(res => {
-        console.log(res)
+        console.log("RESS", res)
         setHomeContainer(res)
         setCurrentOrder(res.order)
         setUserInfoState(() => {
@@ -45,13 +45,12 @@ function HomeScreen() {
             gsm,
             email,
             password,
-            cinsiyet,
-            puan,
+            cinsiyet
           } = res.user
-
+          console.log("RES ", res.bonus)
           const cariID = res.cariID
 
-          let buffer = {
+          const buffer = {
             aciklama,
             adi,
             soyadi,
@@ -59,10 +58,10 @@ function HomeScreen() {
             email,
             password,
             cinsiyet,
-            puan, //homeContainer.bonus
+            bonus: res.bonus,
             cariID,
           }
-          console.log(buffer)
+          console.log("BUFFER ", buffer)
           return buffer
         })
       })
@@ -87,7 +86,7 @@ function HomeScreen() {
         authToken: userState.data,
       })
         .then(res => {
-          console.log(res)
+          console.log("RESS", res)
           setHomeContainer(res)
           setCurrentOrder(res.order)
           setUserInfoState(() => {
@@ -98,13 +97,12 @@ function HomeScreen() {
               gsm,
               email,
               password,
-              cinsiyet,
-              puan,
+              cinsiyet
             } = res.user
-
+            console.log("RES ", res.bonus)
             const cariID = res.cariID
 
-            let buffer = {
+            const buffer = {
               aciklama,
               adi,
               soyadi,
@@ -112,10 +110,10 @@ function HomeScreen() {
               email,
               password,
               cinsiyet,
-              puan, //homeContainer.bonus
+              bonus: res.bonus,
               cariID,
             }
-            console.log(buffer)
+            console.log("BUFFER ", buffer)
             return buffer
           })
         })
@@ -125,7 +123,7 @@ function HomeScreen() {
     })
 
     return unsubscribe
-  }, [navigation])
+  }, [, navigation])
 
   return (
     <>

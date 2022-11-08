@@ -166,7 +166,7 @@ function ProductScreen({ route }: any) {
           source={require('@/assets/images/product-bg.jpg')}
           style={styles.detailBg}
         >
-          <View style={{ flex: 3, backgroundColor: 'transparent' }}>
+          <View style={{ flex: 3.5, backgroundColor: 'transparent' }}>
             <Pressable
               onPress={() => navigation.goBack()}
               style={styles.backButton}
@@ -189,11 +189,19 @@ function ProductScreen({ route }: any) {
               <Text style={styles.detailText}>
                 {productResponse.product.shortDescription}
               </Text>
+              <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ color: '#fff', fontSize: 13, fontFamily: 'Nunito-SemiBold' }}>
+                  + {productResponse.product.bonus.toFixed(2)}
+                </Text>
+                <Text style={{ color: '#fff', fontSize: 13, fontFamily: 'Nunito-SemiBold', marginLeft: 7 }}>
+                  CoffeCo Puan
+                </Text>
+              </View>
             </View>
           </View>
           <View
             style={{
-              flex: 3,
+              flex: 2.5,
               backgroundColor: 'transparent',
               width: '100%',
               alignSelf: 'center',
@@ -232,7 +240,7 @@ function ProductScreen({ route }: any) {
                         <View style={styles.optionSelect}>
                           <Text style={styles.optionSelectText}>Seçiniz</Text>
                           <SvgXml
-                            xml={Icons.iconArrow}
+                            xml={Icons.iconArrowDown}
                             width="24"
                             height="24"
                             style={styles.navIcon}
@@ -271,8 +279,9 @@ function ProductScreen({ route }: any) {
                                       <Text style={{
                                         position: 'absolute',
                                         fontFamily: 'Nunito-Regular',
-                                        bottom: 8,
-                                        fontSize: 15,
+                                        color: '#000',
+                                        bottom: -8,
+                                        fontSize: 12
                                       }}
                                       >
                                         {variantChild.description}
@@ -285,9 +294,9 @@ function ProductScreen({ route }: any) {
                                     >
                                       <Text
                                         style={{
-                                          fontSize: 15,
+                                          fontSize: 13,
                                           position: 'absolute',
-                                          bottom: 8,
+                                          bottom: 9,
                                           color: '#1b854b',
                                         }}
                                       >
@@ -325,7 +334,8 @@ function ProductScreen({ route }: any) {
               )}
               <View style={styles.optionListFooter}>
                 <View style={{
-                  flex: 3
+                  flex: 2,
+                  marginRight: 10
                 }}
                 >
                   <NumericInput
@@ -334,6 +344,8 @@ function ProductScreen({ route }: any) {
                     iconSize={5}
                     totalWidth={90}
                     totalHeight={45}
+                    iconStyle={{ color: "#444444" }}
+                    textColor="#666666"
                     rounded
                     type="up-down"
                     value={Qty}
@@ -353,19 +365,19 @@ function ProductScreen({ route }: any) {
                 >
                   <View
                     style={{
-                      flex: 4,
-                      marginRight: 5
+                      flex: 1,
+                      flexDirection: 'row'
                     }}
                   >
                     <Text style={styles.optionCartText}>SEPETE EKLE</Text>
-                  </View>
-                  <View
-                    style={{
-                      flex: 2
-                    }}
-                  >
                     <Text style={styles.optionCartPrice}>{totalPrice} ₺</Text>
                   </View>
+                  {/* <View
+                    style={{
+                      flex: 2,
+                    }}
+                  >
+                  </View> */}
                 </Pressable>
               </View>
             </View>
@@ -398,23 +410,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   detailImage: {
-    height: '90%',
+    height: '85%',
     marginTop: 60,
     resizeMode: 'cover',
     width: '100%',
     aspectRatio: 1,
     borderRadius: 8,
-    marginBottom: 20,
+    marginBottom: 15,
   },
   detailTitle: {
-    fontSize: 20,
+    fontSize: 17,
     color: '#fff',
     fontFamily: 'Nunito-ExtraBold',
-    alignSelf: 'center',
-    marginBottom: 5,
+    alignSelf: 'center'
   },
   detailText: {
     color: '#f7f7f7',
+    fontSize: 10,
     fontFamily: 'Nunito-Regular',
     alignSelf: 'flex-start',
     paddingLeft: '4%',
@@ -516,16 +528,16 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   optionCart: {
-    flex: 3,
+    flex: 4,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#1b854b',
     borderRadius: 14,
     height: 50,
-    paddingLeft: 15,
-    paddingRight: 15,
     shadowColor: '#000',
+    paddingLeft: 10,
+    paddingRight: 10,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -541,11 +553,13 @@ const styles = StyleSheet.create({
   },
   optionCartPrice: {
     color: '#fff',
-    fontFamily: 'Nunito-Bold',
-    fontSize: 15,
+    fontFamily: 'Nunito-Regular',
+    marginLeft: 'auto',
+    fontSize: 14,
   },
   optionSelectText: {
     fontFamily: 'Nunito-Regular',
+    color: '#777777'
   },
   optionVariantActive: {
     // marginRight: 15,

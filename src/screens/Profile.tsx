@@ -212,7 +212,7 @@ function ProfileScreen() {
             {!pastOrdersLoading && (
               <ScrollView
                 nestedScrollEnabled={true}
-                style={{ maxHeight: '60%' }}
+                style={{ maxHeight: '30%' }}
               >
                 {pastOrders &&
                   pastOrders.orders.reverse().map((order: any, index) => (

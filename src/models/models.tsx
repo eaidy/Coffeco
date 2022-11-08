@@ -56,6 +56,7 @@ export type RegisterFormModel = {
     Email: string;
     Password: string;
     RePassword: string;
+    DeviceID: string;
 }
 
 export type ProductBasketModel = {

@@ -34,6 +34,7 @@ type BasketModel = {
   orderID?: number | undefined
   products: Array<Object>
   variants: Array<Object>
+  bonusEarned?: number
 }
 
 type SendOrder = {
@@ -66,7 +67,9 @@ function OrderScreen() {
     orderID: undefined,
     products: [],
     variants: [],
+    bonusEarned: 0
   })
+  const [isBonusUsed, setIsBonusUsed] = useState(false)
   const [branches, setBranches] = useState([])
   const [sendMessage, setSendMessage] = useState<string>("")
   const [sendOrderInfo, setSendOrderInfo] = useState<SendOrder>({
@@ -83,14 +86,12 @@ function OrderScreen() {
     { duration: 45, isActive: false },
   ])
   const [pageLoad, setPageLoad] = useState(false)
-  const [deliveryMin, setDeliveryMin] = useState<string>("")
 
   const [userState] = useAtom(userStateAtom)
   const [basketState, setBasketState] = useAtom(basketAtom)
   const [userInfoState] = useAtom(userInfoStateAtom)
 
   useEffect(() => {
-    console.log('USER INFO STATE --->>', userInfoState)
     setPageLoad(() => true)
 
     fetchData('Branches', {
@@ -99,24 +100,26 @@ function OrderScreen() {
     })
       .then(data => {
         setBranches(data)
-        console.log('Şubeler alındı', branches)
       })
       .catch(err => {
         console.log('Şubeler alınamadı')
       })
 
-    fetchData('Basket', {
+    fetchData(`Basket?Bonus=${isBonusUsed}`, {
       method: 'POST',
       authToken: userState.data,
     })
       .then(data => {
         if (data) {
+          console.log("BASKET RESPONSE -->", data)
           let basketBuffer: BasketModel = {
             totalPrice: Number(data.order.total.toFixed(2)),
             orderID: data.order.orderID,
             products: data.lines,
             variants: data.variants,
+            bonusEarned: data.order.bonusEarned
           }
+          console.log("BASKET BUFF ->>", basketBuffer)
           setBasketInfo(basketBuffer)
           setBasketState(Number(basketInfo.totalPrice.toFixed(2)))
           setSendOrderInfo(prev => {
@@ -149,6 +152,7 @@ function OrderScreen() {
           orderID: undefined,
           products: [],
           variants: [],
+          bonusEarned: 0
         })
         setBasketState(0)
       })
@@ -174,7 +178,7 @@ function OrderScreen() {
           text: 'Ürünü Sil',
           onPress: () => {
             if (basketInfo.products.length !== 1) {
-              fetchData('RemoveBasketLine', {
+              fetchData(`RemoveBasketLine?Bonus=${isBonusUsed}`, {
                 method: 'POST',
                 authToken: userState.data,
                 body: { OrderID: orderID, LineID: lineID },
@@ -184,7 +188,6 @@ function OrderScreen() {
                     return prev + 1
                   })
                   Toast.showWithGravity('Ürün silindi.', Toast.LONG, Toast.TOP)
-                  console.log(res)
                 })
                 .catch(err => {
                   Toast.showWithGravity(
@@ -197,20 +200,18 @@ function OrderScreen() {
             } else {
               emptyTheBasket()
             }
-            console.log('Ürün silindi.')
           },
           style: 'cancel',
         },
         {
           text: 'Vazgeç',
-          onPress: () => console.log('Vazgeçildi.'),
         },
       ]
     )
   }
 
   const numericInputHandler = (lineID: Number, value: Number) => {
-    fetchData('UpdateBasketLine', {
+    fetchData(`UpdateBasketLine?Bonus=${isBonusUsed}`, {
       method: 'POST',
       authToken: userState.data,
       body: {
@@ -275,7 +276,6 @@ function OrderScreen() {
         setIsLoading(false)
         if (res.status) {
           setSendMessage(res.message)
-          console.log("SEND ORDER -->>>>", res)
           setModalVisible(true)
         } else {
           Toast.showWithGravity(
@@ -493,6 +493,8 @@ function OrderScreen() {
                                 value={product.qty}
                                 minValue={1}
                                 rounded
+                                iconStyle={{ color: "#444444" }}
+                                textColor="#666666"
                                 iconSize={8}
                                 totalWidth={78}
                                 totalHeight={37}
@@ -519,22 +521,47 @@ function OrderScreen() {
                 </View>
                 {basketInfo.orderID && (
                   <>
-                    {sendOrderInfo.Bonus && (
-                      <View style={styles.boxTitle}>
-                        <Text style={{ fontFamily: 'Nunito-SemiBold' }}>
-                          {userInfoState.puan} CoffeeCo Puan Kullanılsın mı ?
+                    <View style={[styles.boxTitle, { justifyContent: 'flex-start' }]}>
+                      <Text style={{
+                        color: '#1B854B',
+                        fontSize: 15
+                      }}
+                      >
+                        + {basketInfo.bonusEarned?.toFixed(2)}
+                      </Text>
+                      <Text style={{
+                        color: '#555555',
+                        fontSize: 12,
+                        marginLeft: 15
+                      }}
+                      >
+                        CoffeCo Puan Kazanacaksınız
+                      </Text>
+                    </View>
+                    {(
+                      <View style={[styles.boxTitle]}>
+                        <Text style={{ fontFamily: 'Nunito-Bold', fontSize: 18, color: '#1B854B' }}>
+                          {userInfoState.bonus}
                         </Text>
-                        <Checkbox
-                          status={sendOrderInfo.Bonus ? 'checked' : 'unchecked'}
-                          onPress={() => {
-                            setSendOrderInfo(prev => {
-                              const buffer = prev
-                              buffer.Bonus = !prev.Bonus
-                              return { ...buffer }
-                            })
-                          }}
-                          color="#1B854B"
-                        />
+                        <Text style={{ fontFamily: 'Nunito-Regular', fontSize: 13, }}>
+                          CoffeeCo Puanınız var. Kullan ?
+                        </Text>
+                        <View>
+                          <Checkbox
+                            status={isBonusUsed ? 'checked' : 'unchecked'}
+                            onPress={() => {
+                              setIsBonusUsed((prev) => !prev)
+                              setSendOrderInfo(prev => {
+                                const buffer = prev
+                                buffer.Bonus = isBonusUsed
+                                return { ...buffer }
+                              })
+                              console.log("SEND ORDER INFO -->>", sendOrderInfo)
+                              setBasketState(prev => prev + 1)
+                            }}
+                            color="#1B854B"
+                          />
+                        </View>
                       </View>
                     )}
                     <View>
@@ -677,7 +704,7 @@ function OrderScreen() {
           </ScrollView>
         )
       }
-    </SafeAreaView>
+    </SafeAreaView >
   )
 }
 const styles = StyleSheet.create({

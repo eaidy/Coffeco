@@ -304,10 +304,10 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   linkBold: {
-    fontFamily: 'Nunito-Bold',
+    fontFamily: 'Nunito-SemiBold',
     color: '#1B854B',
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 17,
     marginTop: 5,
   },
 })
