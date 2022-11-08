@@ -42,8 +42,6 @@ type ChildVariant = {
   isActive: Boolean
 }
 
-type ChildVariants = Array<ChildVariant>
-
 function ProductScreen({ route }: any) {
   const [userState] = useAtom(userStateAtom)
   const [basketState, setBasketState] = useAtom(basketAtom)
@@ -66,7 +64,7 @@ function ProductScreen({ route }: any) {
     })
     let variantsExpandBuffer = productResponse.variants
       .filter((variant: 0) => variant.parentID === 0)
-      .map((expand: any) => false)
+      .map((expand: any) => true)
     setVariantsExpand(variantsExpandBuffer)
   }, [])
 
@@ -224,17 +222,9 @@ function ProductScreen({ route }: any) {
                   {productResponse.variants
                     .filter((isParent: any) => isParent.parentID === 0)
                     .map((variantParent: Variant, parentIndex: any) => (
-                      <Pressable
+                      <View
                         style={styles.option}
                         key={parentIndex}
-                        onPress={() => {
-                          setVariantsExpand(
-                            variantsExpand.map((item, index) =>
-                              index === parentIndex ? !item : item
-                            )
-                          )
-                          console.log(variantsExpand)
-                        }}
                       >
                         <Text style={styles.optionTitle}>
                           {variantParent.description}
@@ -330,7 +320,7 @@ function ProductScreen({ route }: any) {
                             </View>
                           )}
                         </View>
-                      </Pressable>
+                      </View>
                     ))}
                 </ScrollView>
               )}
@@ -464,7 +454,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     shadowColor: '#000',
     backgroundColor: '#fff',
-    marginBottom: 5,
+    marginBottom: 15,
     marginTop: 15,
     shadowOffset: {
       width: 0,
@@ -497,7 +487,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     width: '90%',
     backgroundColor: 'transparent',
-    paddingBottom: 20
+    paddingBottom: 0
   },
   optionNumber: {
     width: '30%',

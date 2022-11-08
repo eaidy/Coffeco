@@ -13,8 +13,8 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   View,
-  Image,
   Pressable,
+  Modal,
 } from 'react-native'
 import { Formik } from 'formik'
 import { Box, Text, ImageBackground, TextInput, Button } from '@/atoms/'
@@ -42,16 +42,18 @@ function LoginScreen() {
     { phoneNumber: '', password: '' }
   )
 
+  const [loadingModal, setLoadingModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const [userState, setUserState] = useAtom(userStateAtom)
+  const [loginInit, setLoginInit] = useState<string>("")
 
   const navigation = useNavigation()
   const { colors, spacing } = useTheme()
 
   const submitLogin = async (values: FormValues) => {
     setIsLoading(true)
-    const response = await login(values.phoneNumber, values.password)
+    await login(values.phoneNumber, values.password)
       .then((res: any) => {
         const buffer: UserState = res ? res : {}
         console.log(buffer, 'Deneme')
@@ -64,145 +66,193 @@ function LoginScreen() {
           })
           console.log('MMKV ---> ' + userLoginAsync.phoneNumber)
         }
+        setIsLoading(false)
       })
       .catch(err => {
         console.log(err)
+        setIsLoading(false)
       })
   }
 
   useEffect(() => {
     if (userState.status) {
-      setIsLoading(false)
+      // setIsLoading(false)
       navigation.dispatch(StackActions.replace('Main'))
     } else {
-      setIsLoading(false)
+      // setIsLoading(false)
       console.log(userState.message)
     }
   }, [userState])
 
+  useEffect(() => {
+    if (userLoginAsync.phoneNumber) {
+      setLoadingModal(true)
+    }
+    fetch('https://api.coffeco.com.tr/ui/UIntegration/LoginInit')
+      .then(res => { return res.json() })
+      .then(data => setLoginInit(data.message))
+      .catch(err => console.log(err))
+  }, [])
+
   return (
-    <ScrollView
-      contentContainerStyle={{
-        flex: 1,
-        flexGrow: 1,
-        padding: spacing.xl,
-      }}
-      keyboardShouldPersistTaps={'always'}
-    >
-      <KeyboardAvoidingView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback
-          onPress={Keyboard.dismiss}
-          style={{ flex: 1 }}
+    <>
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={false}
+        style={{
+          height: '100%',
+          width: '100%'
+        }}
+      >
+        <View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
         >
-          <ImageBackground
-            source={require('@/assets/images/text-bg.png')}
-            resizeMode="cover"
-            minHeight="100%"
-            flex={1}
+          <ActivityIndicator
+            animating={true}
+            color="#CCCCCC"
+            size="large"
+            style={{
+              marginBottom: 8
+            }}
+          />
+          <Text style={{
+            color: '#1B854B',
+            fontFamily: 'Nunito-Bold',
+            fontSize: 25,
+            marginTop: 18,
+            letterSpacing: 2
+          }}>
+            CoffeCo
+          </Text>
+        </View>
+      </Modal>
+      <ScrollView
+        contentContainerStyle={{
+          flex: 1,
+          flexGrow: 1,
+          padding: spacing.xl,
+        }}
+        keyboardShouldPersistTaps={'always'}
+      >
+        <KeyboardAvoidingView style={{ flex: 1 }}>
+          <TouchableWithoutFeedback
+            onPress={Keyboard.dismiss}
+            style={{ flex: 1 }}
           >
-            <Box flex={1}>
-              {isLoading && (
-                <ActivityIndicator
-                  animating={true}
-                  color="#1B854B"
-                  style={{ marginBottom: 15 }}
-                />
-              )}
-              {/* <Text color="loginHeader" fontSize={36} marginBottom="xl">
+            <ImageBackground
+              source={require('@/assets/images/text-bg.png')}
+              resizeMode="cover"
+              minHeight="100%"
+              flex={1}
+            >
+              <Box flex={1}>
+                {isLoading && (
+                  <ActivityIndicator
+                    animating={true}
+                    color="#1B854B"
+                    style={{ marginBottom: 15 }}
+                  />
+                )}
+                {/* <Text color="loginHeader" fontSize={36} marginBottom="xl">
                 Giriş Yap
               </Text> */}
-              <Formik
-                initialValues={{ phoneNumber: '', password: '' }}
-                onSubmit={(values: FormValues) => submitLogin(values)}
-              >
-                {({ handleChange, handleBlur, handleSubmit, values }) => (
-                  <>
-                    <Box width="100%" marginBottom="xl">
-                      <TextInput
-                        keyboardType="phone-pad"
-                        placeholder="Telefon"
-                        placeholderTextColor={colors.neutral500}
-                        value={values.phoneNumber}
-                        onChangeText={handleChange('phoneNumber')}
-                        onBlur={handleBlur('phoneNumber')}
+                <Formik
+                  initialValues={{ phoneNumber: '', password: '' }}
+                  onSubmit={(values: FormValues) => submitLogin(values)}
+                >
+                  {({ handleChange, handleBlur, handleSubmit, values }) => (
+                    <>
+                      <Box width="100%" marginBottom="xl">
+                        <TextInput
+                          keyboardType="phone-pad"
+                          placeholder="Telefon"
+                          placeholderTextColor={colors.neutral500}
+                          value={values.phoneNumber}
+                          onChangeText={handleChange('phoneNumber')}
+                          onBlur={handleBlur('phoneNumber')}
+                        />
+                      </Box>
+                      <Box width="100%" marginBottom="xl">
+                        <TextInput
+                          secureTextEntry={true}
+                          placeholder="Şifre"
+                          placeholderTextColor={colors.neutral500}
+                          value={values.password}
+                          onChangeText={handleChange('password')}
+                          onBlur={handleBlur('password')}
+                        />
+                      </Box>
+                      <Button
+                        label="GİRİŞ YAP"
+                        onPress={handleSubmit}
+                        backgroundColor="buttonBackground"
+                        padding="md"
+                        borderRadius="sm"
+                        shadowColor="black"
+                        shadowOpacity={0.4}
+                        shadowRadius={8.3}
+                        elevation={20}
+                        shadowOffset={{ width: 0, height: 6 }}
                       />
-                    </Box>
-                    <Box width="100%" marginBottom="xl">
-                      <TextInput
-                        secureTextEntry={true}
-                        placeholder="Şifre"
-                        placeholderTextColor={colors.neutral500}
-                        value={values.password}
-                        onChangeText={handleChange('password')}
-                        onBlur={handleBlur('password')}
-                      />
-                    </Box>
-                    <Button
-                      label="GİRİŞ YAP"
-                      onPress={handleSubmit}
-                      backgroundColor="buttonBackground"
-                      padding="md"
-                      borderRadius="sm"
-                      shadowColor="black"
-                      shadowOpacity={0.4}
-                      shadowRadius={8.3}
-                      elevation={20}
-                      shadowOffset={{ width: 0, height: 6 }}
-                    />
-                    {!userState.status && userState.data !== '' && (
-                      <Text style={styles.errorValidation}>
-                        Telefon numarası ya da şifre hatalı
-                      </Text>
-                    )}
-                    <View style={styles.altBox}>
-                      <View>
-                        <View style={styles.rememberMe}>
-                          <Text style={styles.rememberMeText}>
-                            Beni Hatırla :{' '}
-                          </Text>
-                          <Checkbox
-                            status={rememberMe ? 'checked' : 'unchecked'}
-                            onPress={() => setRememberMe(prev => !prev)}
-                            color="#1B854B"
-                          />
+                      {!userState.status && userState.data !== '' && (
+                        <Text style={styles.errorValidation}>
+                          Telefon numarası ya da şifre hatalı
+                        </Text>
+                      )}
+                      <View style={styles.altBox}>
+                        <View>
+                          <View style={styles.rememberMe}>
+                            <Text style={styles.rememberMeText}>
+                              Beni Hatırla :{' '}
+                            </Text>
+                            <Checkbox
+                              status={rememberMe ? 'checked' : 'unchecked'}
+                              onPress={() => setRememberMe(prev => !prev)}
+                              color="#1B854B"
+                            />
+                          </View>
+                        </View>
+                        <View>
+                          <Pressable
+                            onPress={() => navigation.navigate('ForgetPassword')}
+                          >
+                            <Text
+                              style={[
+                                styles.rememberMeText,
+                                {
+                                  color: '#1B854B',
+                                  marginLeft: 15,
+                                  fontSize: 14,
+                                },
+                              ]}
+                            >
+                              Şifremi unuttum?
+                            </Text>
+                          </Pressable>
                         </View>
                       </View>
-                      <View>
-                        <Pressable
-                          onPress={() => navigation.navigate('ForgetPassword')}
-                        >
-                          <Text
-                            style={[
-                              styles.rememberMeText,
-                              {
-                                color: '#1B854B',
-                                marginLeft: 15,
-                                fontSize: 14,
-                              },
-                            ]}
-                          >
-                            Şifremi unuttum?
-                          </Text>
-                        </Pressable>
-                      </View>
-                    </View>
-                  </>
-                )}
-              </Formik>
+                    </>
+                  )}
+                </Formik>
 
-              <View style={styles.link}>
-                <Text style={styles.linkText}>Hesabın yok mu ?</Text>
-                <Pressable onPress={() => navigation.navigate('Signup')}>
-                  <Text style={styles.linkBold}>
-                    Hemen Kaydol 25 Bonus kazan!
-                  </Text>
-                </Pressable>
-              </View>
-            </Box>
-          </ImageBackground>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-    </ScrollView>
+                <View style={styles.link}>
+                  <Text style={styles.linkText}>Hesabın yok mu ?</Text>
+                  <Pressable onPress={() => navigation.navigate('Signup')}>
+                    <Text style={styles.linkBold}>
+                      {loginInit}
+                    </Text>
+                  </Pressable>
+                </View>
+              </Box>
+            </ImageBackground>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </ScrollView>
+    </>
   )
 }
 

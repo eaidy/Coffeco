@@ -123,24 +123,6 @@ function ProfileScreen() {
       .catch(err => console.log(err))
   }
 
-  // const repeatOrder = (orderID: Number) => {
-  //   Alert.alert(
-  //     "Uyarı",
-  //     "Siparişi tekrarla henüz geliştirme aşamasındadır.",
-  //     [
-  //       {
-  //         text: "Cancel",
-  //         onPress: () => console.log("Cancel Pressed"),
-  //         style: "cancel"
-  //       },
-  //       {
-  //         text: "OK",
-  //         onPress: () => console.log("OK Pressed")
-  //       }
-  //     ]
-  //   )
-  // }
-
   const handleSignOut = () => {
     Alert.alert('Çıkış', 'Çıkış yapmak istediğinizden emin misiniz ?', [
       {
@@ -230,7 +212,7 @@ function ProfileScreen() {
             {!pastOrdersLoading && (
               <ScrollView
                 nestedScrollEnabled={true}
-                style={{ maxHeight: '40%' }}
+                style={{ maxHeight: '30%' }}
               >
                 {pastOrders &&
                   pastOrders.orders.reverse().map((order: any, index) => (

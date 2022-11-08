@@ -1,8 +1,8 @@
 // API Imports
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useState, useEffect } from 'react'
 import { useAtom } from 'jotai'
-import { useNavigation } from '@react-navigation/native'
+import { StackActions, useNavigation } from '@react-navigation/native'
 
 // Component Imports
 import { Text } from '@/atoms'
@@ -16,6 +16,7 @@ import {
   TouchableHighlight,
   Modal,
   Alert,
+  RefreshControl,
 } from 'react-native'
 import { Icons } from '@/constants'
 import { SvgXml } from 'react-native-svg'
@@ -30,20 +31,15 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 type BasketModel = {
   totalPrice: number
-  orderID?: Number | null
+  orderID?: number | undefined
   products: Array<Object>
   variants: Array<Object>
 }
 
-type ProductsQuantity = Array<{
-  lineID: Number
-  Qty: Number
-}>
-
 type SendOrder = {
   OrderID?: Number
   BranchID?: Number
-  DeliveryMinute?: Number
+  DeliveryMinute?: number
   DeliveryNote?: String
   Bonus?: Boolean
 }
@@ -51,17 +47,28 @@ type SendOrder = {
 function OrderScreen() {
   const navigation = useNavigation()
 
-  const [arbitraryTime, setArbitraryTime] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
+
+  const wait = (timeout: any) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  }
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    wait(500).then(() => setRefreshing(false));
+    setBasketState((prev) => prev + 1)
+  }, []);
+
   const [isLoading, setIsLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [basketInfo, setBasketInfo] = useState<BasketModel>({
     totalPrice: 0,
-    orderID: null,
+    orderID: undefined,
     products: [],
     variants: [],
   })
   const [branches, setBranches] = useState([])
-  const [productsQuantity, setProductsQuantity] = useState<ProductsQuantity>([])
+  const [sendMessage, setSendMessage] = useState<string>("")
   const [sendOrderInfo, setSendOrderInfo] = useState<SendOrder>({
     OrderID: 0,
     BranchID: 0,
@@ -71,9 +78,9 @@ function OrderScreen() {
   })
   const [activeBranchId, setActiveBranchId] = useState<Number>(0)
   const [deliveryTimes, setDeliveryTimes] = useState([
-    { duration: 15, time: '', isActive: false },
-    { duration: 30, time: '', isActive: false },
-    { duration: 45, time: '', isActive: false },
+    { duration: 15, isActive: false },
+    { duration: 30, isActive: false },
+    { duration: 45, isActive: false },
   ])
   const [pageLoad, setPageLoad] = useState(false)
   const [deliveryMin, setDeliveryMin] = useState<string>("")
@@ -85,17 +92,6 @@ function OrderScreen() {
   useEffect(() => {
     console.log('USER INFO STATE --->>', userInfoState)
     setPageLoad(() => true)
-
-    setDeliveryTimes(prev => {
-      const buffer = prev.map(timeObj => {
-        return {
-          ...timeObj,
-          time: calculateDeliveryTime(timeObj.duration),
-        }
-      })
-
-      return [...buffer]
-    })
 
     fetchData('Branches', {
       method: 'POST',
@@ -109,22 +105,18 @@ function OrderScreen() {
         console.log('Şubeler alınamadı')
       })
 
-    setTimeout(() => {
-      fetchData('Basket', {
-        method: 'POST',
-        authToken: userState.data,
-      })
-        .then(response => {
-          return response
-        })
-        .then(data => {
+    fetchData('Basket', {
+      method: 'POST',
+      authToken: userState.data,
+    })
+      .then(data => {
+        if (data) {
           let basketBuffer: BasketModel = {
             totalPrice: Number(data.order.total.toFixed(2)),
             orderID: data.order.orderID,
             products: data.lines,
             variants: data.variants,
           }
-          console.log(data)
           setBasketInfo(basketBuffer)
           setBasketState(Number(basketInfo.totalPrice.toFixed(2)))
           setSendOrderInfo(prev => {
@@ -133,22 +125,15 @@ function OrderScreen() {
             bufferPrev.BranchID = 0
             return bufferPrev
           })
-          console.log(sendOrderInfo)
-          let buffer: ProductsQuantity = []
-          buffer = data.lines.map((item: any) => {
-            return {
-              lineID: item.lineID,
-              Qty: item.qty,
-            }
-          })
-          setProductsQuantity(buffer)
           setPageLoad(() => false)
-        })
-        .catch(err => {
-          console.log(err)
+        } else {
           setPageLoad(() => false)
-        })
-    }, 400)
+        }
+      })
+      .catch(err => {
+        console.log(err, "Bu mu ?")
+        setPageLoad(() => false)
+      })
   }, [basketState])
 
   const emptyTheBasket = () => {
@@ -161,7 +146,7 @@ function OrderScreen() {
       .then(res => {
         setBasketInfo({
           totalPrice: 0,
-          orderID: null,
+          orderID: undefined,
           products: [],
           variants: [],
         })
@@ -240,19 +225,6 @@ function OrderScreen() {
       .catch(err => console.log(err))
   }
 
-  const arbitraryTimeHandler = () => {
-    setArbitraryTime(!arbitraryTime)
-    setDeliveryTimes(prev => {
-      const buffer = prev.map(item => {
-        return {
-          ...item,
-          isActive: false,
-        }
-      })
-      return [...buffer]
-    })
-  }
-
   const branchPressHandler = (branchID: Number) => {
     setActiveBranchId(branchID)
     setSendOrderInfo((prev: any) => {
@@ -298,11 +270,13 @@ function OrderScreen() {
       },
       body: JSON.stringify(sendOrderInfo),
     })
+      .then(resp => { return resp.json() })
       .then((res: any) => {
         setIsLoading(false)
         if (res.status) {
+          setSendMessage(res.message)
+          console.log("SEND ORDER -->>>>", res)
           setModalVisible(true)
-          emptyTheBasket()
         } else {
           Toast.showWithGravity(
             'Hata, sipariş alınamadı : ' + res.message,
@@ -321,40 +295,27 @@ function OrderScreen() {
       })
   }
 
-  const calculateDeliveryTime = (duration: number) => {
-    let today = new Date()
-    let hoursNmbr = today.getHours()
-    let minsNmbr = today.getMinutes()
-    let hours = ''
-    let minutes = ''
-    if (minsNmbr + duration < 60) {
-      minutes =
-        minsNmbr + duration < 10
-          ? `0${minsNmbr + duration}`
-          : `${minsNmbr + duration}`
-      hours = hoursNmbr < 10 ? `0${hoursNmbr}` : `${hoursNmbr}`
-    } else {
-      minutes =
-        minsNmbr + duration - 60 < 10
-          ? `0${minsNmbr + duration - 60}`
-          : `${minsNmbr + duration - 60}`
-      hours = hoursNmbr + 1 < 10 ? `0${hoursNmbr}` : `${hoursNmbr + 1}`
-    }
-    return hours + ':' + minutes
-  }
-
-  const timeInterval = setInterval(() => {
-    setDeliveryTimes(prev => {
-      const buffer = prev.map(timeObj => {
-        return {
-          ...timeObj,
-          time: calculateDeliveryTime(timeObj.duration),
-        }
-      })
-
-      return [...buffer]
-    })
-  }, 12000)
+  // const calculateDeliveryTime = (duration: number) => {
+  //   let today = new Date()
+  //   let hoursNmbr = today.getHours()
+  //   let minsNmbr = today.getMinutes()
+  //   let hours = ''
+  //   let minutes = ''
+  //   if (minsNmbr + duration < 60) {
+  //     minutes =
+  //       minsNmbr + duration < 10
+  //         ? `0${minsNmbr + duration}`
+  //         : `${minsNmbr + duration}`
+  //     hours = hoursNmbr < 10 ? `0${hoursNmbr}` : `${hoursNmbr}`
+  //   } else {
+  //     minutes =
+  //       minsNmbr + duration - 60 < 10
+  //         ? `0${minsNmbr + duration - 60}`
+  //         : `${minsNmbr + duration - 60}`
+  //     hours = hoursNmbr + 1 < 10 ? `0${hoursNmbr}` : `${hoursNmbr + 1}`
+  //   }
+  //   return hours + ':' + minutes
+  // }
 
   const touchProps = {
     activeOpacity: 1,
@@ -383,7 +344,10 @@ function OrderScreen() {
   }
 
   return (
-    <>
+    <SafeAreaView style={{
+      flex: 1,
+      backgroundColor: '#fff'
+    }}>
       <Modal
         animationType="slide"
         transparent={true}
@@ -391,336 +355,329 @@ function OrderScreen() {
         visible={modalVisible}
       >
         <View style={styles.modalContent}>
-          <Image
-            style={styles.modalIcon}
-            source={require('@/assets/images/siparis-onay.png')}
-          />
+          <View style={styles.modalIcon}>
+            <Image
+              source={require('@/assets/images/siparis-onay.png')}
+            />
+          </View>
           <Text style={styles.modalText}>
-            Siparişiniz'i aldık, Belirttiğin süre sonunda dükkanımızda hazır
-            olacak!
+            {sendMessage}
           </Text>
           <Pressable
             style={styles.modalClose}
             onPress={() => {
               setModalVisible(false)
-              navigation.navigate('Home')
+              navigation.dispatch(StackActions.replace('Main'))
             }}
           >
             <Text style={styles.modalCloseText}>Tamam</Text>
           </Pressable>
         </View>
       </Modal>
-      <SafeAreaView style={{
-        flex: 1,
-        backgroundColor: '#fff'
-      }}>
-        <Header />
-        {
-          pageLoad ? (
-            <View style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-              <ActivityIndicator
-                animating={true}
-                color="#1B854B"
-                style={{ height: 50, width: 50, marginBottom: 15 }}
+      <Header />
+      {
+        pageLoad ? (
+          <View style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <ActivityIndicator
+              animating={true}
+              color="#1B854B"
+              style={{ height: 50, width: 50, marginBottom: 15 }}
+            />
+          </View>
+        ) : (
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
               />
-            </View>
-          ) : (
-            <ScrollView>
-              <View style={styles.wrapper}>
-                <Text style={styles.title}>Sepetim</Text>
-                <View style={styles.sectionContainer}>
-                  <View style={styles.box}>
-                    {basketInfo.orderID && (
-                      <View style={styles.boxTitle}>
-                        <Text style={styles.boxTitleText}>Ürünler</Text>
-                        {basketInfo.orderID && (
-                          <TouchableHighlight {...touchProps}>
-                            <Text style={styles.boxTitleRemoveText}>
-                              Sepet'i Boşalt
-                            </Text>
-                          </TouchableHighlight>
-                        )}
-                      </View>
-                    )}
-                    <View style={styles.boxContent}>
-                      {!basketInfo.orderID && (
-                        <View>
-                          <Text
-                            style={{
-                              textAlign: 'center',
-                              fontFamily: 'Nunito-SemiBold',
-                              fontSize: 22
-                            }}
-                          >
-                            Sepetiniz boş...
-                          </Text>
-                          <View style={{ alignSelf: 'center', padding: 40 }}>
-                            <SvgXml
-                              xml={Icons.iconBasket}
-                              width="150"
-                              height="150"
-                              fill={'gray'}
-                            />
-                          </View>
-                          <Pressable
-                            onPress={() => navigation.navigate('Products')}
-                            style={{ padding: 5 }}
-                          >
-                            <Text
-                              style={{
-                                fontFamily: 'Nunito-Regular',
-                                color: '#1B854B',
-                                textAlign: 'center',
-                              }}
-                            >
-                              Ürünlere göz at!
-                            </Text>
-                          </Pressable>
-                        </View>
-                      )}
-                      {basketInfo.orderID &&
-                        basketInfo.products.map((product: any) => {
-                          return (
-                            <View style={styles.product} key={product.lineID}>
-                              <View style={{ flex: 3, flexDirection: 'row' }}>
-                                <View style={styles.productLeft}>
-                                  <Image
-                                    style={styles.productImage}
-                                    source={
-                                      product.image !== 'https://panel.coffeco.com.tr/'
-                                        ? { uri: product.image }
-                                        : require('@/assets/images/product.png')
-                                    }
-                                  />
-                                  <View style={styles.productContent}>
-                                    <Text style={styles.productTitle}>
-                                      {product.description}
-                                    </Text>
-                                    {
-                                      basketInfo.variants
-                                        .filter(
-                                          (variant: any) =>
-                                            variant.lineID === product.lineID
-                                        )
-                                        .map((variant: any, index) => {
-                                          return (
-                                            <Text key={index} style={styles.productTitleSmall}>
-                                              {variant.priceDescription}
-                                            </Text>
-                                          )
-                                        })
-                                    }
-                                  </View>
-                                  <Text style={styles.productPrice}>{(product.price * product.qty).toFixed(2)}₺</Text>
-                                </View>
-                              </View>
-                              <View style={{ flex: 1, flexDirection: 'row' }}>
-                                <NumericInput
-                                  onChange={value =>
-                                    numericInputHandler(product.lineID, value)
-                                  }
-                                  value={product.qty}
-                                  minValue={1}
-                                  rounded
-                                  iconSize={8}
-                                  totalWidth={78}
-                                  totalHeight={37}
-                                  type="up-down"
-                                />
-                              </View>
-                              <Pressable
-                                onPress={() =>
-                                  removeProduct(basketInfo.orderID, product.lineID)
-                                }
-                                style={{ marginLeft: 10 }}
-                              >
-                                <SvgXml
-                                  xml={Icons.iconDelete}
-                                  width="24"
-                                  height="24"
-                                  fill="gray"
-                                />
-                              </Pressable>
-                            </View>
-                          )
-                        })}
-                    </View>
-                  </View>
+            }
+          >
+            <View style={styles.wrapper}>
+              <Text style={styles.title}>Sepetim</Text>
+              <View style={styles.sectionContainer}>
+                <View>
                   {basketInfo.orderID && (
-                    <>
-                      {sendOrderInfo.Bonus && (
-                        <View style={styles.boxTitle}>
-                          <Text style={{ fontFamily: 'Nunito-SemiBold' }}>
-                            {userInfoState.puan} CoffeeCo Puan Kullanılsın mı ?
+                    <View style={styles.boxTitle}>
+                      <Text style={styles.boxTitleText}>Ürünler</Text>
+                      {basketInfo.orderID && (
+                        <TouchableHighlight {...touchProps}>
+                          <Text style={styles.boxTitleRemoveText}>
+                            Sepet'i Boşalt
                           </Text>
-                          <Checkbox
-                            status={sendOrderInfo.Bonus ? 'checked' : 'unchecked'}
-                            onPress={() => {
-                              setSendOrderInfo(prev => {
-                                const buffer = prev
-                                buffer.Bonus = !prev.Bonus
-                                return { ...buffer }
-                              })
-                            }}
-                            color="#1B854B"
-                          />
-                        </View>
+                        </TouchableHighlight>
                       )}
-                      <View style={styles.box}>
-                        <View style={styles.boxTitle}>
-                          <Text style={styles.boxTitleText}>
-                            Teslim Alınacak Şube
-                          </Text>
-                        </View>
-                        <View style={[styles.boxContent, styles.boxContentAddress]}>
-                          {branches &&
-                            branches.map((branch: any, index) => (
-                              <View
-                                key={index}
-                                style={
-                                  activeBranchId === branch.branchID
-                                    ? [styles.address, styles.addressActive]
-                                    : [styles.address]
-                                }
-                              >
-                                <Pressable
-                                  onPress={() => branchPressHandler(branch.branchID)}
-                                >
-                                  <View style={styles.addressTop}>
-                                    <Text
-                                      style={[
-                                        styles.addressTitle,
-                                        styles.addressTitleActive,
-                                      ]}
-                                    >
-                                      {branch.city}
-                                    </Text>
-                                    <View style={styles.addressIcons}>
-                                      {activeBranchId === branch.branchID && (
-                                        <Pressable style={styles.addressIcon}>
-                                          <SvgXml
-                                            xml={Icons.iconCheck}
-                                            width="18"
-                                            height="18"
-                                            style={[
-                                              styles.addressIconSvg,
-                                              styles.addressIconSvgActive,
-                                            ]}
-                                          />
-                                        </Pressable>
-                                      )}
-                                    </View>
-                                  </View>
-                                  <Text
-                                    style={[
-                                      styles.addressText,
-                                      styles.addressTextActive,
-                                    ]}
-                                  >
-                                    {branch.name}
-                                  </Text>
-                                </Pressable>
-                              </View>
-                            ))}
-                        </View>
-                      </View>
-                      <View style={styles.box}>
-                        <View style={styles.boxTitle}>
-                          <Text style={styles.boxTitleText}>Teslimat Saati</Text>
-                        </View>
-                        <View style={[styles.boxContent, styles.boxContentTimes]}>
-                          {deliveryTimes &&
-                            deliveryTimes.map((deliveryTime, index) => (
-                              <Pressable
-                                key={index}
-                                onPress={() => {
-                                  setDeliveryTimes(prev => {
-                                    const buffer = prev.map((item, i) => {
-                                      return {
-                                        ...item,
-                                        isActive: index === i ? true : false,
-                                      }
-                                    })
-                                    return [...buffer]
-                                  })
-                                }}
-                                style={
-                                  deliveryTime.isActive
-                                    ? [styles.time, styles.timeActive]
-                                    : [styles.time]
-                                }
-                              >
-                                <Text
-                                  style={
-                                    deliveryTime.isActive
-                                      ? [styles.timeTitle, styles.timeTitleActive]
-                                      : [styles.timeTitle]
-                                  }
-                                >
-                                  {deliveryTime.duration + 'dk'}
-                                </Text>
-                                <Text
-                                  style={
-                                    deliveryTime.isActive
-                                      ? { color: 'white' }
-                                      : { color: 'gray' }
-                                  }
-                                >
-                                  {deliveryTime.time}
-                                </Text>
-                              </Pressable>
-                            ))}
-                        </View>
-                        <View style={styles.boxTitle}>
-                          <Text style={styles.boxTitleText}>Sipariş Notu</Text>
-                        </View>
-                        <View
+                    </View>
+                  )}
+                  <View style={styles.boxContent}>
+                    {!basketInfo.orderID && (
+                      <View>
+                        <Text
                           style={{
-                            padding: 15,
+                            textAlign: 'center',
+                            fontFamily: 'Nunito-SemiBold',
+                            fontSize: 22
                           }}
                         >
-                          <TextInput
-                            placeholder="Notunuz..."
-                            mode="outlined"
-                            value={sendOrderInfo.DeliveryNote}
-                            onChangeText={note =>
-                              setSendOrderInfo(prev => {
-                                const buffer = prev
-                                buffer.DeliveryNote = note
-                                return { ...buffer }
-                              })
-                            }
-                            activeOutlineColor="#1b854b"
-                            style={{ backgroundColor: '#fff' }}
+                          Sepetiniz boş...
+                        </Text>
+                        <View style={{ alignSelf: 'center', padding: 40 }}>
+                          <SvgXml
+                            xml={Icons.iconBasket}
+                            width="150"
+                            height="150"
+                            fill={'gray'}
                           />
                         </View>
+                        <Pressable
+                          onPress={() => navigation.navigate('Products')}
+                          style={{ padding: 5 }}
+                        >
+                          <Text
+                            style={{
+                              fontFamily: 'Nunito-Regular',
+                              color: '#1B854B',
+                              textAlign: 'center',
+                            }}
+                          >
+                            Ürünlere göz at!
+                          </Text>
+                        </Pressable>
                       </View>
-                    </>
-                  )}
+                    )}
+                    {basketInfo.orderID &&
+                      basketInfo.products.map((product: any) => {
+                        return (
+                          <View style={styles.product} key={product.lineID}>
+                            <View style={{ flex: 3, flexDirection: 'row' }}>
+                              <View style={styles.productLeft}>
+                                <Image
+                                  style={styles.productImage}
+                                  source={
+                                    product.image !== 'https://panel.coffeco.com.tr/'
+                                      ? { uri: product.image }
+                                      : require('@/assets/images/product.png')
+                                  }
+                                />
+                                <View style={styles.productContent}>
+                                  <Text style={styles.productTitle}>
+                                    {product.description}
+                                  </Text>
+                                  {
+                                    basketInfo.variants
+                                      .filter(
+                                        (variant: any) =>
+                                          variant.lineID === product.lineID
+                                      )
+                                      .map((variant: any, index) => {
+                                        return (
+                                          <Text key={index} style={styles.productTitleSmall}>
+                                            {variant.priceDescription}
+                                          </Text>
+                                        )
+                                      })
+                                  }
+                                </View>
+                                <Text style={styles.productPrice}>{(product.price * product.qty).toFixed(2)}₺</Text>
+                              </View>
+                            </View>
+                            <View style={{ flex: 1, flexDirection: 'row' }}>
+                              <NumericInput
+                                onChange={value =>
+                                  numericInputHandler(product.lineID, value)
+                                }
+                                value={product.qty}
+                                minValue={1}
+                                rounded
+                                iconSize={8}
+                                totalWidth={78}
+                                totalHeight={37}
+                                type="up-down"
+                              />
+                            </View>
+                            <Pressable
+                              onPress={() =>
+                                removeProduct(basketInfo.orderID, product.lineID)
+                              }
+                              style={{ marginLeft: 10 }}
+                            >
+                              <SvgXml
+                                xml={Icons.iconDelete}
+                                width="24"
+                                height="24"
+                                fill="gray"
+                              />
+                            </Pressable>
+                          </View>
+                        )
+                      })}
+                  </View>
                 </View>
-                {isLoading && (
-                  <ActivityIndicator
-                    animating={true}
-                    color="#1B854B"
-                    style={{ marginBottom: 15 }}
-                  />
-                )}
                 {basketInfo.orderID && (
-                  <Pressable style={styles.order} onPress={() => sendOrder()}>
-                    <Text style={styles.orderText}>SİPARİŞ VER</Text>
-                    <Text style={styles.orderPrice}>{basketInfo.totalPrice} ₺</Text>
-                  </Pressable>
+                  <>
+                    {sendOrderInfo.Bonus && (
+                      <View style={styles.boxTitle}>
+                        <Text style={{ fontFamily: 'Nunito-SemiBold' }}>
+                          {userInfoState.puan} CoffeeCo Puan Kullanılsın mı ?
+                        </Text>
+                        <Checkbox
+                          status={sendOrderInfo.Bonus ? 'checked' : 'unchecked'}
+                          onPress={() => {
+                            setSendOrderInfo(prev => {
+                              const buffer = prev
+                              buffer.Bonus = !prev.Bonus
+                              return { ...buffer }
+                            })
+                          }}
+                          color="#1B854B"
+                        />
+                      </View>
+                    )}
+                    <View>
+                      <View style={styles.boxTitle}>
+                        <Text style={styles.boxTitleText}>
+                          Teslim Alınacak Şube
+                        </Text>
+                      </View>
+                      <View style={[styles.boxContent, styles.boxContentAddress]}>
+                        {branches &&
+                          branches.map((branch: any, index) => (
+                            <View
+                              key={index}
+                              style={
+                                activeBranchId === branch.branchID
+                                  ? [styles.address, styles.addressActive]
+                                  : [styles.address]
+                              }
+                            >
+                              <Pressable
+                                onPress={() => branchPressHandler(branch.branchID)}
+                              >
+                                <View style={styles.addressTop}>
+                                  <Text
+                                    style={[
+                                      styles.addressTitle,
+                                      styles.addressTitleActive,
+                                    ]}
+                                  >
+                                    {branch.city}
+                                  </Text>
+                                  <View style={styles.addressIcons}>
+                                    {activeBranchId === branch.branchID && (
+                                      <Pressable style={styles.addressIcon}>
+                                        <SvgXml
+                                          xml={Icons.iconCheck}
+                                          width="18"
+                                          height="18"
+                                          style={[
+                                            styles.addressIconSvg,
+                                            styles.addressIconSvgActive,
+                                          ]}
+                                        />
+                                      </Pressable>
+                                    )}
+                                  </View>
+                                </View>
+                                <Text
+                                  style={[
+                                    styles.addressText,
+                                    styles.addressTextActive,
+                                  ]}
+                                >
+                                  {branch.name}
+                                </Text>
+                              </Pressable>
+                            </View>
+                          ))}
+                      </View>
+                    </View>
+                    <View>
+                      <View style={styles.boxTitle}>
+                        <Text style={styles.boxTitleText}>Teslimat Zamanı</Text>
+                      </View>
+                      <View style={[styles.boxContent, styles.boxContentTimes]}>
+                        {deliveryTimes &&
+                          deliveryTimes.map((deliveryTime, index) => (
+                            <Pressable
+                              key={index}
+                              onPress={() => {
+                                setDeliveryTimes(prev => {
+                                  const buffer = prev.map((item, i) => {
+                                    return {
+                                      ...item,
+                                      isActive: index === i ? true : false,
+                                    }
+                                  })
+                                  return [...buffer]
+                                })
+                              }}
+                              style={
+                                deliveryTime.isActive
+                                  ? [styles.time, styles.timeActive]
+                                  : [styles.time]
+                              }
+                            >
+                              <Text
+                                style={
+                                  deliveryTime.isActive
+                                    ? [styles.timeTitle, styles.timeTitleActive]
+                                    : [styles.timeTitle]
+                                }
+                              >
+                                {deliveryTime.duration + 'dk'}
+                              </Text>
+                            </Pressable>
+                          ))}
+                      </View>
+                      <View style={styles.boxTitle}>
+                        <Text style={styles.boxTitleText}>Sipariş Notu</Text>
+                      </View>
+                      <View
+                        style={{
+                          padding: 15,
+                        }}
+                      >
+                        <TextInput
+                          placeholder="Notunuz..."
+                          mode="outlined"
+                          value={sendOrderInfo.DeliveryNote}
+                          onChangeText={note =>
+                            setSendOrderInfo(prev => {
+                              const buffer = prev
+                              buffer.DeliveryNote = note
+                              return { ...buffer }
+                            })
+                          }
+                          activeOutlineColor="#1b854b"
+                          style={{ backgroundColor: '#fff' }}
+                        />
+                      </View>
+                    </View>
+                  </>
                 )}
               </View>
-            </ScrollView>
-          )
-        }
-      </SafeAreaView>
-    </>
+              {isLoading && (
+                <ActivityIndicator
+                  animating={true}
+                  color="#1B854B"
+                  style={{ paddingTop: 10, paddingBottom: 10 }}
+                />
+              )}
+              {basketInfo.orderID && (
+                <Pressable style={styles.order} onPress={() => sendOrder()}>
+                  <Text style={styles.orderText}>SİPARİŞ VER</Text>
+                  <Text style={styles.orderPrice}>{basketInfo.totalPrice} ₺</Text>
+                </Pressable>
+              )}
+            </View>
+          </ScrollView>
+        )
+      }
+    </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({
@@ -884,7 +841,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 12,
+    padding: 18,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -894,8 +851,10 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   timeTitle: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
+    paddingTop: 8,
+    paddingBottom: 8,
     color: '#1B854B',
   },
   timeActive: {
@@ -991,17 +950,21 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito-Bold',
     textAlign: 'center',
   },
-  modal: {},
+  modal: {
+  },
   modalText: {
     fontSize: 15,
     fontFamily: 'Nunito-Regular',
     marginTop: 16,
+    textAlign: 'center'
   },
-  modalIcon: {},
+  modalIcon: {
+    paddingBottom: 10
+  },
   modalContent: {
     backgroundColor: '#fff',
-    paddingTop: 120,
-    paddingBottom: 120,
+    paddingTop: 70,
+    paddingBottom: 70,
     paddingLeft: 30,
     paddingRight: 30,
     display: 'flex',
@@ -1011,7 +974,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     borderRadius: 16,
-    borderColor: 'gray',
+    borderColor: '#DDDDDD',
     borderWidth: 2,
   },
   modalClose: {

@@ -198,7 +198,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   navbarButtonText: {
-    color: '#9795A4',
     textAlign: 'center',
     fontSize: 11,
     fontFamily: 'Nunito-SemiBold',

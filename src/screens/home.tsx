@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Header from '@/components/header'
-import { ScrollView, View } from 'react-native'
+import { RefreshControl, ScrollView, View } from 'react-native'
 import { Image, StyleSheet } from 'react-native'
 import { Pressable, ImageBackground, Text } from '@/atoms'
 //import { NavigationContainer } from '@react-navigation/native'
@@ -19,6 +19,57 @@ type HomeContainer = {
 
 function HomeScreen() {
   const navigation = useNavigation()
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const wait = (timeout: any) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  }
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    wait(500).then(() => setRefreshing(false));
+    fetchData('Home', {
+      method: 'POST',
+      authToken: userState.data,
+    })
+      .then(res => {
+        console.log(res)
+        setHomeContainer(res)
+        setCurrentOrder(res.order)
+        setUserInfoState(() => {
+          const {
+            aciklama,
+            adi,
+            soyadi,
+            gsm,
+            email,
+            password,
+            cinsiyet,
+            puan,
+          } = res.user
+
+          const cariID = res.cariID
+
+          let buffer = {
+            aciklama,
+            adi,
+            soyadi,
+            gsm,
+            email,
+            password,
+            cinsiyet,
+            puan, //homeContainer.bonus
+            cariID,
+          }
+          console.log(buffer)
+          return buffer
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }, []);
 
   const [homeContainer, setHomeContainer] = useState<HomeContainer>({
     campaign: [],
@@ -80,7 +131,14 @@ function HomeScreen() {
     <>
       <SafeAreaView style={{ backgroundColor: '#fff', paddingBottom: 90 }}>
         <Header />
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
+        >
           <ImageBackground
             source={require('@/assets/images/text-bg.png')}
             resizeMode="cover"
@@ -155,8 +213,8 @@ function HomeScreen() {
                   <Text style={styles.cardText}>
                     {userInfoState.adi + ' ' + userInfoState.soyadi}
                   </Text>
-                  <Text style={styles.cardTitle}>CoffeeCo Puan : </Text>
-                  <Text style={styles.cardPrice}>{homeContainer.bonus}</Text>
+                  <Text style={styles.cardTitle}>{homeContainer.bonus ? "CoffeCo Puan :" : " "} </Text>
+                  <Text style={styles.cardPrice}>{homeContainer.bonus ? homeContainer.bonus : " "}</Text>
                 </ImageBackground>
               </Pressable>
               <View style={styles.slider}>

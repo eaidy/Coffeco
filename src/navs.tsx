@@ -22,7 +22,7 @@ const MMKV = new MMKVLoader().initialize();
 
 export default function Navigations() {
 
-  const [userState, setUserState] = useAtom(userStateAtom)
+  const [, setUserState] = useAtom(userStateAtom)
   const [userLoginAsync,] = useMMKVStorage("userLoginAsync", MMKV)
   const [initialRoute, setInitialRoute] = useState()
 
