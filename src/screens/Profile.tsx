@@ -514,6 +514,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 70,
     marginRight: 10,
+    borderRadius: 6
   },
   productLeft: {
     display: 'flex',
