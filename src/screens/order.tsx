@@ -776,6 +776,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 70,
     marginRight: 6,
+    borderRadius: 6
   },
   productLeft: {
     display: 'flex',
