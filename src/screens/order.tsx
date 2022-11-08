@@ -232,7 +232,7 @@ function OrderScreen() {
       const buffer = prev
       buffer.BranchID = branchID
       return {
-        ...buffer,
+        ...buffer
       }
     })
   }
