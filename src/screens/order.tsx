@@ -851,7 +851,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   timeTitle: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 'bold',
     paddingTop: 8,
     paddingBottom: 8,

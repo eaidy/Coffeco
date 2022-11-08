@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#1b854b',
-    borderRadius: 15,
+    borderRadius: 35,
     paddingBottom: 2,
   },
   productPlusText: {

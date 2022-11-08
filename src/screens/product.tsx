@@ -270,13 +270,12 @@ function ProductScreen({ route }: any) {
                                     >
                                       <Text style={{
                                         position: 'absolute',
-                                        bottom: -10,
+                                        fontFamily: 'Nunito-Regular',
+                                        bottom: 8,
                                         fontSize: 15,
                                       }}
                                       >
-                                        {
-                                          variantChild.description.split(" ").map((word: string) => word[0].toUpperCase() + word.substring(0 + 1).toLowerCase() + " ")
-                                        }
+                                        {variantChild.description}
                                       </Text>
                                     </View>
                                     <View
@@ -288,7 +287,7 @@ function ProductScreen({ route }: any) {
                                         style={{
                                           fontSize: 15,
                                           position: 'absolute',
-                                          bottom: 5,
+                                          bottom: 8,
                                           color: '#1b854b',
                                         }}
                                       >
@@ -333,8 +332,8 @@ function ProductScreen({ route }: any) {
                     onChange={value => setQty(value)}
                     minValue={1}
                     iconSize={5}
-                    totalWidth={100}
-                    totalHeight={50}
+                    totalWidth={90}
+                    totalHeight={45}
                     rounded
                     type="up-down"
                     value={Qty}
@@ -352,8 +351,21 @@ function ProductScreen({ route }: any) {
                   style={styles.optionCart}
                   onPress={() => addBasketHandler()}
                 >
-                  <Text style={styles.optionCartText}>SEPETE EKLE</Text>
-                  <Text style={styles.optionCartPrice}>{totalPrice} ₺</Text>
+                  <View
+                    style={{
+                      flex: 4,
+                      marginRight: 5
+                    }}
+                  >
+                    <Text style={styles.optionCartText}>SEPETE EKLE</Text>
+                  </View>
+                  <View
+                    style={{
+                      flex: 2
+                    }}
+                  >
+                    <Text style={styles.optionCartPrice}>{totalPrice} ₺</Text>
+                  </View>
                 </Pressable>
               </View>
             </View>
@@ -525,14 +537,16 @@ const styles = StyleSheet.create({
   optionCartText: {
     color: '#fff',
     fontFamily: 'Nunito-SemiBold',
-    fontSize: 15,
+    fontSize: 13,
   },
   optionCartPrice: {
     color: '#fff',
     fontFamily: 'Nunito-Bold',
-    fontSize: 16,
+    fontSize: 15,
   },
-  optionSelectText: {},
+  optionSelectText: {
+    fontFamily: 'Nunito-Regular',
+  },
   optionVariantActive: {
     // marginRight: 15,
     backgroundColor: '#1b854b',
