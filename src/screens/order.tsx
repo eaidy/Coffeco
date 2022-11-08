@@ -539,7 +539,19 @@ function OrderScreen() {
                       </Text>
                     </View>
                     {(
-                      <View style={[styles.boxTitle]}>
+                      <Pressable
+                        onPress={() => {
+                          setIsBonusUsed((prev) => !prev)
+                          setSendOrderInfo(prev => {
+                            const buffer = prev
+                            buffer.Bonus = isBonusUsed
+                            return { ...buffer }
+                          })
+                          console.log("SEND ORDER INFO -->>", sendOrderInfo)
+                          setBasketState(prev => prev + 1)
+                        }}
+                        style={[styles.boxTitle]}
+                      >
                         <Text style={{ fontFamily: 'Nunito-Bold', fontSize: 18, color: '#1B854B' }}>
                           {userInfoState.bonus}
                         </Text>
@@ -549,20 +561,10 @@ function OrderScreen() {
                         <View>
                           <Checkbox
                             status={isBonusUsed ? 'checked' : 'unchecked'}
-                            onPress={() => {
-                              setIsBonusUsed((prev) => !prev)
-                              setSendOrderInfo(prev => {
-                                const buffer = prev
-                                buffer.Bonus = isBonusUsed
-                                return { ...buffer }
-                              })
-                              console.log("SEND ORDER INFO -->>", sendOrderInfo)
-                              setBasketState(prev => prev + 1)
-                            }}
                             color="#1B854B"
                           />
                         </View>
-                      </View>
+                      </Pressable>
                     )}
                     <View>
                       <View style={styles.boxTitle}>
