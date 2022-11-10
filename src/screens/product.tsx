@@ -347,6 +347,7 @@ function ProductScreen({ route }: any) {
                     iconStyle={{ color: "#444444" }}
                     textColor="#666666"
                     rounded
+                    editable={false}
                     type="up-down"
                     value={Qty}
                   />
