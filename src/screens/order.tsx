@@ -240,6 +240,17 @@ function OrderScreen() {
       .catch(err => console.log(err))
   }
 
+  const branchPressHandler = (branchID: Number) => {
+    setActiveBranchId(branchID)
+    setSendOrderInfo((prev: any) => {
+      const buffer = prev
+      buffer.BranchID = branchID
+      return {
+        ...buffer,
+      }
+    })
+  }
+
   const sendOrder = () => {
     if (sendOrderInfo.BranchID === 0) {
       Toast.showWithGravity('Lütfen şube seçiniz.', Toast.LONG, Toast.TOP)
