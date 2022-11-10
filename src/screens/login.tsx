@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito-SemiBold',
     color: '#1B854B',
     textAlign: 'center',
-    fontSize: 17,
+    fontSize: 15,
     marginTop: 5,
   },
 })
