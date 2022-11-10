@@ -700,7 +700,7 @@ function OrderScreen() {
                           padding: 15,
                         }}>
                           <TextInput
-                            placeholder={"Ata"}
+                            placeholder={"Notunuz..."}
                             mode="outlined"
                             value={sendOrderInfo.DeliveryNote}
                             onChangeText={note =>
