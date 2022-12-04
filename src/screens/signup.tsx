@@ -178,6 +178,7 @@ function SignupScreen({ navigation }) {
                         value={values.Email}
                         onChangeText={handleChange('Email')}
                         onBlur={handleBlur('Email')}
+                        autoCapitalize="none"
                         placeholderTextColor={colors.neutral500}
                       />
                       <Text style={[styles.errorValidation]}>

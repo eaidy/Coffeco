@@ -63,7 +63,8 @@ export default function Navigations() {
         name="Auth"
         component={AuthNavigation}
         options={{
-          headerShown: false,
+          headerShown: true,
+          title: "Coffeco",
         }}
       />
       <Stack.Screen
