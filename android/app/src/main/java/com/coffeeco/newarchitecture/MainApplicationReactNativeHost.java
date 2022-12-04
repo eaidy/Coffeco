@@ -1,4 +1,4 @@
-package com.coffeeco.newarchitecture;
+package com.coffecocom.tr.coffeco.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.coffeeco.BuildConfig;
-import com.coffeeco.newarchitecture.components.MainComponentsRegistry;
-import com.coffeeco.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.coffecocom.tr.coffeco.BuildConfig;
+import com.coffecocom.tr.coffeco.newarchitecture.components.MainComponentsRegistry;
+import com.coffecocom.tr.coffeco.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

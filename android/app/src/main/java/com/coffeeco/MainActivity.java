@@ -1,4 +1,4 @@
-package com.coffeeco;
+package com.coffecocom.tr.coffeco;
 
 import android.os.Bundle;
 import com.zoontek.rnbootsplash.RNBootSplash;

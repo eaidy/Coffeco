@@ -1,4 +1,4 @@
-package com.coffeeco.newarchitecture.modules;
+package com.coffecocom.tr.coffeco.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;
