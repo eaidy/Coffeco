@@ -1,6 +1,7 @@
 // API Imports
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React, { useEffect, useState } from 'react'
+import { Platform } from 'react-native'
 
 // Nested Navigators Imports
 import AuthNavigation from '@/navs/auth'
@@ -19,6 +20,8 @@ import { login } from './services/auth'
 
 const Stack = createNativeStackNavigator()
 const MMKV = new MMKVLoader().initialize();
+
+const headerShow = Platform.OS === 'android' ? false : true
 
 export default function Navigations() {
 
@@ -63,7 +66,7 @@ export default function Navigations() {
         name="Auth"
         component={AuthNavigation}
         options={{
-          headerShown: true,
+          headerShown: headerShow,
           title: "Coffeco",
         }}
       />
